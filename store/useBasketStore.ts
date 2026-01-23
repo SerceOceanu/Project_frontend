@@ -1,0 +1,63 @@
+import { create } from 'zustand'
+import { BasketProduct } from '@/types/types'
+
+interface Order {
+  name: string;
+  surname: string;
+  company: string;
+  address: string;
+  postalCode: string;
+  isCity: boolean;
+  phone: string;
+  email: string;
+
+  isAnotherAddress: boolean;
+
+  deliveryType: 'pickup' | 'courier' | 'locker';
+  lockerNumber?: string;
+  paymentType: 'card' | 'payu' | 'blik';
+  comment?: string;
+}
+interface BasketStore {
+  isBasketModalOpen: boolean
+  deliveryCost: number
+
+  basket: BasketProduct[];
+
+  order: Order;
+  setOrder: (key: keyof Order, value: boolean | string | number) => void;
+  addToBasket: (product: BasketProduct) => void;
+  removeFromBasket: (id: number) => void;
+  clearBasket: () => void;
+  changeQuantity: (id: number, quantity: number) => void;
+  setValue: (key: string, value: boolean | string | number) => void
+}
+
+export const useBasketStore = create<BasketStore>((set) => ({
+  isBasketModalOpen: false,
+  deliveryCost: 0,
+  basket: [],
+  order: {
+    name: '',
+    surname: '',
+    company: '',
+    address: '',
+    postalCode: '',
+    isCity: false,
+    phone: '',
+    email: '',
+    isAnotherAddress: false,
+    deliveryType: 'pickup',
+    lockerNumber: '',
+    paymentType: 'card',
+    comment: '',
+  },
+  
+  setOrder: (key: keyof Order, value: boolean | string | number) => set((state) => ({ order: { ...state.order, [key]: value } })),
+  addToBasket: (product) => set((state) => ({ basket: [...state.basket, product] })),
+  removeFromBasket: (id: number) => set((state) => ({ basket: state.basket.filter((p) => p.id !== id) })),
+  changeQuantity: (id: number, quantity: number) => set((state) => ({ basket: state.basket.map((p) => p.id === id ? { ...p, quantity: quantity } : p) })),
+  clearBasket: () => set({ basket: [] }),
+  setValue: (key: string, value: boolean | string | number) => set({ [key]: value }),
+}))
+

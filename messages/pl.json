@@ -1,0 +1,219 @@
+{
+  "login": "Zaloguj się do swojego konta",
+  "new": "Nowy",
+  "back": "Wróć",
+  "currency": "zł",
+  "see-all": "Zobacz wszystkie",
+  "name": "Serce Oceanu",
+  "week-days": "pn-pt",
+  "weekend-days": "sb-nd",
+  "qty": "szt",
+  "weight": "g",
+  "delete": "Usuń",
+  "continue":"Kontynuuj",
+  "apply": "Złóż zamówienie",
+  "total": "Razem",
+  "login-button": "Zaloguj się",
+  "login-with-google": "Zaloguj się za pomocą Google",
+  "loading": "Ładowanie...",
+  "completed": "Dostarczono",
+  "pending": "W przygotowaniu",
+
+  "language": {
+    "change-language": "Język",
+    "labelUA": "Ukrainiański",
+    "labelPL": "Polski"
+  },
+  "header": {
+    "work-hours": "Godziny pracy",
+    "work-hours-description": "pn-pt",
+    "home": "Główna",
+    "delivery": "Dostawa",
+    "about-us": "O nas",
+    "catalogue": "Asortyment",
+    "basket": "Koszyk",
+    "contact": "Kontakt",
+    "chilled": "Produkty chłodzone",
+    "frozen": "Produkty zamrożone",
+    "ready": "Produkty gotowe",
+    "marinated": "Produkty marinowane",
+    "snacks": "Snacki",
+    "menu": "Menu",
+    "navigation": "Nawigacja",
+    "personal": "Osobiste",
+    "profile": "Profil",
+    "favorites": "Ulubione",
+    "contacts": "Kontakty do zamówienia",
+    "contacts-title": "Prowadzimy zamówienia",
+    "support": "Wsparcie",
+    "phone": "+48 884 826 064",
+    "email": "info@serceoceanu.com.pl"
+  },
+  "footer": {
+    "contacts": "Kontakty",
+    "work-time": "Godziny pracy",
+    "we-in-social-networks": "Mamy w mediach"
+  },
+  "about-us": {
+    "description": "To rodzinny biznes, stworzony na podstawie szacunku dla tradycji i wierzącym w to, że jedzenie łączy ludzi. Dla nas szczególnie cenne momenty, kiedy cała rodzina zbiera się przy jednym stole. Wierzymy, że wysokiej jakości produkty morskie mogą dać bliskim radosć, ciepło i smak prawdziwego świątecznego obiadu.",
+    "our": "Nasze",
+    "our2": "Nasza",
+    "values": "wartości",
+    "history": "Historia",
+    "card1": {
+      "title": "Czystość bez kompromisów",
+      "description": "Każdy produkt jest wybierany z najwyższą starannością, aby otrzymać tylko najlepsze."
+    },
+    "card2": {
+      "title": "Siła tradycji rodzinnych",
+      "description": "Wybieramy to, co byśmy dali na własny sto."
+    },
+    "card3": {
+      "title": "Zaufanie i otwartość",
+      "description": "Prawdziwość w pracy i przejrzystość w każdej szczegółowej części — podstawa naszych relacji z klientami."
+    },
+    "card4": {
+      "title": "Troska o każdego",
+      "description": "Jesteśmy obok na każdym etapie — od wyboru produktu do jego podania na twoim stole."
+    },
+    "card5": {
+      "title": "Momenty, które łączą",
+      "description": "Nasze produkty morskie są stworzone, aby każda kolacja była małym świętem dla całej rodziny."
+    },
+    "trust": {  
+      "title": "Zaufanie i otwartość",
+      "p1": "Prawdziwość w pracy i przejrzystość w każdej szczegółowej części — podstawa naszych relacji z klientami.",
+      "p2": "Wtedy postanowiliśmy zrobić krok sami: znaleźć i przywieść produkty, które przypominają o domu. Na początek tylko dla siebie, a z czasem — i dla innych. Okazało się, że ich jest wiele — tych, którzy chcą poczuć spokój i święto przy swoim stole.",
+      "p31": "Tak zaczęła się nasza historia. Dziś oferujemy nie tylko",
+      "p32": "ale i świeżą rybę oraz produkty morskie, aby",
+      "p33": "różnorodność, smak i trochę radości.",
+      "span1": "ulubione produkty z dzieciństwa,",
+      "span2": "każda rodzina mogła dodać do swojego stołu "
+    },
+    "statistics1": "W Polsce już poczuło się to ciepło i miłość dzięki naszym produktom.",
+    "statistics2": "Dokładnie tego dnia rozpoczęliśmy naszą historię."
+  },
+  "delivery": {
+    "card1": {
+      "title": "Zona dostawy",
+      "description": "Wysyłamy zamówienia po całej Polsce"
+    },
+    "card2": {
+      "title": "Pakowanie",
+      "description": "Paczkomatami InPost w bezpiecznych termoboxach z chłodzącymi elementami."
+    },
+    "card3": {
+      "title": "Dostawa",
+      "description": "Dostawa zajmuje tylko 1 dzień — szybko, wygodnie i bez zbędnych problemów."
+    },
+    "card4": {
+      "title": "Dostawa kurierska",
+      "description": "Dostawa zajmuje tylko 1 dzień — szybko, wygodnie i bez zbędnych problemów."
+    },
+    "map-title": "Mapa samochodu",
+    "work-time": "Godziny pracy"
+  },
+  "catalogue": {
+    "cheap-products": "Tanie",
+    "expensive-products": "Drogie",
+    "popular-products": "Popularne",
+    "assortment": "Asortyment",
+    "recommended": "Zalecane"
+  },
+  "profile": {  
+    "history": "Historia zamówień",
+    "addresses": "Adresy dostawy",
+    "likes": "Ulubione produkty",
+    "logout": "Wyloguj się",
+    "edit": "Edycja profilu",
+    "name": "Imię",
+    "phone": "Telefon",
+    "password": "Hasło",
+    "password-placeholder": "Wprowadź nowe hasło",
+    "confirm-password": "Potwierdź hasło",
+    "confirm-password-placeholder": "Powtórz hasło",
+    "password-hint": "Pozostaw puste, jeśli nie chcesz zmieniać hasła",
+    "save": "Zapisz zmiany",
+    
+    "no-orders": "Nie masz jeszcze żadnych zamówień",
+    "no-orders-text" : "Tutaj będą wyświetlane twoje poprzednie i aktywne zamówienia, jak tylko zrobisz pierwsze.",
+    "make-order": "Złóż zamówienie",
+
+    "no-addresses": "Nie masz jeszcze żadnych zapisanych adresów",
+    "no-addresses-text" : "Tutaj będą zapisane adresy, na które robisz zamówienia. Adres zostanie zapisany tutaj automatycznie po złożeniu zamówienia",
+    "address-warning": "Zachowuje się do 5 adresów. Przy dodawaniu nowego, najstarszy adres zostanie usunięty.",
+
+    "no-favorites": "Nie masz jeszcze żadnych ulubionych produktów",
+    "no-favorites-text" : "Dodaj tutaj produkty, aby wracać do nich ponownie i ponownie.",
+    "no-favorites-button": "Złóż pierwsze ulubione"
+  },
+  "basket": {
+    "title": "Twoje zamówienie",
+    "no-products": "Twój koszyk jest pusty",
+    "no-products-text": "Dodaj pierwszy produkt do swojego koszyka, aby nie był sam",
+    "no-products-button": "Zrobić zamówienie",
+    "button": "Złóż zamówienie",
+    "empty-basket-button": "Zrobić zamówienie",
+
+    "main-title": "Oformowanie zamówienia",
+    "main-tooltip": "Zaloguj się i po pierwszym zamówieniu pola zostaną wypełnione automatycznie",
+    "main-button-enter": "Zaloguj się do osobistego konta",
+    "in-basket": "W koszyk"
+  },
+  "delivery-form": {
+    "title": "Dane do dostawy",
+    "name": "Imię",
+    "surname": "Nazwisko",
+    "company": "Nazwa firmy (opcjonalnie)",
+    "address": "Ulica i numer domu*",
+    "postal-code": "Kod pocztowy*",
+    "city": "Miasto",
+    "village": "Wieś",
+    "phone" : "Numer telefonu*",
+    "phone-placeholder" : "Wprowadź numer telefonu",
+    "another-address-checkbox": "Nałożenie na inny adres",
+
+    "delivery-type": "Typ dostawy",
+    "delivery-type-1": "Samochód: (możliwa płatność gotówką)",
+    "delivery-type-2": "InPost Paczkomaty: 14,99 zł",
+    "delivery-type-3": "Kurier InPost: 18,99 zł",
+
+    "delivery-type-31": "InPost Paczkomaty: 14,99 zł",
+    "delivery-type-32": "Kurier InPost: 18,99 zł",
+
+    "post-box-title": "Paczkomat*",
+    "post-box-description": "Wybierz paczkomat",
+
+    "payment-type": "Typ płatności",
+    "payment-type-1": "Płatność kartą z PayU",
+    "payment-type-2": "Płatność online przez PayU",
+    "payment-type-3": "Blik",
+    
+    "comment": "Komentarz",
+    "comment-placeholder": "Uwagi do zamówienia",
+    "submit": "Potwierdź zamówienie",
+    "submit-final": "Złóż zamówienie",
+
+    "delivery-cost": "Koszt dostawy",
+    "order-cost": "Koszt produktów"
+  },
+  "validation": {
+    "name-min": "Imię musi zawierać minimum 2 znaki",
+    "surname-min": "Nazwisko musi zawierać minimum 2 znaki",
+    "address-min": "Adres musi zawierać minimum 5 znaków",
+    "postal-code-min": "Kod pocztowy musi zawierać minimum 4 znaki",
+    "phone-min": "Numer telefonu musi zawierać minimum 10 znaków",
+    "email-invalid": "Nieprawidłowy adres email",
+    "code-invalid": "Nieprawidłowy kod weryfikacyjny"
+  },
+  "verify-code-title": "Wprowadź kod weryfikacyjny",
+  "verify-code-description": "Wysłaliśmy kod na numer {phone}",
+  "verifying": "Weryfikacja...",
+  "verify-button": "Zweryfikuj",
+  "sending-code": "Wysyłanie kodu...",
+  "error-sending-code": "Błąd wysyłania kodu. Spróbuj ponownie.",
+  "error-google-login": "Błąd logowania przez Google. Spróbuj ponownie.",
+  "error-popup-closed": "Okno logowania zostało zamknięte. Spróbuj ponownie.",
+  "error-popup-blocked": "Okno logowania zostało zablokowane przez przeglądarkę. Zezwól na wyskakujące okna dla tej strony.",
+  "error-unauthorized-domain": "Ta domena nie jest autoryzowana do logowania przez Google. Skontaktuj się z administratorem."
+}
