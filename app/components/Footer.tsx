@@ -128,9 +128,9 @@ export default function Footer() {
           <span className="text-light-gray text-sm">
           © All rights reserved.
           </span>
-          <span className="text-light-gray text-sm">
+          <Link href="/privacy-policy" className="text-light-gray text-sm hover:underline">
             Privacy Policy
-          </span>
+          </Link>
         </div>
       </section>
     </footer>
