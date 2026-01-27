@@ -10,7 +10,6 @@ import {
   ConfirmationResult
 } from 'firebase/auth';
 import { auth, googleProvider } from './firebase';
-import Cookies from 'js-cookie';
 
 export const signInWithGoogle = async (): Promise<User> => {
   // Use redirect on production, popup on development
@@ -22,7 +21,16 @@ export const signInWithGoogle = async (): Promise<User> => {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
     const token = await user.getIdToken();
-    Cookies.set('session', token, { expires: 7 });
+    
+    // Send token to server to create httpOnly cookie
+    await fetch('/api/auth/session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ idToken: token }),
+    });
+    
     return user;
   }
 };
@@ -32,7 +40,16 @@ export const handleRedirectResult = async (): Promise<User | null> => {
     const result = await getRedirectResult(auth);
     if (result?.user) {
       const token = await result.user.getIdToken();
-      Cookies.set('session', token, { expires: 7 });
+      
+      // Send token to server to create httpOnly cookie
+      await fetch('/api/auth/session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ idToken: token }),
+      });
+      
       return result.user;
     }
     return null;
@@ -127,13 +144,26 @@ export const verifyPhoneCode = async (
   const result = await confirmationResult.confirm(code);
   const user = result.user;
   const token = await user.getIdToken();
-  Cookies.set('session', token, { expires: 7 });
+  
+  // Send token to server to create httpOnly cookie
+  await fetch('/api/auth/session', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ idToken: token }),
+  });
+  
   return user;
 };
 
 export const logout = async (): Promise<void> => {
   await signOut(auth);
-  Cookies.remove('session');
+  
+  // Delete session from server
+  await fetch('/api/auth/session', {
+    method: 'DELETE',
+  });
 };
 
 export const getCurrentUser = (): Promise<User | null> => {
@@ -141,7 +171,15 @@ export const getCurrentUser = (): Promise<User | null> => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         const token = await user.getIdToken(true);
-        Cookies.set('session', token, { expires: 7 });
+        
+        // Send token to server to create httpOnly cookie
+        await fetch('/api/auth/session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ idToken: token }),
+        });
       }
       unsubscribe();
       resolve(user);
