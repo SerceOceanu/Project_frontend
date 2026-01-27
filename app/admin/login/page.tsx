@@ -38,7 +38,7 @@ export default function AdminLoginPage() {
       onSuccess: (response) => {
         console.log('✅ Login successful, response:', response);
         
-        // Получаем токен из ответа: response.tokens.accessToken
+        // Get token from response: response.tokens.accessToken
         const token = response?.tokens?.accessToken || response?.token || response?.accessToken;
         
         if (!token) {
@@ -47,11 +47,11 @@ export default function AdminLoginPage() {
           return;
         }
         
-        // Сохраняем токен в localStorage
+        // Save token to localStorage
         localStorage.setItem('admin-token', token);
         console.log('💾 Token saved to localStorage:', token.substring(0, 20) + '...');
         
-        // Проверяем что токен сохранился
+        // Verify token was saved
         const savedToken = localStorage.getItem('admin-token');
         if (savedToken === token) {
           console.log('✅ Token verified in localStorage');

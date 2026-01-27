@@ -5,7 +5,7 @@ import CustomInput from "@/components/CustomInput";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import RadioGroupComponent from "./RadioGroup";
 import { PhoneInput } from "@/components/PhoneInput";
 import { cn } from "@/lib/utils";
@@ -13,9 +13,11 @@ import { Checkbox } from "@/components/ui/checkbox"
 import CustomSelect from "@/components/CustomSelect";
 import { Textarea } from "@/components/ui/textarea";
 import { useBasketStore } from "@/store/useBasketStore";
+import { useStatesStore } from "@/store/useStatesStore";
 
 export default function Form() {
   const { order, setOrder } = useBasketStore();
+  const { setIsLoginOpen } = useStatesStore();
   const t = useTranslations();
   // Dynamic Zod schema with i18n validation messages
   const schema = useMemo(() => 
@@ -65,11 +67,25 @@ export default function Form() {
     setOrder('comment', watch('comment') || '');
   });
 
+  // Auto-switch to payu payment when courier or locker is selected
+  useEffect(() => {
+    if ((order.deliveryType === 'courier' || order.deliveryType === 'locker') && order.paymentType === 'cash') {
+      setOrder('paymentType', 'payu');
+    }
+  }, [order.deliveryType, order.paymentType, setOrder]);
+
   return (
     <form >
       <h2 className="font-bold w-full rubik text-[32px] mb-6"> {t('basket.main-title')} </h2>
       <p className="rubik text-gray  mb-3 "> {t('basket.main-tooltip')} </p>
-      <Button type="button" variant="outline" className="w-full h-[56px] bg-white mb-5"> {t('basket.main-button-enter')} </Button>
+      <Button 
+        type="button" 
+        variant="outline" 
+        className="w-full h-[56px] bg-white mb-5"
+        onClick={() => setIsLoginOpen(true)}
+      > 
+        {t('basket.main-button-enter')} 
+      </Button>
       <div className="flex flex-col gap-5 bg-white px-6 py-7 rounded-xl">
         <h3 className="font-bold w-full rubik text-[24px]"> {t('delivery-form.title')} </h3>
         <div className="grid grid-cols-2 gap-5"> 
@@ -119,7 +135,16 @@ export default function Form() {
         />  
         
         <div className="relative flex flex-col gap-2">
-          <label className="text-sm text-gray">{t('delivery-form.phone')}</label>
+          <label className="text-sm text-gray">
+            {t('delivery-form.phone').split('*').map((part, index, array) => (
+              index === array.length - 1 ? part : (
+                <span key={index}>
+                  {part}
+                  <span className="text-red-500">*</span>
+                </span>
+              )
+            ))}
+          </label>
           <Controller
             name="phone"
             control={control}
@@ -176,11 +201,14 @@ export default function Form() {
       <div className="flex flex-col gap-5 bg-white px-6 py-7 rounded-xl mb-3">
         <h3 className="font-bold w-full rubik text-[24px]"> {t('delivery-form.payment-type')} </h3>
           <RadioGroupComponent 
-            items={[
-                { value: 'card', type: 'Visa' as const, label: t('delivery-form.payment-type-1') },
+              items={
+                order.deliveryType === 'pickup'
+                  ? [
                 { value: 'payu', type: 'PayUGo' as const, label: t('delivery-form.payment-type-2') }, 
-                { value: 'blik', type: 'Blik' as const, label: t('delivery-form.payment-type-3') }
-            ]} 
+                      { value: 'cash', label: t('delivery-form.payment-type-cash') }
+                    ]
+                : [{ value: 'payu', type: 'PayUGo' as const, label: t('delivery-form.payment-type-2') }]
+              }
             value={order.paymentType} 
             onChange={(value) => { setOrder('paymentType', value) }} 
           />

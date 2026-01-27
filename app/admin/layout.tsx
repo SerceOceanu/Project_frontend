@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Rubik, Roboto, Inter } from "next/font/google";
 import "../globals.css";
 import { ReactQueryProvider } from "../providers";
-import Header from "./components/Header";
-import Menu from "./components/Menu";
 import { Toaster } from "@/components/ui/sonner";
+import AuthGuard from "./components/AuthGuard";
+import AdminShell from "./components/AdminShell";
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 const rubik = Rubik({ variable: "--font-rubik", subsets: ["latin"] });
@@ -27,16 +27,12 @@ export default function AdminLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${rubik.variable} ${roboto.variable} ${inter.variable} antialiased`}
       >
         <ReactQueryProvider>
-          <div className="flex flex-col min-h-screen relative">
-            <main className="flex-1 bg-background flex flex-col">
-              <Header />
-              <section className="flex flex-1">
-                <Menu />
+          <AuthGuard>
+            <AdminShell>
                 {children}
-              </section>
-            </main>
-          </div>
+            </AdminShell>
           <Toaster position="top-left" />
+          </AuthGuard>
         </ReactQueryProvider>
       </body>
     </html>

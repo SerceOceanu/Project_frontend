@@ -118,7 +118,11 @@
     "expensive-products": "Drogie",
     "popular-products": "Popularne",
     "assortment": "Asortyment",
-    "recommended": "Zalecane"
+    "recommended": "Zalecane",
+    "no-products-title": "Brak produktów",
+    "no-products-description": "Niestety, w tej kategorii nie ma jeszcze dostępnych produktów. Spróbuj przejrzeć inne kategorie lub wróć później.",
+    "no-search-results-title": "Nie znaleziono wyników",
+    "no-search-results-description": "Niestety, nie znaleziono produktów dla zapytania \"{query}\". Spróbuj zmienić wyszukiwane hasło."
   },
   "profile": {  
     "history": "Historia zamówień",
@@ -185,6 +189,7 @@
     "post-box-description": "Wybierz paczkomat",
 
     "payment-type": "Typ płatności",
+    "payment-type-cash": "Gotówką",
     "payment-type-1": "Płatność kartą z PayU",
     "payment-type-2": "Płatność online przez PayU",
     "payment-type-3": "Blik",
@@ -215,5 +220,9 @@
   "error-google-login": "Błąd logowania przez Google. Spróbuj ponownie.",
   "error-popup-closed": "Okno logowania zostało zamknięte. Spróbuj ponownie.",
   "error-popup-blocked": "Okno logowania zostało zablokowane przez przeglądarkę. Zezwól na wyskakujące okna dla tej strony.",
-  "error-unauthorized-domain": "Ta domena nie jest autoryzowana do logowania przez Google. Skontaktuj się z administratorem."
+  "error-unauthorized-domain": "Ta domena nie jest autoryzowana do logowania przez Google. Skontaktuj się z administratorem.",
+  "accept-regulations": "Zapoznałem się z Regulaminem i Warunkami",
+  "order-success-title": "Zamówienie zostało pomyślnie złożone!",
+  "order-success-description": "Dziękujemy za zamówienie! Już starannie pakujemy Twoje owoce morza i przygotowujemy je do wysyłki",
+  "order-success-button": "Na stronę główną"
 }

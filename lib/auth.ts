@@ -1,6 +1,8 @@
 import { 
   signInWithPopup, 
-  signOut, 
+  signInWithRedirect,
+  getRedirectResult,
+  signOut,
   User, 
   onAuthStateChanged,
   RecaptchaVerifier,
@@ -11,11 +13,33 @@ import { auth, googleProvider } from './firebase';
 import Cookies from 'js-cookie';
 
 export const signInWithGoogle = async (): Promise<User> => {
-  const result = await signInWithPopup(auth, googleProvider);
-  const user = result.user;
-  const token = await user.getIdToken();
-  Cookies.set('session', token, { expires: 7 });
-  return user;
+  // Use redirect on production, popup on development
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+    await signInWithRedirect(auth, googleProvider);
+    // User will be redirected, so we won't reach here
+    throw new Error('Redirecting...');
+  } else {
+    const result = await signInWithPopup(auth, googleProvider);
+    const user = result.user;
+    const token = await user.getIdToken();
+    Cookies.set('session', token, { expires: 7 });
+    return user;
+  }
+};
+
+export const handleRedirectResult = async (): Promise<User | null> => {
+  try {
+    const result = await getRedirectResult(auth);
+    if (result?.user) {
+      const token = await result.user.getIdToken();
+      Cookies.set('session', token, { expires: 7 });
+      return result.user;
+    }
+    return null;
+  } catch (error) {
+    console.error('Error handling redirect result:', error);
+    throw error;
+  }
 };
 
 export const setupRecaptcha = async (elementId: string): Promise<RecaptchaVerifier> => {

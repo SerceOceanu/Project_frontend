@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { Rubik } from "next/font/google";
-import "../globals.css";
-import { ReactQueryProvider } from "../providers";
+import "../../globals.css";
+import { ReactQueryProvider } from "../../providers";
 
 const rubik = Rubik({variable: "--font-rubik",subsets: ["latin"]});
 export const metadata: Metadata = {title: "Admin Login - Cerce Oceanu",description: "Admin Panel Login"};
 
-export default function LoginLayout({
+export default function AdminLoginLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -23,4 +23,3 @@ export default function LoginLayout({
     </html>
   );
 }
-

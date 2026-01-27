@@ -39,8 +39,8 @@ export function useAdminLogout() {
       localStorage.removeItem('admin-token');
       console.log('🚪 Logged out, token removed from localStorage');
       
-      // Перенаправляем на страницу логина
-      router.push('/login');
+      // Redirect to admin login page
+      router.push('/admin/login');
     }
   };
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,9 +15,8 @@ import { OTPInput } from "./OTPInput";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useStatesStore } from "@/store/useStatesStore";
 import { useSignInWithGoogle } from "@/hooks/useAuth";
-import { setupRecaptcha, sendPhoneVerification, verifyPhoneCode, cleanupRecaptcha } from "@/lib/auth";
+import { setupRecaptcha, sendPhoneVerification, verifyPhoneCode, handleRedirectResult } from "@/lib/auth";
 import { useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
 import { AUTH_QUERY_KEY } from '@/hooks/useAuth';
 import type { ConfirmationResult } from 'firebase/auth';
 
@@ -32,11 +31,44 @@ type FormValues = {
 };
 
 export default function LoginForm() {
-  const { isCodeSent } = useStatesStore();
+  const { isCodeSent, setIsLoginOpen } = useStatesStore();
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const queryClient = useQueryClient();
+  const formRef = useRef<HTMLDivElement>(null);
+  
+  // Handle redirect result on component mount
+  useEffect(() => {
+    const checkRedirectResult = async () => {
+      try {
+        const user = await handleRedirectResult();
+        if (user) {
+          queryClient.setQueryData(AUTH_QUERY_KEY, user);
+          setIsLoginOpen(false);
+        }
+      } catch (error) {
+        console.error('Error handling redirect:', error);
+      }
+    };
+    
+    checkRedirectResult();
+  }, [queryClient, setIsLoginOpen]);
+  
+  // Close on click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (formRef.current && !formRef.current.contains(event.target as Node)) {
+        setIsLoginOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [setIsLoginOpen]);
   
   return (
-    <div className='w-full max-w-[460px] absolute top-16 right-2.5 bg-white rounded-xl shadow-xl p-10'>
+    <div ref={formRef} className='w-full max-w-[460px] absolute top-16 right-2.5 bg-white rounded-xl shadow-xl p-10'>
       {/* Один общий контейнер для reCAPTCHA */}
       <div id="recaptcha-container"></div>
       
@@ -195,8 +227,8 @@ const PhoneForm = ({ setConfirmationResult }: { setConfirmationResult: (result: 
 
 const VerificationCode = ({ 
   confirmationResult, 
-  setConfirmationResult 
-}: { 
+  setConfirmationResult
+}: {
   confirmationResult: ConfirmationResult | null;
   setConfirmationResult: (result: ConfirmationResult) => void;
 }) => {
@@ -207,7 +239,6 @@ const VerificationCode = ({
   const [error, setError] = useState('');
   const { phoneNumber, setIsCodeSent, setPhoneNumber, setIsLoginOpen } = useStatesStore();
   const queryClient = useQueryClient();
-  const router = useRouter();
 
   const handleVerify = async () => {
     if (!confirmationResult) return;
@@ -219,7 +250,6 @@ const VerificationCode = ({
       const user = await verifyPhoneCode(confirmationResult, code);
       queryClient.setQueryData(AUTH_QUERY_KEY, user);
       setIsLoginOpen(false);
-      router.push('/profile');
     } catch (err: any) {
       console.error('Error verifying code:', err);
       if (err.code === 'auth/invalid-verification-code') {

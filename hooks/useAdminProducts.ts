@@ -152,7 +152,7 @@ export function useCreateProduct() {
       if (!response.ok) {
         let errorMessage = 'Failed to create product';
         try {
-          const error = await response.json();
+        const error = await response.json();
           errorMessage = error.error || error.message || errorMessage;
           console.error('❌ Create product error:', error);
         } catch (e) {
@@ -187,7 +187,7 @@ export function useUpdateProduct() {
       formData.append('quantityPerServing', productData.quantityPerServing.toString());
       
       if (productData.enabled !== undefined) {
-        formData.append('enabled', productData.enabled.toString());
+      formData.append('enabled', productData.enabled.toString());
       }
       
       if (productData.label) {
@@ -200,7 +200,7 @@ export function useUpdateProduct() {
 
       const headers = getAuthHeaders();
       // НЕ добавляем Content-Type для FormData - браузер сам установит multipart/form-data с boundary
-      
+
       const response = await fetch(`${API_URL}/products/${id}`, {
         method: 'PUT',
         headers: headers, // Отправляем Bearer токен в заголовке Authorization

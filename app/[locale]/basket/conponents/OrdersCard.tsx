@@ -4,19 +4,18 @@ import OrderItem from './OrderItem'
 import { Button } from '@/components/ui/button'
 import { useTranslations } from 'next-intl'
 import { useState, useMemo } from 'react'
-import { Link } from '@/lib/navigation'
+import { Link, useRouter } from '@/lib/navigation'
 import { useBasketStore } from '@/store/useBasketStore'
 import { Checkbox } from '@/components/ui/checkbox';
 import { BasketProduct } from '@/types/types';
 import { useCreateOrder } from '@/hooks/useOrder';
 import { toast } from 'sonner';
 
-export default function OrdersCard({ type }: { type: 'modal' | 'page' }) {
+export default function OrdersCard({ type, setIsSuccessModalOpen }: { type: 'modal' | 'page', setIsSuccessModalOpen?: (open: boolean) => void }) {
   const { basket } = useBasketStore();
   const t = useTranslations();
-  console.log(basket, 'Basket');
   const total = basket.reduce((acc, item: BasketProduct) => acc + item.price * item.quantity, 0).toFixed(2);
-  console.log(total, 'Total');
+  
   return (
     <div className='flex flex-col bg-white rounded-xl p-5 shadow-lg gap-6 '>
       {(basket.length === 0 || !basket.length) && <NoOrders />}
@@ -28,9 +27,8 @@ export default function OrdersCard({ type }: { type: 'modal' | 'page' }) {
             <OrderItem key={index} product={item} />
           ))}
         </div>
-        {type === 'modal' ? <TotalModal total={Number(total)} /> : <TotalPage total={Number(total)} />}
+        {type === 'modal' ? <TotalModal total={Number(total)} /> : <TotalPage total={Number(total)} setIsSuccessModalOpen={setIsSuccessModalOpen} />}
       </>)}
-
     </div>
   )
 }
@@ -52,7 +50,7 @@ const TotalModal = ({ total }: { total: number }) => {
   )
 }
 
-const TotalPage = ({ total }: { total: number }) => {
+const TotalPage = ({ total, setIsSuccessModalOpen }: { total: number, setIsSuccessModalOpen?: (open: boolean) => void }) => {
   const { deliveryCost, order, basket, clearBasket } = useBasketStore();
   const t = useTranslations();
   const [accept, setAccept] = useState(false);
@@ -84,9 +82,18 @@ const TotalPage = ({ total }: { total: number }) => {
       },
       {
         onSuccess: (data) => {
-          toast.success('Замовлення успішно створено!');
-          console.log('Order created:', data);
-          clearBasket();
+          if (order.paymentType === 'cash') {
+            setIsSuccessModalOpen?.(true);
+            clearBasket();
+          } 
+          else if (data?.payment?.redirectUri) {
+            clearBasket();
+            window.location.href = data.payment.redirectUri;
+          }
+          else {
+            setIsSuccessModalOpen?.(true);
+            clearBasket();
+          }
         },
         onError: (error) => {
           toast.error(`Помилка: ${error.message}`);
@@ -110,7 +117,9 @@ const TotalPage = ({ total }: { total: number }) => {
       </div>
       <div className='flex items-center gap-2 py-5'>
         <Checkbox id="accept" checked={accept} onCheckedChange={(checked) => setAccept(checked === 'indeterminate' ? false : checked)} />
-        <label htmlFor="accept" className="text-sm text-gray cursor-pointer">  Zapoznałem się z treścią strony Regulamin * </label>
+        <label htmlFor="accept" className="text-sm text-gray cursor-pointer">
+          {t('accept-regulations')} <span className="text-red-500">*</span>
+        </label>
       </div>
       <Button 
         onClick={handleCreateOrder} 

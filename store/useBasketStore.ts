@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import { BasketProduct } from '@/types/types'
 
 interface Order {
@@ -15,7 +16,7 @@ interface Order {
 
   deliveryType: 'pickup' | 'courier' | 'locker';
   lockerNumber?: string;
-  paymentType: 'card' | 'payu' | 'blik';
+  paymentType: 'cash' | 'payu';
   comment?: string;
 }
 interface BasketStore {
@@ -33,7 +34,9 @@ interface BasketStore {
   setValue: (key: string, value: boolean | string | number) => void
 }
 
-export const useBasketStore = create<BasketStore>((set) => ({
+export const useBasketStore = create<BasketStore>()(
+  persist(
+    (set) => ({
   isBasketModalOpen: false,
   deliveryCost: 0,
   basket: [],
@@ -49,15 +52,25 @@ export const useBasketStore = create<BasketStore>((set) => ({
     isAnotherAddress: false,
     deliveryType: 'pickup',
     lockerNumber: '',
-    paymentType: 'card',
+        paymentType: 'payu',
     comment: '',
   },
   
   setOrder: (key: keyof Order, value: boolean | string | number) => set((state) => ({ order: { ...state.order, [key]: value } })),
   addToBasket: (product) => set((state) => ({ basket: [...state.basket, product] })),
   removeFromBasket: (id: number) => set((state) => ({ basket: state.basket.filter((p) => p.id !== id) })),
-  changeQuantity: (id: number, quantity: number) => set((state) => ({ basket: state.basket.map((p) => p.id === id ? { ...p, quantity: quantity } : p) })),
+      changeQuantity: (id: number, quantity: number) => set((state) => ({ basket: state.basket.map((p) => p.id === id ? { ...p, quantity: quantity } : p) })),
   clearBasket: () => set({ basket: [] }),
   setValue: (key: string, value: boolean | string | number) => set({ [key]: value }),
-}))
+    }),
+    {
+      name: 'basket-storage', // unique name for localStorage key
+      partialize: (state) => ({
+        basket: state.basket,
+        order: state.order,
+        deliveryCost: state.deliveryCost,
+      }),
+    }
+  )
+)
 

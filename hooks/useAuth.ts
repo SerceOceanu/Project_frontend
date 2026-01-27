@@ -22,8 +22,25 @@ export const useSignInWithGoogle = () => {
   return useMutation({
     mutationFn: signInWithGoogle,
     onSuccess: (user) => {
-      queryClient.setQueryData(AUTH_QUERY_KEY, user);
-      router.push('/profile');
+      // Only handle success for popup (development)
+      // For redirect (production), this won't be called
+      if (user) {
+        queryClient.setQueryData(AUTH_QUERY_KEY, user);
+        
+        // Check if login was from basket page
+        if (typeof window !== 'undefined') {
+          const currentPath = window.location.pathname;
+          if (!currentPath.includes('/basket')) {
+            router.push('/profile');
+          }
+        }
+      }
+    },
+    onError: (error: any) => {
+      // Ignore "Redirecting..." error as it's expected
+      if (error.message !== 'Redirecting...') {
+        console.error('Google sign-in error:', error);
+      }
     },
   });
 };

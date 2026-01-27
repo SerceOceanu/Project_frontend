@@ -21,7 +21,16 @@ export default function CustomInput({
 }) {
   return (
     <div className={cn("relative flex flex-col gap-2", className)}>
-      <label htmlFor={name} className="text-sm text-gray"> {label} </label>
+      <label htmlFor={name} className="text-sm text-gray">
+        {label.split('*').map((part, index, array) => (
+          index === array.length - 1 ? part : (
+            <span key={index}>
+              {part}
+              <span className="text-red-500">*</span>
+            </span>
+          )
+        ))}
+      </label>
       <Input 
         id={name}
         type={type}

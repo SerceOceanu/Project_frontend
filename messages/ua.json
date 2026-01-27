@@ -126,7 +126,11 @@
     "expensive-products": "Дорогі",
     "popular-products": "Популярні",
     "assortment": "Асортимент",
-    "recommended": "Рекомендованe"  
+    "recommended": "Рекомендованe",
+    "no-products-title": "Товарів поки немає",
+    "no-products-description": "На жаль, в цій категорії поки немає доступних товарів. Спробуйте переглянути інші категорії або зайдіть пізніше.",
+    "no-search-results-title": "Нічого не знайдено",
+    "no-search-results-description": "На жаль, за запитом \"{query}\" нічого не знайдено. Спробуйте змінити пошуковий запит."
   },
   "profile": {
     "history": "Історія замовлень",
@@ -193,6 +197,7 @@
     "post-box-description": "Вибери поштомат",
 
     "payment-type": "Тип оплати",
+    "payment-type-cash": "Готівкою",
     "payment-type-1": "Card payment with PayU ",
     "payment-type-2": " Online payment by PayU",
     "payment-type-3": "Blik",
@@ -223,5 +228,9 @@
   "error-google-login": "Помилка входу через Google. Спробуйте ще раз.",
   "error-popup-closed": "Вікно входу було закрито. Спробуйте ще раз.",
   "error-popup-blocked": "Вікно входу заблоковано браузером. Дозвольте спливаючі вікна для цього сайту.",
-  "error-unauthorized-domain": "Цей домен не авторизований для входу через Google. Зверніться до адміністратора."
+  "error-unauthorized-domain": "Цей домен не авторизований для входу через Google. Зверніться до адміністратора.",
+  "accept-regulations": "Я ознайомився з Правилами та умовами",
+  "order-success-title": "Замовлення успішно оформлено!",
+  "order-success-description": "Дякуємо за замовлення! Ми вже дбайливо пакуємо ваші морепродукти та готуємо їх до відправки",
+  "order-success-button": "На головну"
 }
