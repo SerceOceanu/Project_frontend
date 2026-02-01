@@ -1,7 +1,5 @@
 import { 
   signInWithPopup, 
-  signInWithRedirect,
-  getRedirectResult,
   signOut,
   User, 
   onAuthStateChanged,
@@ -12,32 +10,20 @@ import {
 import { auth, googleProvider } from './firebase';
 
 export const signInWithGoogle = async (): Promise<User> => {
-  // Use redirect on production, popup on development
-  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
-    console.log('🔄 Using signInWithRedirect for production');
-    console.log('🔄 Current hostname:', window.location.hostname);
-    console.log('🔄 Auth domain:', auth.config.authDomain);
-    
-    try {
-      console.log('🔄 Calling signInWithRedirect...');
-      await signInWithRedirect(auth, googleProvider);
-      console.log('🔄 signInWithRedirect called successfully, waiting for redirect...');
-      
-      // Return a promise that never resolves - user will be redirected
-      return new Promise(() => {});
-    } catch (error: any) {
-      console.error('❌ signInWithRedirect failed:', error);
-      console.error('❌ Error code:', error.code);
-      console.error('❌ Error message:', error.message);
-      throw error;
-    }
-  } else {
-    console.log('🔄 Using signInWithPopup for localhost');
+  // Use popup for better reliability
+  console.log('🔄 Using signInWithPopup');
+  console.log('🔄 Current hostname:', window.location.hostname);
+  console.log('🔄 Auth domain:', auth.config.authDomain);
+  
+  try {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
-    const token = await user.getIdToken();
+    console.log('✅ Got user:', user.email);
     
-    console.log('✅ Got token, sending to server');
+    const token = await user.getIdToken();
+    console.log('✅ Got token (length:', token.length, ')');
+    
+    console.log('✅ Sending token to server...');
     // Send token to server to create httpOnly cookie
     const response = await fetch('/api/auth/session', {
       method: 'POST',
@@ -47,75 +33,33 @@ export const signInWithGoogle = async (): Promise<User> => {
       body: JSON.stringify({ idToken: token }),
     });
     
+    console.log('✅ Server response status:', response.status);
+    
     if (!response.ok) {
-      console.error('❌ Failed to create session:', await response.text());
+      const errorText = await response.text();
+      console.error('❌ Failed to create session:', errorText);
     } else {
-      console.log('✅ Session created successfully');
+      const responseData = await response.json();
+      console.log('✅ Session created successfully:', responseData);
     }
     
     return user;
+  } catch (error: any) {
+    console.error('❌ signInWithPopup failed:', error);
+    console.error('❌ Error code:', error.code);
+    console.error('❌ Error message:', error.message);
+    throw error;
   }
 };
 
 export const handleRedirectResult = async (): Promise<User | null> => {
-  try {
-    console.log('🔍 Checking for redirect result...');
-    console.log('🔍 Current URL:', window.location.href);
-    console.log('🔍 Has URL params:', window.location.search);
-    console.log('🔍 Auth state:', auth.currentUser ? `User exists: ${auth.currentUser.email}` : 'No user');
-    console.log('🔍 Auth app name:', auth.app.name);
-    
-    const result = await getRedirectResult(auth);
-    console.log('🔍 getRedirectResult returned:', result ? 'Result found' : 'null');
-    
-    if (result?.user) {
-      console.log('✅ Got user from redirect:', result.user.email);
-      console.log('✅ User ID:', result.user.uid);
-      console.log('✅ Provider:', result.providerId);
-      
-      const token = await result.user.getIdToken();
-      console.log('✅ Token length:', token.length);
-      console.log('✅ Token preview:', token.substring(0, 50) + '...');
-      
-      console.log('✅ Sending token to server...');
-      // Send token to server to create httpOnly cookie
-      const response = await fetch('/api/auth/session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ idToken: token }),
-      });
-      
-      console.log('✅ Server response status:', response.status);
-      const responseData = await response.json();
-      console.log('✅ Server response data:', responseData);
-      
-      if (!response.ok) {
-        console.error('❌ Failed to create session');
-      } else {
-        console.log('✅ Session created successfully');
-      }
-      
-      return result.user;
-    }
-    
-    // Check if user is already authenticated
-    if (auth.currentUser) {
-      console.log('ℹ️ No redirect result, but user is already authenticated:', auth.currentUser.email);
-      return auth.currentUser;
-    }
-    
-    console.log('ℹ️ No redirect result found and no current user');
-    console.log('ℹ️ This might be normal if not returning from OAuth redirect');
-    return null;
-  } catch (error: any) {
-    console.error('❌ Error handling redirect result:', error);
-    console.error('❌ Error code:', error?.code);
-    console.error('❌ Error message:', error?.message);
-    console.error('❌ Error stack:', error?.stack);
-    throw error;
+  // Not needed anymore since we use popup, but keep for compatibility
+  // Just check if user is already authenticated
+  if (auth.currentUser) {
+    console.log('ℹ️ User is already authenticated:', auth.currentUser.email);
+    return auth.currentUser;
   }
+  return null;
 };
 
 export const setupRecaptcha = async (elementId: string): Promise<RecaptchaVerifier> => {
