@@ -12,12 +12,6 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-console.log('🔧 Firebase Config:', {
-  apiKey: firebaseConfig.apiKey ? '✅ Set' : '❌ Missing',
-  authDomain: firebaseConfig.authDomain ? `✅ ${firebaseConfig.authDomain}` : '❌ Missing',
-  projectId: firebaseConfig.projectId ? `✅ ${firebaseConfig.projectId}` : '❌ Missing',
-});
-
 if (!firebaseConfig.apiKey || !firebaseConfig.authDomain || !firebaseConfig.projectId) {
   throw new Error(
     '❌ Firebase configuration is missing! Required: NEXT_PUBLIC_FIREBASE_API_KEY, NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN, NEXT_PUBLIC_FIREBASE_PROJECT_ID'

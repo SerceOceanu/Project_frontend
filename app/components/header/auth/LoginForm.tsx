@@ -92,7 +92,6 @@ const PhoneForm = ({ setConfirmationResult }: { setConfirmationResult: (result: 
     
     try {
       const phoneNumber = data.phone.startsWith('+') ? data.phone : `+${data.phone}`;
-      console.log('Sending to:', phoneNumber);
       
       // Подождите, чтобы DOM был готов
       await new Promise(resolve => setTimeout(resolve, 100));
@@ -197,17 +196,12 @@ const PhoneForm = ({ setConfirmationResult }: { setConfirmationResult: (result: 
       
       <Button 
         onClick={() => {
-          console.log('🖱️ Google button clicked');
           signIn.mutate(undefined, {
             onSuccess: () => {
-              console.log('✅ signIn.mutate onSuccess called (localhost only)');
-              // Only close modal on localhost (popup flow)
-              // On production, user will be redirected before this is called
               setIsLoginOpen(false);
             },
             onError: (error) => {
-              console.log('⚠️ signIn.mutate onError called:', error);
-              // Don't close modal on error - user needs to see the error
+              console.error('Google sign-in error:', error);
             },
           });
         }}

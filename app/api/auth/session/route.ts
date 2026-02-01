@@ -3,24 +3,15 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('📝 POST /api/auth/session - Creating session');
-    console.log('📝 Request headers:', Object.fromEntries(request.headers.entries()));
-    
-    const body = await request.json();
-    console.log('📝 Request body:', body);
-    
-    const { idToken } = body;
+    const { idToken } = await request.json();
     
     if (!idToken) {
-      console.error('❌ No token provided');
       return NextResponse.json(
         { error: 'No token provided' },
         { status: 400 }
       );
     }
     
-    console.log('✅ Token received (length:', idToken.length, ')');
-    console.log('✅ Setting cookie...');
     const cookieStore = await cookies();
     
     cookieStore.set('session', idToken, {
@@ -31,18 +22,9 @@ export async function POST(request: NextRequest) {
       path: '/',
     });
     
-    console.log('✅ Session cookie set successfully');
-    console.log('✅ Cookie settings:', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7,
-      path: '/',
-    });
-    
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('❌ Session creation error:', error);
+    console.error('Session creation error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

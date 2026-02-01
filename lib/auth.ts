@@ -10,20 +10,11 @@ import {
 import { auth, googleProvider } from './firebase';
 
 export const signInWithGoogle = async (): Promise<User> => {
-  // Use popup for better reliability
-  console.log('🔄 Using signInWithPopup');
-  console.log('🔄 Current hostname:', window.location.hostname);
-  console.log('🔄 Auth domain:', auth.config.authDomain);
-  
   try {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
-    console.log('✅ Got user:', user.email);
-    
     const token = await user.getIdToken();
-    console.log('✅ Got token (length:', token.length, ')');
     
-    console.log('✅ Sending token to server...');
     // Send token to server to create httpOnly cookie
     const response = await fetch('/api/auth/session', {
       method: 'POST',
@@ -33,21 +24,14 @@ export const signInWithGoogle = async (): Promise<User> => {
       body: JSON.stringify({ idToken: token }),
     });
     
-    console.log('✅ Server response status:', response.status);
-    
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('❌ Failed to create session:', errorText);
-    } else {
-      const responseData = await response.json();
-      console.log('✅ Session created successfully:', responseData);
+      console.error('Failed to create session:', errorText);
     }
     
     return user;
   } catch (error: any) {
-    console.error('❌ signInWithPopup failed:', error);
-    console.error('❌ Error code:', error.code);
-    console.error('❌ Error message:', error.message);
+    console.error('signInWithPopup failed:', error);
     throw error;
   }
 };
@@ -56,7 +40,6 @@ export const handleRedirectResult = async (): Promise<User | null> => {
   // Not needed anymore since we use popup, but keep for compatibility
   // Just check if user is already authenticated
   if (auth.currentUser) {
-    console.log('ℹ️ User is already authenticated:', auth.currentUser.email);
     return auth.currentUser;
   }
   return null;
@@ -79,11 +62,10 @@ export const setupRecaptcha = async (elementId: string): Promise<RecaptchaVerifi
 
   const recaptchaVerifier = new RecaptchaVerifier(auth, elementId, {
     size: 'invisible',
-    callback: (response: any) => {
-      console.log('reCAPTCHA solved automatically');
+    callback: () => {
+      // reCAPTCHA solved
     },
     'expired-callback': () => {
-      console.log('reCAPTCHA expired');
       cleanupRecaptcha();
     }
   });
@@ -94,7 +76,6 @@ export const setupRecaptcha = async (elementId: string): Promise<RecaptchaVerifi
   // ВАЖНО: Отрендерите reCAPTCHA сразу
   try {
     await recaptchaVerifier.render();
-    console.log('reCAPTCHA rendered successfully');
   } catch (error) {
     console.error('Error rendering reCAPTCHA:', error);
     throw error;

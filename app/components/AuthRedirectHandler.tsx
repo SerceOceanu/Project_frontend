@@ -19,13 +19,8 @@ export default function AuthRedirectHandler() {
 
     const checkRedirectResult = async () => {
       try {
-        console.log('🔍 AuthRedirectHandler: Checking for redirect result...');
-        console.log('🔍 Current URL:', window.location.href);
-        console.log('🔍 Referrer:', document.referrer);
-        
         const user = await handleRedirectResult();
         if (user) {
-          console.log('✅ AuthRedirectHandler: User authenticated via redirect:', user.email);
           queryClient.setQueryData(AUTH_QUERY_KEY, user);
           // Invalidate user query to refetch user data
           queryClient.invalidateQueries({ queryKey: ['user'] });
@@ -33,11 +28,9 @@ export default function AuthRedirectHandler() {
           // Close login modal if it's open
           const event = new CustomEvent('auth-success');
           window.dispatchEvent(event);
-        } else {
-          console.log('ℹ️ AuthRedirectHandler: No redirect result found');
         }
       } catch (error) {
-        console.error('❌ AuthRedirectHandler: Error handling redirect:', error);
+        console.error('AuthRedirectHandler error:', error);
       } finally {
         setChecked(true);
       }

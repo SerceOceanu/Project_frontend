@@ -22,8 +22,6 @@ export const useSignInWithGoogle = () => {
   return useMutation({
     mutationFn: signInWithGoogle,
     onSuccess: (user) => {
-      // Only handle success for popup (development)
-      // For redirect (production), this won't be called
       if (user) {
         queryClient.setQueryData(AUTH_QUERY_KEY, user);
         
@@ -37,8 +35,7 @@ export const useSignInWithGoogle = () => {
       }
     },
     onError: (error: any) => {
-      // Only log real errors, not redirect-related ones
-      console.error('❌ Google sign-in error:', error);
+      console.error('Google sign-in error:', error);
     },
   });
 };
