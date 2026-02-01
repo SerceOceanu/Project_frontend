@@ -60,7 +60,10 @@ export const signInWithGoogle = async (): Promise<User> => {
 export const handleRedirectResult = async (): Promise<User | null> => {
   try {
     console.log('🔍 Checking for redirect result...');
-    console.log('🔍 Auth state:', auth.currentUser ? 'User exists' : 'No user');
+    console.log('🔍 Current URL:', window.location.href);
+    console.log('🔍 Has URL params:', window.location.search);
+    console.log('🔍 Auth state:', auth.currentUser ? `User exists: ${auth.currentUser.email}` : 'No user');
+    console.log('🔍 Auth app name:', auth.app.name);
     
     const result = await getRedirectResult(auth);
     console.log('🔍 getRedirectResult returned:', result ? 'Result found' : 'null');
@@ -68,8 +71,11 @@ export const handleRedirectResult = async (): Promise<User | null> => {
     if (result?.user) {
       console.log('✅ Got user from redirect:', result.user.email);
       console.log('✅ User ID:', result.user.uid);
+      console.log('✅ Provider:', result.providerId);
+      
       const token = await result.user.getIdToken();
       console.log('✅ Token length:', token.length);
+      console.log('✅ Token preview:', token.substring(0, 50) + '...');
       
       console.log('✅ Sending token to server...');
       // Send token to server to create httpOnly cookie
@@ -81,9 +87,12 @@ export const handleRedirectResult = async (): Promise<User | null> => {
         body: JSON.stringify({ idToken: token }),
       });
       
+      console.log('✅ Server response status:', response.status);
+      const responseData = await response.json();
+      console.log('✅ Server response data:', responseData);
+      
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('❌ Failed to create session:', errorText);
+        console.error('❌ Failed to create session');
       } else {
         console.log('✅ Session created successfully');
       }
@@ -98,11 +107,13 @@ export const handleRedirectResult = async (): Promise<User | null> => {
     }
     
     console.log('ℹ️ No redirect result found and no current user');
+    console.log('ℹ️ This might be normal if not returning from OAuth redirect');
     return null;
   } catch (error: any) {
     console.error('❌ Error handling redirect result:', error);
     console.error('❌ Error code:', error?.code);
     console.error('❌ Error message:', error?.message);
+    console.error('❌ Error stack:', error?.stack);
     throw error;
   }
 };
