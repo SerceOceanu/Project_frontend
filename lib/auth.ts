@@ -14,16 +14,19 @@ import { auth, googleProvider } from './firebase';
 export const signInWithGoogle = async (): Promise<User> => {
   // Use redirect on production, popup on development
   if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+    console.log('🔄 Using signInWithRedirect for production');
     await signInWithRedirect(auth, googleProvider);
     // User will be redirected, so we won't reach here
     throw new Error('Redirecting...');
   } else {
+    console.log('🔄 Using signInWithPopup for localhost');
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
     const token = await user.getIdToken();
     
+    console.log('✅ Got token, sending to server');
     // Send token to server to create httpOnly cookie
-    await fetch('/api/auth/session', {
+    const response = await fetch('/api/auth/session', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -31,18 +34,27 @@ export const signInWithGoogle = async (): Promise<User> => {
       body: JSON.stringify({ idToken: token }),
     });
     
+    if (!response.ok) {
+      console.error('❌ Failed to create session:', await response.text());
+    } else {
+      console.log('✅ Session created successfully');
+    }
+    
     return user;
   }
 };
 
 export const handleRedirectResult = async (): Promise<User | null> => {
   try {
+    console.log('🔍 Checking for redirect result...');
     const result = await getRedirectResult(auth);
     if (result?.user) {
+      console.log('✅ Got user from redirect:', result.user.email);
       const token = await result.user.getIdToken();
       
+      console.log('✅ Got token, sending to server');
       // Send token to server to create httpOnly cookie
-      await fetch('/api/auth/session', {
+      const response = await fetch('/api/auth/session', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -50,11 +62,18 @@ export const handleRedirectResult = async (): Promise<User | null> => {
         body: JSON.stringify({ idToken: token }),
       });
       
+      if (!response.ok) {
+        console.error('❌ Failed to create session:', await response.text());
+      } else {
+        console.log('✅ Session created successfully');
+      }
+      
       return result.user;
     }
+    console.log('ℹ️ No redirect result found');
     return null;
   } catch (error) {
-    console.error('Error handling redirect result:', error);
+    console.error('❌ Error handling redirect result:', error);
     throw error;
   }
 };

@@ -14,10 +14,9 @@ import { IoChevronBack } from "react-icons/io5";
 import { OTPInput } from "./OTPInput";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useStatesStore } from "@/store/useStatesStore";
-import { useSignInWithGoogle } from "@/hooks/useAuth";
-import { setupRecaptcha, sendPhoneVerification, verifyPhoneCode, handleRedirectResult } from "@/lib/auth";
+import { useSignInWithGoogle, AUTH_QUERY_KEY } from "@/hooks/useAuth";
+import { setupRecaptcha, sendPhoneVerification, verifyPhoneCode } from "@/lib/auth";
 import { useQueryClient } from '@tanstack/react-query';
-import { AUTH_QUERY_KEY } from '@/hooks/useAuth';
 import type { ConfirmationResult } from 'firebase/auth';
 
 declare global {  
@@ -33,25 +32,7 @@ type FormValues = {
 export default function LoginForm() {
   const { isCodeSent, setIsLoginOpen } = useStatesStore();
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
-  const queryClient = useQueryClient();
   const formRef = useRef<HTMLDivElement>(null);
-  
-  // Handle redirect result on component mount
-  useEffect(() => {
-    const checkRedirectResult = async () => {
-      try {
-        const user = await handleRedirectResult();
-        if (user) {
-          queryClient.setQueryData(AUTH_QUERY_KEY, user);
-          setIsLoginOpen(false);
-        }
-      } catch (error) {
-        console.error('Error handling redirect:', error);
-      }
-    };
-    
-    checkRedirectResult();
-  }, [queryClient, setIsLoginOpen]);
   
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

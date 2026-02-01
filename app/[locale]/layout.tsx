@@ -4,6 +4,7 @@ import "../globals.css";
 import { ReactQueryProvider } from "../providers";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import AuthRedirectHandler from "../components/AuthRedirectHandler";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -46,6 +47,7 @@ export default async function LocaleLayout({
       >
         <NextIntlClientProvider messages={messages}>
           <ReactQueryProvider>
+            <AuthRedirectHandler />
             <div className="flex flex-col min-h-screen relative">
               <Header />  
               <main className="flex-1 bg-background flex flex-col">
