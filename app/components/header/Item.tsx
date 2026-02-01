@@ -19,7 +19,7 @@ export default function Item({
   onClick: () => void
 }) {
   return (
-    <Link href={href} onClick={onClick}> 
+    <Link href={href} onClick={onClick} className="h-full"> 
       <Button 
         className={cn(
           button, 
@@ -30,10 +30,10 @@ export default function Item({
         onClick={() => setFilter(item.value as Filter)}
       >
         <Image src={item.image} alt={item.title} width={24} height={24} />
-        <span className="rubik text-sm font-light leading-none text-start">{item.title}</span> 
+        <span className="rubik text-sm font-light text-start whitespace-normal break-words">{item.title}</span> 
       </Button>
   
     </Link>
   )
 }
-const button = 'w-full flex items-center text-center  rubik text-sm text-gray py-3 px-3 rounded-2xl bg-white border border-transparent';
+const button = 'w-full h-full flex items-center text-center rubik text-sm text-gray py-3 px-3 rounded-2xl bg-white border border-transparent';

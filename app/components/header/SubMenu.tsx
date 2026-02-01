@@ -1,12 +1,20 @@
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { Link } from '@/lib/navigation';
+import { Link, usePathname } from '@/lib/navigation';
 import { useSearchParams } from 'next/navigation';
 export default function SubMenu() {
   const t = useTranslations();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const category = searchParams.get('category');
+  
+  // Show submenu only on home page and catalogue pages (including product pages)
+  const isHomePage = pathname === '/' || pathname?.match(/^\/(ua|pl)?$/);
+  const isCataloguePage = pathname === '/catalogue';
+  const shouldShow = isHomePage || isCataloguePage;
+  
+  if (!shouldShow) return null;
   const items = [
     {
       image: '/assets/images/icon1.png',

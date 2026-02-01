@@ -24,29 +24,31 @@ export default function Buttons({product}: {product: Product}) {
   };
 
   return (
-    <div className='flex items-center justify-between self-start'>
+    <div className='flex flex-col md:flex-row md:items-center justify-between self-start'>
       <div className="rubik text-[32px] font-bold mr-6"> {product.price}{t('currency')} </div>
-      <div className='flex mr-2.5 w-[180px] items-center justify-center'>
-        {productInBasket  
-          ? <Counter count={productInBasket.quantity || 1} setCount={(count) => changeQuantity(product.id, count)} handleRemove={() => removeFromBasket(product.id)} />
-          : <Button 
-              className="bg-orange hover:bg-orange/90 !px-6 h-[48px] text-2xl w-[180px]"
-              onClick={() => addToBasket({ ...product, quantity: 1 })}
-            >  
-              {t('basket.in-basket')} <FiShoppingBag className="size-6" />
-            </Button>
-        }
+      <div className="flex items-center gap-2.5">
+        <div className='flex  w-[180px] items-center justify-center'>
+          {productInBasket  
+            ? <Counter count={productInBasket.quantity || 1} setCount={(count) => changeQuantity(product.id, count)} handleRemove={() => removeFromBasket(product.id)} />
+            : <Button 
+                className="bg-orange hover:bg-orange/90 !px-6 h-[48px] text-2xl w-[180px]"
+                onClick={() => addToBasket({ ...product, quantity: 1 })}
+              >  
+                {t('basket.in-basket')} <FiShoppingBag className="size-6" />
+              </Button>
+          }
+        </div>
+        {isAuth && (
+          <Button 
+            size='icon' 
+            variant='outline' 
+            className='size-[48px] bg-white hover:bg-white/90 shadow border-none text-orange'
+            onClick={handleToggleFavorite}
+          >
+            {isFavorite ? <PiHeartFill className="size-[24px]" /> : <PiHeart className="size-[24px]" />}
+          </Button>
+        )}
       </div>
-      {isAuth && (
-        <Button 
-          size='icon' 
-          variant='outline' 
-          className='size-[48px] bg-white hover:bg-white/90 shadow border-none text-orange'
-          onClick={handleToggleFavorite}
-        >
-          {isFavorite ? <PiHeartFill className="size-[24px]" /> : <PiHeart className="size-[24px]" />}
-        </Button>
-      )}
     </div>
   )
 }

@@ -14,10 +14,12 @@ import CustomSelect from "@/components/CustomSelect";
 import { Textarea } from "@/components/ui/textarea";
 import { useBasketStore } from "@/store/useBasketStore";
 import { useStatesStore } from "@/store/useStatesStore";
+import { useUser } from "@/hooks/useAuth";
 
 export default function Form() {
   const { order, setOrder } = useBasketStore();
   const { setIsLoginOpen } = useStatesStore();
+  const { data: user } = useUser();
   const t = useTranslations();
   // Dynamic Zod schema with i18n validation messages
   const schema = useMemo(() => 
@@ -78,14 +80,16 @@ export default function Form() {
     <form >
       <h2 className="font-bold w-full rubik text-[32px] mb-6"> {t('basket.main-title')} </h2>
       <p className="rubik text-gray  mb-3 "> {t('basket.main-tooltip')} </p>
-      <Button 
-        type="button" 
-        variant="outline" 
-        className="w-full h-[56px] bg-white mb-5"
-        onClick={() => setIsLoginOpen(true)}
-      > 
-        {t('basket.main-button-enter')} 
-      </Button>
+      {!user && (
+        <Button 
+          type="button" 
+          variant="outline" 
+          className="w-full h-[56px] bg-white mb-5"
+          onClick={() => setIsLoginOpen(true)}
+        > 
+          {t('basket.main-button-enter')} 
+        </Button>
+      )}
       <div className="flex flex-col gap-5 bg-white px-6 py-7 rounded-xl">
         <h3 className="font-bold w-full rubik text-[24px]"> {t('delivery-form.title')} </h3>
         <div className="grid grid-cols-2 gap-5"> 

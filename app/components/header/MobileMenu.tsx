@@ -126,7 +126,7 @@ export default function MobileMenu() {
             item={filters[4]} 
             filter={activeFilter || filter as Filter} 
             setFilter={setFilter} 
-            className="justify-center mb-6" 
+            className="justify-center mb-6 max-h-12" 
             href={filters[4].href}
             onClick={() => setOpen(false)}
           />
