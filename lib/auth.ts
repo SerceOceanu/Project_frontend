@@ -19,9 +19,12 @@ export const signInWithGoogle = async (): Promise<User> => {
     console.log('🔄 Auth domain:', auth.config.authDomain);
     
     try {
+      console.log('🔄 Calling signInWithRedirect...');
       await signInWithRedirect(auth, googleProvider);
-      // User will be redirected, so we won't reach here
-      throw new Error('Redirecting...');
+      console.log('🔄 signInWithRedirect called successfully, waiting for redirect...');
+      
+      // Return a promise that never resolves - user will be redirected
+      return new Promise(() => {});
     } catch (error: any) {
       console.error('❌ signInWithRedirect failed:', error);
       console.error('❌ Error code:', error.code);

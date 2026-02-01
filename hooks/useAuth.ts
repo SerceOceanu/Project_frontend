@@ -37,10 +37,8 @@ export const useSignInWithGoogle = () => {
       }
     },
     onError: (error: any) => {
-      // Ignore "Redirecting..." error as it's expected
-      if (error.message !== 'Redirecting...') {
-        console.error('Google sign-in error:', error);
-      }
+      // Only log real errors, not redirect-related ones
+      console.error('❌ Google sign-in error:', error);
     },
   });
 };
