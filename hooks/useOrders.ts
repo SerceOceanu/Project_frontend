@@ -30,6 +30,7 @@ interface OrdersResponse {
     limit: number;
     offset: number;
   };
+  count?: number;
 }
 
 interface UseOrdersParams {
@@ -55,7 +56,9 @@ export function useOrders(params: UseOrdersParams = {}) {
       const endpoint = `/orders?${queryParams.toString()}`;
       return apiRequest<OrdersResponse>(endpoint);
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: 0,
+    refetchOnMount: 'always', 
+    refetchOnWindowFocus: true,
     enabled: isAuthenticated(),
   });
 }

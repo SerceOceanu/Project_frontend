@@ -9,7 +9,7 @@ import { useOrders } from "@/hooks/useOrders";
 
 export default function History() {
   const t = useTranslations();
-  const [step, setStep] = useState(0);
+  const [page, setPage] = useState(0);
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'confirmed' | 'preparing' | 'in_delivery' | 'delivered' | 'cancelled'>('all');
   const [mounted, setMounted] = useState(false);
   const itemsPerPage = 5;
@@ -18,11 +18,17 @@ export default function History() {
     setMounted(true);
   }, []);
   
-  const { data: ordersData, isLoading, error } = useOrders({
-    limit: 100,
-    offset: 0,
+  const { data: ordersData, isLoading, error, refetch } = useOrders({
+    limit: itemsPerPage,
+    offset: page * itemsPerPage,
     status: statusFilter,
   });
+
+  useEffect(() => {
+    if (mounted) {
+      refetch();
+    }
+  }, [mounted, refetch]);
 
   const selectOptions = useMemo(() => [
     { label: t('all'), value: 'all' },
@@ -36,7 +42,7 @@ export default function History() {
   
   const handleStatusChange = useCallback((value: string) => {
     setStatusFilter(value as 'all' | 'pending' | 'confirmed' | 'preparing' | 'in_delivery' | 'delivered' | 'cancelled');
-    setStep(0);
+    setPage(0);
   }, []);
   
   const orders = useMemo(() => {
@@ -63,10 +69,8 @@ export default function History() {
     });
   }, [ordersData]);
 
-  const pageCount = Math.ceil(orders.length / itemsPerPage);
-  const startIndex = step * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentOrders = orders.slice(startIndex, endIndex);
+  const totalCount = ordersData?.count ?? 20;
+  const pageCount = Math.ceil(totalCount / itemsPerPage);
 
   if (!mounted || isLoading) {
     return (
@@ -91,23 +95,19 @@ export default function History() {
           </div>
         ) : orders.length === 0 ? (
           <NoOrders />
-        ) : currentOrders.length > 0 ? (
+        ) : (
           <>
-            {currentOrders.map((order) => (
+            {orders.map((order) => (
               <OrderItem key={order.id} order={order} />
             ))}
             {pageCount > 1 && (
               <Paggination 
-                currentPage={step}
-                setCurrentPage={setStep}
+                currentPage={page}
+                setCurrentPage={setPage}
                 pageCount={pageCount}
               />
             )}
           </>
-        ) : (
-          <div className="flex items-center justify-center min-h-[482px]">
-            <p className="text-gray">{t('no-orders-to-display')}</p>
-          </div>
         )}
       </div>
     </div>

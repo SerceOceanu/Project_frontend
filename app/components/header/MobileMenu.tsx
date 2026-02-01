@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 import { Filter } from "@/types/types";
 import Item from "./Item";
 import LinkItem from "./LinkItem";
-import { BsHeart, BsPerson } from "react-icons/bs";
+import { BsHeart, BsPerson, BsHeartFill } from "react-icons/bs";
 import { RiTelegram2Fill } from "react-icons/ri";
 import { Locale } from "@/i18n/config";
 import { useUser } from "@/hooks/useAuth";
@@ -148,7 +148,7 @@ export default function MobileMenu() {
                   onClick={() => setOpen(false)}
                   className={cn(button,'justify-center gap-2.5',pathname === '/profile/favorites' && ' text-orange border-orange')}
                 >
-                  <BsHeart size={20} />
+                  {pathname === '/profile/favorites' ? <BsHeartFill size={20} /> : <BsHeart size={20} />}
                   <span className="rubik text-sm font-light">{t('header.favorites')}</span>
                 </Link>
               </div>

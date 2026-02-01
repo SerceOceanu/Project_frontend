@@ -3,6 +3,7 @@ import { FiEdit } from "react-icons/fi";
 import { LiaHistorySolid } from "react-icons/lia";
 import { PiMapPinThin } from "react-icons/pi";
 import { CiHeart } from "react-icons/ci";
+import { PiHeartFill } from "react-icons/pi";
 import { IoIosLogOut } from "react-icons/io";
 import { useLogout } from "@/hooks/useAuth";
 import { useTranslations } from "next-intl";
@@ -30,17 +31,20 @@ export default function ProfileMenu() {
     {
       label: t('profile.history'),
       href: '/profile/history',
-      icon: <LiaHistorySolid size={20}  />
+      icon: <LiaHistorySolid size={20}  />,
+      activeIcon: <LiaHistorySolid size={20}  />
     },
     {
       label: t('profile.addresses'),
       href: '/profile/address',
-      icon: <PiMapPinThin size={20}  />
+      icon: <PiMapPinThin size={20}  />,
+      activeIcon: <PiMapPinThin size={20}  />
     },
     {
       label: t('profile.likes'),
       href: '/profile/favorites',
-      icon: <CiHeart size={20} />
+      icon: <CiHeart size={20} />,
+      activeIcon: <PiHeartFill size={20} />
     },
   ]
   const logout = useLogout(); 
@@ -84,7 +88,9 @@ export default function ProfileMenu() {
                   "flex items-center gap-2 rubik text-sm font-medium  py-2.5 px-5 rounded hover:bg-orange/5",
                   isActive ? "text-orange bg-background" : "text-gray "
                 )}>
-                  <div className='size-9 bg-white flex items-center justify-center rounded'>{item.icon}</div>
+                  <div className='size-9 bg-white flex items-center justify-center rounded'>
+                    {isActive ? item.activeIcon : item.icon}
+                  </div>
                   {item.label}
                 </div>
               </Link>
@@ -112,7 +118,9 @@ export default function ProfileMenu() {
                 "flex flex-col text-center items-center gap-2 rubik text-sm font-medium  p-2  rounded-xl hover:bg-orange/5",
                 isActive ? "text-orange bg-background" : "text-gray "
               )}>
-                <div className='size-9 bg-white flex items-center justify-center rounded-lg'>{item.icon}</div>
+                <div className='size-9 bg-white flex items-center justify-center rounded-lg'>
+                  {isActive ? item.activeIcon : item.icon}
+                </div>
                 {item.label}
               </div>
             </Link>

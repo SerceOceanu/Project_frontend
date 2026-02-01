@@ -21,7 +21,7 @@ export default function Paggination({ currentPage, setCurrentPage, pageCount }: 
   };
 
   return (
-    <div className="flex items-center justify-between gap-4 w-full">
+    <div className="flex items-center justify-between w-full mt-auto">
       <ReactPaginate
         breakLabel="....."
         nextLabel={null}
@@ -30,31 +30,32 @@ export default function Paggination({ currentPage, setCurrentPage, pageCount }: 
         pageRangeDisplayed={2}
         marginPagesDisplayed={1}
         pageCount={pageCount}
+        forcePage={currentPage}
         renderOnZeroPageCount={null}
-        containerClassName="flex items-center font-light  bg-white px-5 py-2.5 rounded-[10px] shadow-sm cursor-pointer rubik flex-1 h-[44px]"
-        pageClassName="text-lg rubik"
-        pageLinkClassName=" px-2  rounded py-1  hover:bg-orange/10 transition-colors"
-        activeClassName="text-orange font-semibold"
+        containerClassName="flex items-center font-light bg-white px-5 py-0 rounded-l-[10px]  rubik flex-1 h-14"
+        pageClassName="text-2xl rubik !min-w-14 hover:bg-gray-50 flex items-center justify-center"
+        pageLinkClassName=" px-2 py-2.5 w-full text-center rounded py-1  transition-colors cursor-pointer"
+        activeClassName="text-orange  font-semibold"
         breakClassName="rubik "
         breakLinkClassName="px-2"
         disabledClassName="opacity-50 cursor-not-allowed"
       />
       
-      <div className='flex items-center gap-2'>
+      <div className='flex items-center text-2xl'>
         <button
           onClick={goToPreviousPage}
           disabled={currentPage === 0}
-          className="p-3 bg-white rounded-[10px] h-[44px] shadow hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className=" bg-white size-14 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <GoArrowLeft className="" />
+          <GoArrowLeft  />
         </button>
         
         <button
           onClick={goToNextPage}
           disabled={currentPage >= pageCount - 1}
-          className="p-3 bg-white rounded-[10px] h-[44px] shadow hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className=" bg-white rounded-r-[10px] size-14 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <GoArrowRight className="" />
+          <GoArrowRight  />
         </button>
       </div>
     </div>

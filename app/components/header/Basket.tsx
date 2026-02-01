@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { CiHeart } from "react-icons/ci";
+import { PiHeartFill } from "react-icons/pi";
 import { useTranslations } from "next-intl";
 import { TbBasket } from "react-icons/tb";
 import { cn } from "@/lib/utils";
@@ -19,6 +20,8 @@ export default function Basket() {
   const { isBasketModalOpen, setValue } = useBasketStore();
   const containerRef = useRef<HTMLDivElement>(null);
   const { data: user } = useUser();
+  
+  const isFavoritesPage = pathname === '/profile/favorites' || pathname?.match(/^\/(ua|pl)\/profile\/favorites/);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -54,11 +57,11 @@ export default function Basket() {
         {user && (
           <Link href={buttons[0].href}>
             <Button 
-              className={cn( pathname === buttons[0].href && ' text-orange border-orange', "flex items-center gap-2 shadow-none rounded-2xl " )} 
+              className={cn( isFavoritesPage && ' text-orange border-orange', "flex items-center gap-2 shadow-none rounded-2xl " )} 
               variant="outline" 
               size="icon-lg"
             >
-              {buttons[0].icon}
+              {isFavoritesPage ? <PiHeartFill size={20} /> : <CiHeart size={20} />}
             </Button>
           </Link>
         )}
