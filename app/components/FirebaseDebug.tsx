@@ -12,16 +12,7 @@ export default function FirebaseDebug() {
     console.log('🔧 Firebase Debug Info:');
     console.log('  - Current hostname:', window.location.hostname);
     console.log('  - Auth domain:', auth.config.authDomain);
-    console.log('  - Project ID:', auth.config.projectId);
     console.log('  - API Key exists:', !!auth.config.apiKey);
-    
-    // Check if domain matches
-    const expectedAuthDomain = `${auth.config.projectId}.firebaseapp.com`;
-    if (auth.config.authDomain === expectedAuthDomain) {
-      console.log('  ✅ Auth domain matches project ID');
-    } else {
-      console.log('  ⚠️ Auth domain does not match expected:', expectedAuthDomain);
-    }
     
     console.log('\n📋 Required Firebase Console settings:');
     console.log('  1. Firebase Console → Authentication → Settings → Authorized domains');
