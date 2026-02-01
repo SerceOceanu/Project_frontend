@@ -15,9 +15,19 @@ export const signInWithGoogle = async (): Promise<User> => {
   // Use redirect on production, popup on development
   if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
     console.log('🔄 Using signInWithRedirect for production');
-    await signInWithRedirect(auth, googleProvider);
-    // User will be redirected, so we won't reach here
-    throw new Error('Redirecting...');
+    console.log('🔄 Current hostname:', window.location.hostname);
+    console.log('🔄 Auth domain:', auth.config.authDomain);
+    
+    try {
+      await signInWithRedirect(auth, googleProvider);
+      // User will be redirected, so we won't reach here
+      throw new Error('Redirecting...');
+    } catch (error: any) {
+      console.error('❌ signInWithRedirect failed:', error);
+      console.error('❌ Error code:', error.code);
+      console.error('❌ Error message:', error.message);
+      throw error;
+    }
   } else {
     console.log('🔄 Using signInWithPopup for localhost');
     const result = await signInWithPopup(auth, googleProvider);
@@ -47,12 +57,18 @@ export const signInWithGoogle = async (): Promise<User> => {
 export const handleRedirectResult = async (): Promise<User | null> => {
   try {
     console.log('🔍 Checking for redirect result...');
+    console.log('🔍 Auth state:', auth.currentUser ? 'User exists' : 'No user');
+    
     const result = await getRedirectResult(auth);
+    console.log('🔍 getRedirectResult returned:', result ? 'Result found' : 'null');
+    
     if (result?.user) {
       console.log('✅ Got user from redirect:', result.user.email);
+      console.log('✅ User ID:', result.user.uid);
       const token = await result.user.getIdToken();
+      console.log('✅ Token length:', token.length);
       
-      console.log('✅ Got token, sending to server');
+      console.log('✅ Sending token to server...');
       // Send token to server to create httpOnly cookie
       const response = await fetch('/api/auth/session', {
         method: 'POST',
@@ -63,17 +79,27 @@ export const handleRedirectResult = async (): Promise<User | null> => {
       });
       
       if (!response.ok) {
-        console.error('❌ Failed to create session:', await response.text());
+        const errorText = await response.text();
+        console.error('❌ Failed to create session:', errorText);
       } else {
         console.log('✅ Session created successfully');
       }
       
       return result.user;
     }
-    console.log('ℹ️ No redirect result found');
+    
+    // Check if user is already authenticated
+    if (auth.currentUser) {
+      console.log('ℹ️ No redirect result, but user is already authenticated:', auth.currentUser.email);
+      return auth.currentUser;
+    }
+    
+    console.log('ℹ️ No redirect result found and no current user');
     return null;
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ Error handling redirect result:', error);
+    console.error('❌ Error code:', error?.code);
+    console.error('❌ Error message:', error?.message);
     throw error;
   }
 };
