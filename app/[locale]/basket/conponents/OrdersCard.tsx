@@ -11,6 +11,7 @@ import { BasketProduct } from '@/types/types';
 import { useCreateOrder } from '@/hooks/useOrder';
 import { toast } from 'sonner';
 import { useDeliveryPrice } from '@/hooks/useDeliveryPrice';
+import { calculateItemTotal, sum, add, formatCurrency } from '@/lib/currency';
 
 interface OrdersCardProps {
   type: 'modal' | 'page';
@@ -20,7 +21,7 @@ interface OrdersCardProps {
 export default function OrdersCard({ type, setIsSuccessModalOpen }: OrdersCardProps) {
   const { basket, order, setValue, deliveryCost } = useBasketStore();
   const t = useTranslations();
-  const total = basket.reduce((acc, item: BasketProduct) => acc + item.price * item.quantity, 0).toFixed(2);
+  const total = sum(basket.map((item: BasketProduct) => calculateItemTotal(item.price, item.quantity || 1)));
   
   // Fetch delivery cost based on delivery type
   const { data: deliveryCostData, isLoading } = useDeliveryPrice({
@@ -46,10 +47,10 @@ export default function OrdersCard({ type, setIsSuccessModalOpen }: OrdersCardPr
           ))}
         </div>
         {type === 'modal' ? (
-          <TotalModal total={Number(total)} />
+          <TotalModal total={total} />
         ) : (
           <TotalPage 
-            total={Number(total)} 
+            total={total.toFixed(2)} 
             setIsSuccessModalOpen={setIsSuccessModalOpen}
             deliveryCostData={deliveryCostData}
             isLoading={isLoading}
@@ -68,7 +69,7 @@ const TotalModal = ({ total }: { total: number }) => {
     <div className='flex px-8 py-5 bg-light rounded-2xl items-end justify-between'>
       <div className='flex flex-col text-2xl text-gray'>
         {t('total')}
-        <span className='rubik text-[500] text-[40px] text-black '>{total}{t('currency')}</span>
+        <span className='rubik text-[500] text-[40px] text-black '>{formatCurrency(total)}{t('currency')}</span>
       </div>
       <Link href={'/basket'}>
         <Button onClick={() => setValue('isBasketModalOpen', false)} className="bg-orange hover:bg-orange/90 text-lg h-[56px]">{t('basket.button')}</Button>
@@ -78,7 +79,7 @@ const TotalModal = ({ total }: { total: number }) => {
 }
 
 interface TotalPageProps {
-  total: number;
+    total: string;
   setIsSuccessModalOpen?: (open: boolean) => void;
   deliveryCostData?: { cost?: number; freeDelivery?: boolean; [key: string]: any };
   isLoading?: boolean;
@@ -91,7 +92,7 @@ const TotalPage = ({ total, setIsSuccessModalOpen, deliveryCostData, isLoading: 
   
   // Use delivery cost from API if available, otherwise use from store
   const currentDeliveryCost = deliveryCostData?.cost !== undefined ? deliveryCostData.cost : deliveryCost;
-  const totalAmount = currentDeliveryCost + total;
+  const totalAmount = add(Number(total), currentDeliveryCost || 0);
   const { mutate: createOrder, isPending } = useCreateOrder();
   
   const isValid = useMemo(() => {
@@ -151,15 +152,15 @@ const TotalPage = ({ total, setIsSuccessModalOpen, deliveryCostData, isLoading: 
               ) : deliveryCostData?.freeDelivery ? (
                 <span className="text-green-600">{t('free') || 'Безкоштовно'}</span>
               ) : (
-                `${currentDeliveryCost}${t('currency')}`
+                `${formatCurrency(currentDeliveryCost || 0)}${t('currency')}`
               )
             }
           </span>
-          <span className='rubik'>{t('delivery-form.order-cost')}: {total}{t('currency')}</span>
+          <span className='rubik'>{t('delivery-form.order-cost')}: {formatCurrency(Number(total))}{t('currency')}</span>
         </div>
         <div className='flex flex-col text-2xl text-gray'>
           {t('total')}
-          <span className='rubik text-[500] text-[40px] text-black '>{totalAmount}{t('currency')}</span>
+          <span className='rubik text-[500] text-[40px] text-black '>{formatCurrency(totalAmount)}{t('currency')}</span>
         </div>
       </div>
       <div className='flex items-center gap-2 py-5'>

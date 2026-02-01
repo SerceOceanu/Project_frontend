@@ -8,6 +8,7 @@ import { useBasketStore } from "@/store/useBasketStore";
 import { FiShoppingBag } from "react-icons/fi";
 import { isAuthenticated } from "@/lib/api-client";
 import { useFavoriteProducts, useToggleFavorite } from "@/hooks/useFavorites";
+import { formatCurrency } from "@/lib/currency";
 
 
 export default function Buttons({product}: {product: Product}) {
@@ -25,7 +26,7 @@ export default function Buttons({product}: {product: Product}) {
 
   return (
     <div className='flex flex-col md:flex-row md:items-center justify-between self-start'>
-      <div className="rubik text-[32px] font-bold mr-6"> {product.price}{t('currency')} </div>
+      <div className="rubik text-[32px] font-bold mr-6"> {formatCurrency(product.price)}{t('currency')} </div>
       <div className="flex items-center gap-2.5">
         <div className='flex  w-[180px] items-center justify-center'>
           {productInBasket  

@@ -9,7 +9,8 @@ import { Product } from "@/types/types";
 import DeleteAlert from "./DeleteAlert";
 import EditDialog from "./EditDialog";
 import { useUpdateProductStatus } from "@/hooks/useAdminProducts";
-import { toast } from "sonner"; 
+import { toast } from "sonner";
+import { formatCurrency } from "@/lib/currency"; 
 
 export default function ProductCardEdit({item}: {item: Product  }) {
   const { name, description, price, gramsPerServing, imageUrl, id, inStock } = item;
@@ -55,7 +56,7 @@ export default function ProductCardEdit({item}: {item: Product  }) {
         </div>
         <div className='flex items-center justify-between mt-auto'>
           <div className="inter text-[28px] font-bold">
-            {price}
+            {formatCurrency(price)}
             <span className="text-sm text-gray">zl</span>
           </div>
           <Switch 

@@ -4,6 +4,7 @@ import Counter from "@/components/Counter";
 import { RxCross2 } from "react-icons/rx";
 import { BasketProduct } from "@/types/types";
 import { useBasketStore } from "@/store/useBasketStore";
+import { calculateItemTotal, formatCurrency } from "@/lib/currency";
 
 export default function OrderItem({ product }: { product: BasketProduct }) {
   const t = useTranslations();
@@ -13,7 +14,7 @@ export default function OrderItem({ product }: { product: BasketProduct }) {
     else removeFromBasket(product.id);
   }
 
-  const totalPrice = product.price * (product?.quantity || 1);
+  const totalPrice = calculateItemTotal(product.price, product?.quantity || 1);
   return (
       <div className="relative flex p-2.5 bg-light rounded-2xl items-center pr-5">
         <div className="flex gap-6 items-center w-1/2 ">
@@ -30,7 +31,7 @@ export default function OrderItem({ product }: { product: BasketProduct }) {
             <div className="rubik text-orange">{product.gramsPerServing} {t('weight')} / {product.quantityPerServing} {t('qty')}</div>
           </div>
         </div>
-        <div className="inter text-lg md:text-2xl text-gray flex ml-auto mr-5">{totalPrice.toFixed(2)} {t('currency')}</div>
+        <div className="inter text-lg md:text-2xl text-gray flex ml-auto mr-5">{formatCurrency(totalPrice)} {t('currency')}</div>
         <Counter count={product?.quantity || 1} setCount={(count) => changeQuantity(product.id, count)} handleRemove={handleRemoveFromBasket} />
         <RxCross2 className="absolute top-1/2 -translate-y-1/2 -right-[30px] size-6 text-gray cursor-pointer" onClick={() => removeFromBasket(product.id)} />
       </div>

@@ -10,6 +10,7 @@ import { useBasketStore } from "@/store/useBasketStore";
 import { Product } from "@/types/types";
 import { isAuthenticated } from "@/lib/api-client";
 import { useFavoriteProducts, useToggleFavorite } from "@/hooks/useFavorites";
+import { formatCurrency } from "@/lib/currency";
 
 export default function ProductCard({ product }: { product: Product }) {
   const { addToBasket, removeFromBasket, basket, changeQuantity } = useBasketStore();
@@ -71,7 +72,7 @@ export default function ProductCard({ product }: { product: Product }) {
         </p>
         <div className='flex items-center justify-between mt-auto'>
           <div className="inter text-[28px] font-bold">
-            {product.price.toFixed(2)} 
+            {formatCurrency(product.price)} 
             <span className="text-sm text-gray">zł</span>
           </div>
          

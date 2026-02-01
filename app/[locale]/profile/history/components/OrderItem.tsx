@@ -3,7 +3,8 @@ import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import Status from '@/components/Status';
-import { IoIosArrowForward } from 'react-icons/io'; 
+import { IoIosArrowForward } from 'react-icons/io';
+import { formatCurrency } from '@/lib/currency'; 
 
 
 export default function OrderItem({ order }: { order: any }   ) {
@@ -19,7 +20,7 @@ export default function OrderItem({ order }: { order: any }   ) {
             <Status status={order.status} className="ml-auto lg:ml-0" />
           </div>
           <div className="inter text-2xl font-bold lg:ml-auto self-start mt-6 lg:mt-0">
-            {order.total.toFixed(2)} {t('currency')}
+            {formatCurrency(order.total)} {t('currency')}
           </div>
         </div>
         <div 
@@ -57,7 +58,7 @@ export const OrderItemProduct = ({ product }: { product: any }) => {
           <div className="rubik text-sm md:text-base text-orange">{product.weight} {t('weight')} / {product.quantity} {t('qty')}</div>
         </div>
       </div>
-      <div className="inter text-sm md:text-2xl ml-auto text-gray flex-shrink-0">{product.price.toFixed(2)} {t('currency')}</div>
+      <div className="inter text-sm md:text-2xl ml-auto text-gray flex-shrink-0">{formatCurrency(product.price)} {t('currency')}</div>
     </div>
   )
 }
