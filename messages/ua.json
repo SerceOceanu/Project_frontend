@@ -20,9 +20,17 @@
   "accept-terms": "Я приймаю Умови використання та Політику конфіденційності",
   "send-again": "Відправити код ще раз",
   "loading": "Завантаження...",
+  "error": "Помилка",
+  "no-orders-to-display": "Немає замовлень для відображення",
 
-  "completed": "Доставлено",
-  "pending": "Готується",
+  "all": "Всі",
+  "pending": "Очікує",
+  "confirmed": "Підтверджено",
+  "preparing": "Готується",
+  "in_delivery": "В дорозі",
+  "delivered": "Доставлено",
+  "cancelled": "Скасовано",
+  "select-status": "Виберіть статус",
   "language": {
     "change-language": "Мова",
     "labelUA": "Українська",
@@ -146,6 +154,8 @@
     "confirm-password-placeholder": "Повторіть пароль",
     "password-hint": "Залиште порожнім, якщо не хочете змінювати пароль",
     "save": "Зберегти зміни",
+    "no-name": "Ім'я не вказано",
+    "no-phone": "Телефон не вказано",
 
     "no-orders": "У вас ще немає замовлень",
     "no-orders-text" : "Тут відображатимуться ваші попередні та активні замовлення, щойно ви зробите перше.",
@@ -188,11 +198,11 @@
 
     "delivery-type": "Тип доставки",
     "delivery-type-1": "Самовивіз: (можлива оплата готівкою)",
-    "delivery-type-2": "InPost Paczkomaty: 14,99 zł",
-    "delivery-type-3": "Kurier InPost: 18,99 zł",
+    "delivery-type-2": "InPost Paczkomaty: 12 zł",
+    "delivery-type-3": "Kurier InPost: 15 zł",
 
-    "delivery-type-31": "InPost Paczkomaty: 14,99 zł",
-    "delivery-type-32": "Kurier InPost: 18,99 zł",
+    "delivery-type-31": "InPost Paczkomaty: 12 zł",
+    "delivery-type-32": "Kurier InPost: 15 zł",
     "post-box-title": "Поштомат*",
     "post-box-description": "Вибери поштомат",
 

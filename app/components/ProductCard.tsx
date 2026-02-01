@@ -4,17 +4,27 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 import { FaPlus } from "react-icons/fa6";
-import { useState } from "react";
 import Counter from "@/components/Counter";
 import { Link } from "@/lib/navigation";
 import { useBasketStore } from "@/store/useBasketStore";
 import { Product } from "@/types/types";
+import { isAuthenticated } from "@/lib/api-client";
+import { useFavoriteProducts, useToggleFavorite } from "@/hooks/useFavorites";
 
 export default function ProductCard({ product }: { product: Product }) {
   const { addToBasket, removeFromBasket, basket, changeQuantity } = useBasketStore();
   const productInBasket = basket.find((p) => p.id === product.id);
-  // const [like, setLike] = useState(product.isFavorite || false);
+  const { data: favoriteIds = [] } = useFavoriteProducts();
+  const { mutate: toggleFavorite } = useToggleFavorite();
+  const isFavorite = favoriteIds.includes(String(product.id));
   const t = useTranslations();
+  const isAuth = isAuthenticated();
+
+  const handleToggleFavorite = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleFavorite({ productId: product.id, currentFavorites: favoriteIds });
+  };
 
   const handleRemoveFromBasket = () => {
     if(productInBasket?.quantity && productInBasket.quantity > 1) changeQuantity(product.id, productInBasket.quantity - 1);
@@ -35,16 +45,14 @@ export default function ProductCard({ product }: { product: Product }) {
     >
       <div className='relative w-full h-[215px] mb-5'>
         {product.label !== 'none' && <div className="absolute top-2.5 left-2.5 rounded-md px-2.5 py-2 bg-blue text-white text-xs inter">{product.label}</div>}
-        {/* <div 
-          className='absolute top-2.5 right-2.5 size-8 flex items-center justify-center bg-white/90 rounded-md cursor-pointer hover:bg-white'
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            // setLike(!like);
-          }}
-        >
-          {product.isFavorite ? <PiHeartFill size={16} className={`text-orange`} /> : <PiHeart size={16} className={`text-orange`} />}
-        </div> */}
+        {isAuth && (
+          <div 
+            className='absolute top-2.5 right-2.5 size-8 flex items-center justify-center bg-white/90 rounded-md cursor-pointer hover:bg-white'
+            onClick={handleToggleFavorite}
+          >
+            {isFavorite ? <PiHeartFill size={16} className={`text-orange`} /> : <PiHeart size={16} className={`text-orange`} />}
+          </div>
+        )}
         <Image
             src={product.imageUrl || ''}
             alt={product.name}
@@ -80,8 +88,6 @@ export default function ProductCard({ product }: { product: Product }) {
           </div>
         </div>
       </div>
-
-
   </Link>
   )
 }

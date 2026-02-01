@@ -3,18 +3,36 @@ import NoOrders from './NoOrders'
 import OrderItem from './OrderItem'  
 import { Button } from '@/components/ui/button'
 import { useTranslations } from 'next-intl'
-import { useState, useMemo } from 'react'
-import { Link, useRouter } from '@/lib/navigation'
+import { useState, useMemo, useEffect } from 'react'
+import { Link } from '@/lib/navigation'
 import { useBasketStore } from '@/store/useBasketStore'
 import { Checkbox } from '@/components/ui/checkbox';
 import { BasketProduct } from '@/types/types';
 import { useCreateOrder } from '@/hooks/useOrder';
 import { toast } from 'sonner';
+import { useDeliveryPrice } from '@/hooks/useDeliveryPrice';
 
-export default function OrdersCard({ type, setIsSuccessModalOpen }: { type: 'modal' | 'page', setIsSuccessModalOpen?: (open: boolean) => void }) {
-  const { basket } = useBasketStore();
+interface OrdersCardProps {
+  type: 'modal' | 'page';
+  setIsSuccessModalOpen?: (open: boolean) => void;
+}
+
+export default function OrdersCard({ type, setIsSuccessModalOpen }: OrdersCardProps) {
+  const { basket, order, setValue, deliveryCost } = useBasketStore();
   const t = useTranslations();
   const total = basket.reduce((acc, item: BasketProduct) => acc + item.price * item.quantity, 0).toFixed(2);
+  
+  // Fetch delivery cost based on delivery type
+  const { data: deliveryCostData, isLoading } = useDeliveryPrice({
+    deliveryType: order.deliveryType,
+  });
+  
+  // Update delivery cost in store when data is fetched
+  useEffect(() => {
+    if (deliveryCostData?.cost !== undefined && deliveryCostData.cost !== deliveryCost) {
+      setValue('deliveryCost', deliveryCostData.cost);
+    }
+  }, [deliveryCostData?.cost, deliveryCost, setValue]);
   
   return (
     <div className='flex flex-col bg-white rounded-xl p-5 shadow-lg gap-6 '>
@@ -27,7 +45,16 @@ export default function OrdersCard({ type, setIsSuccessModalOpen }: { type: 'mod
             <OrderItem key={index} product={item} />
           ))}
         </div>
-        {type === 'modal' ? <TotalModal total={Number(total)} /> : <TotalPage total={Number(total)} setIsSuccessModalOpen={setIsSuccessModalOpen} />}
+        {type === 'modal' ? (
+          <TotalModal total={Number(total)} />
+        ) : (
+          <TotalPage 
+            total={Number(total)} 
+            setIsSuccessModalOpen={setIsSuccessModalOpen}
+            deliveryCostData={deliveryCostData}
+            isLoading={isLoading}
+          />
+        )}
       </>)}
     </div>
   )
@@ -50,11 +77,21 @@ const TotalModal = ({ total }: { total: number }) => {
   )
 }
 
-const TotalPage = ({ total, setIsSuccessModalOpen }: { total: number, setIsSuccessModalOpen?: (open: boolean) => void }) => {
+interface TotalPageProps {
+  total: number;
+  setIsSuccessModalOpen?: (open: boolean) => void;
+  deliveryCostData?: { cost?: number; freeDelivery?: boolean; [key: string]: any };
+  isLoading?: boolean;
+}
+
+const TotalPage = ({ total, setIsSuccessModalOpen, deliveryCostData, isLoading: isLoadingDelivery }: TotalPageProps) => {
   const { deliveryCost, order, basket, clearBasket } = useBasketStore();
   const t = useTranslations();
   const [accept, setAccept] = useState(false);
-  const totalAmount = deliveryCost + total;
+  
+  // Use delivery cost from API if available, otherwise use from store
+  const currentDeliveryCost = deliveryCostData?.cost !== undefined ? deliveryCostData.cost : deliveryCost;
+  const totalAmount = currentDeliveryCost + total;
   const { mutate: createOrder, isPending } = useCreateOrder();
   
   const isValid = useMemo(() => {
@@ -78,7 +115,7 @@ const TotalPage = ({ total, setIsSuccessModalOpen }: { total: number, setIsSucce
       {
         ...order,
         basket,
-        deliveryCost,
+        deliveryCost: currentDeliveryCost,
       },
       {
         onSuccess: (data) => {
@@ -107,7 +144,17 @@ const TotalPage = ({ total, setIsSuccessModalOpen }: { total: number, setIsSucce
     <div className='px-8 py-5 bg-light rounded-2xl  '>
       <div className='flex justify-between border-b pb-4'>
         <div className='flex flex-col gap-1 text-gray'>
-          <span className='rubik'>{t('delivery-form.delivery-cost')}: {deliveryCost}{t('currency')} </span>
+          <span className='rubik'>
+            {t('delivery-form.delivery-cost')}: {
+              isLoadingDelivery ? (
+                <span className="text-gray-400">...</span>
+              ) : deliveryCostData?.freeDelivery ? (
+                <span className="text-green-600">{t('free') || 'Безкоштовно'}</span>
+              ) : (
+                `${currentDeliveryCost}${t('currency')}`
+              )
+            }
+          </span>
           <span className='rubik'>{t('delivery-form.order-cost')}: {total}{t('currency')}</span>
         </div>
         <div className='flex flex-col text-2xl text-gray'>

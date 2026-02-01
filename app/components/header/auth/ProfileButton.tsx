@@ -2,30 +2,33 @@
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { BsPerson } from "react-icons/bs";
+import { BsPerson, BsFillPersonFill } from "react-icons/bs";
 import { useStatesStore } from "@/store/useStatesStore";
 import { useUser } from "@/hooks/useAuth";
 import { usePathname } from '@/lib/navigation';
 import { useRouter } from '@/lib/navigation';
+import { useBasketStore } from "@/store/useBasketStore";
 
 export default function ProfileButton() {
   const { data: user } = useUser();
   const { isLoginOpen, setIsLoginOpen } = useStatesStore();
+  const { setValue } = useBasketStore();
   const pathname = usePathname();
   const router = useRouter();
 
-  // Проверяем находимся ли мы точно на странице /profile (не на вложенных роутах)
-  const isOnProfilePage = pathname?.match(/^\/(ua|pl)?\/profile$/) || pathname === '/profile';
+  const isOnProfilePage = pathname?.startsWith('/profile') || pathname?.match(/^\/(ua|pl)\/profile/);
 
   const handleClick = () => {
+    setValue('isBasketModalOpen', false);
+    
     if (!user) {
-      // Если нет пользователя - открываем форму логина
       setIsLoginOpen(!isLoginOpen);
     } else {
-      // Если пользователь есть - редирект на профиль
       router.push('/profile');
     }
   };
+
+  const showFilledIcon = (isOnProfilePage && user) || (isLoginOpen && !user);
 
   return (
     <Button 
@@ -38,7 +41,7 @@ export default function ProfileButton() {
       variant="outline" 
       size="icon-lg"
     >
-      <BsPerson size={20} />
+      {showFilledIcon ? <BsFillPersonFill size={20} /> : <BsPerson size={20} />}
     </Button>
   )
 }

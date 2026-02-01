@@ -1,443 +1,115 @@
 "use client";
 import CustomSelect from "@/components/CustomSelect";
-import { useState } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import NoOrders from "./components/NoOrders";
 import OrderItem from "./components/OrderItem";
 import Paggination from "@/components/Paggination";
+import { useOrders } from "@/hooks/useOrders";
+
 export default function History() {
+  const t = useTranslations();
   const [step, setStep] = useState(0);
+  const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'confirmed' | 'preparing' | 'in_delivery' | 'delivered' | 'cancelled'>('all');
+  const [mounted, setMounted] = useState(false);
   const itemsPerPage = 5;
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
+  const { data: ordersData, isLoading, error } = useOrders({
+    limit: 100,
+    offset: 0,
+    status: statusFilter,
+  });
+
+  const selectOptions = useMemo(() => [
+    { label: t('all'), value: 'all' },
+    { label: t('pending'), value: 'pending' },
+    { label: t('confirmed'), value: 'confirmed' },
+    { label: t('preparing'), value: 'preparing' },
+    { label: t('in_delivery'), value: 'in_delivery' },
+    { label: t('delivered'), value: 'delivered' },
+    { label: t('cancelled'), value: 'cancelled' }
+  ], [t]);
+  
+  const handleStatusChange = useCallback((value: string) => {
+    setStatusFilter(value as 'all' | 'pending' | 'confirmed' | 'preparing' | 'in_delivery' | 'delivered' | 'cancelled');
+    setStep(0);
+  }, []);
+  
+  const orders = useMemo(() => {
+    if (!ordersData?.items) return [];
+    
+    return ordersData.items.map(order => {
+      const date = new Date(order.created);
+      const formattedDate = `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`;
+      
+      return {
+        id: order.id,
+        date: formattedDate,
+        total: order.totalAmount,
+        status: order.status,
+        products: order.items.map(item => ({
+          id: item.product.id,
+          name: item.product.name,
+          price: item.totalPrice,
+          weight: item.product.gramsPerServing,
+          quantity: item.quantity,
+          imageUrl: item.product.imageUrl,
+        })),
+      };
+    });
+  }, [ordersData]);
+
   const pageCount = Math.ceil(orders.length / itemsPerPage);
-  
-  if(orders.length === 0) return <NoOrders />
-  
   const startIndex = step * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentOrders = orders.slice(startIndex, endIndex);
 
+  if (!mounted || isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[482px]">
+        <p className="text-gray">{t('loading')}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-5">
-        <CustomSelect
-          options={[{ label: 'All', value: 'all' }, { label: 'Pending', value: 'pending' }, { label: 'Completed', value: 'completed' }]}
-          placeholder="Select Status"
-          value="all"
-          onChange={(value) => {}}
-        />
-        <div className="flex flex-col gap-2.5 min-h-[482px]">
-        {currentOrders.map((order) => (
-          <OrderItem key={order.id} order={order} />
-        ))}
-        <Paggination 
-          currentPage={step}
-          setCurrentPage={setStep}
-          pageCount={pageCount}
-        />
+      <CustomSelect
+        options={selectOptions}
+        placeholder={t('select-status')}
+        value={statusFilter}
+        onChange={handleStatusChange}
+      />
+      <div className="flex flex-col gap-2.5 min-h-[482px]">
+        {error ? (
+          <div className="flex items-center justify-center min-h-[482px]">
+            <p className="text-red-500">{t('error')}: {error.message}</p>
+          </div>
+        ) : orders.length === 0 ? (
+          <NoOrders />
+        ) : currentOrders.length > 0 ? (
+          <>
+            {currentOrders.map((order) => (
+              <OrderItem key={order.id} order={order} />
+            ))}
+            {pageCount > 1 && (
+              <Paggination 
+                currentPage={step}
+                setCurrentPage={setStep}
+                pageCount={pageCount}
+              />
+            )}
+          </>
+        ) : (
+          <div className="flex items-center justify-center min-h-[482px]">
+            <p className="text-gray">{t('no-orders-to-display')}</p>
+          </div>
+        )}
       </div>
     </div>
   );
-} 
-
-const orders = [
-
-  {
-    id: 2,
-    date: '2025-01-02',
-    total: 500,
-    status: 'completed',
-    products: [
-      {
-        id: 2,
-        name: 'Product 2',
-        price: 200,
-        weight: 289,
-        quantity: 2,
-      },
-      {
-        id: 3,
-        name: 'Product 3',
-        price: 300,
-        weight: 389,
-        quantity: 3,
-      },
-      {
-        id: 4,
-        name: 'Product 4',
-        price: 400,
-        weight: 489,
-        quantity: 4,
-      },
-      {
-        id: 5,
-        name: 'Product 5',
-        price: 500,
-        weight: 589,
-        quantity: 5,
-      },
-      {
-        id: 6,
-        name: 'Product 6',
-        price: 600,
-        weight: 689,
-        quantity: 6,
-      },  
-      {
-        id: 7,
-        name: 'Product 7',
-        price: 700,
-        weight: 789,
-        quantity: 7,
-      },
-      {
-        id: 8,  
-        name: 'Product 8',
-        price: 800,
-        weight: 889,
-        quantity: 8,
-      },
-    ],
-  },
-  {
-    id: 3,
-    date: '2025-01-03',
-    total: 750,
-    status: 'pending',
-    products: [
-      {
-        id: 3,
-        name: 'Product 3',
-        price: 300,
-        weight: 389,
-        quantity: 3,
-      },
-    ],
-  },
-  {
-    id: 4,
-    date: '2025-01-04',
-    total: 1200,
-    status: 'completed',
-    products: [
-      {
-        id: 4,
-        name: 'Product 4',
-        price: 400,
-        weight: 489,
-        quantity: 4,
-      },
-    ],
-  },
-  {
-    id: 5,
-    date: '2025-01-05',
-    total: 890,
-    status: 'pending',
-    products: [
-      {
-        id: 5,
-        name: 'Product 5',
-        price: 500,
-        weight: 589,
-        quantity: 5,
-      },
-    ],
-  },
-  {
-    id: 6,
-    date: '2025-01-06',
-    total: 650,
-    status: 'completed',
-    products: [
-      {
-        id: 6,
-        name: 'Product 6',
-        price: 600,
-        weight: 689,
-        quantity: 6,
-      },
-    ],
-  },
-  {
-    id: 7,
-    date: '2025-01-07',
-    total: 1100,
-    status: 'pending',
-    products: [
-      {
-        id: 7,
-        name: 'Product 7',
-        price: 700,
-        weight: 789,
-        quantity: 7,
-      },
-    ],
-  },
-  {
-    id: 8,
-    date: '2025-01-08',
-    total: 950,
-    status: 'completed',
-    products: [
-      {
-        id: 8,
-        name: 'Product 8',
-        price: 800,
-        weight: 889,
-        quantity: 8,
-      },
-    ],
-  },
-  {
-    id: 1,
-    date: '2025-01-01',
-    total: 1000,
-    status: 'pending',
-    products: [
-      {
-        id: 1,
-        name: 'Product 1',
-        price: 100,
-        weight: 159,
-        quantity: 1,
-      },
-      {
-        id: 2,
-        name: 'Product 2',
-        price: 200,
-        weight: 289,
-        quantity: 2,
-      },
-    ],    
-  },
-  {
-    id: 2,
-    date: '2025-01-02',
-    total: 500,
-    status: 'completed',
-    products: [
-      {
-        id: 2,
-        name: 'Product 2',
-        price: 200,
-        weight: 289,
-        quantity: 2,
-      },
-    ],
-  },
-  {
-    id: 3,
-    date: '2025-01-03',
-    total: 750,
-    status: 'pending',
-    products: [
-      {
-        id: 3,
-        name: 'Product 3',
-        price: 300,
-        weight: 389,
-        quantity: 3,
-      },
-    ],
-  },
-  {
-    id: 4,
-    date: '2025-01-04',
-    total: 1200,
-    status: 'completed',
-    products: [
-      {
-        id: 4,
-        name: 'Product 4',
-        price: 400,
-        weight: 489,
-        quantity: 4,
-      },
-    ],
-  },
-  {
-    id: 5,
-    date: '2025-01-05',
-    total: 890,
-    status: 'pending',
-    products: [
-      {
-        id: 5,
-        name: 'Product 5',
-        price: 500,
-        weight: 589,
-        quantity: 5,
-      },
-    ],
-  },
-  {
-    id: 6,
-    date: '2025-01-06',
-    total: 650,
-    status: 'completed',
-    products: [
-      {
-        id: 6,
-        name: 'Product 6',
-        price: 600,
-        weight: 689,
-        quantity: 6,
-      },
-    ],
-  },
-  {
-    id: 7,
-    date: '2025-01-07',
-    total: 1100,
-    status: 'pending',
-    products: [
-      {
-        id: 7,
-        name: 'Product 7',
-        price: 700,
-        weight: 789,
-        quantity: 7,
-      },
-    ],
-  },
-  {
-    id: 8,
-    date: '2025-01-08',
-    total: 950,
-    status: 'completed',
-    products: [
-      {
-        id: 8,
-        name: 'Product 8',
-        price: 800,
-        weight: 889,
-        quantity: 8,
-      },
-    ],
-  },
-  {
-    id: 1,
-    date: '2025-01-01',
-    total: 1000,
-    status: 'pending',
-    products: [
-      {
-        id: 1,
-        name: 'Product 1',
-        price: 100,
-        weight: 159,
-        quantity: 1,
-      },
-      {
-        id: 2,
-        name: 'Product 2',
-        price: 200,
-        weight: 289,
-        quantity: 2,
-      },
-    ],    
-  },
-  {
-    id: 2,
-    date: '2025-01-02',
-    total: 500,
-    status: 'completed',
-    products: [
-      {
-        id: 2,
-        name: 'Product 2',
-        price: 200,
-        weight: 289,
-        quantity: 2,
-      },
-    ],
-  },
-  {
-    id: 3,
-    date: '2025-01-03',
-    total: 750,
-    status: 'pending',
-    products: [
-      {
-        id: 3,
-        name: 'Product 3',
-        price: 300,
-        weight: 389,
-        quantity: 3,
-      },
-    ],
-  },
-  {
-    id: 4,
-    date: '2025-01-04',
-    total: 1200,
-    status: 'completed',
-    products: [
-      {
-        id: 4,
-        name: 'Product 4',
-        price: 400,
-        weight: 489,
-        quantity: 4,
-      },
-    ],
-  },
-  {
-    id: 5,
-    date: '2025-01-05',
-    total: 890,
-    status: 'pending',
-    products: [
-      {
-        id: 5,
-        name: 'Product 5',
-        price: 500,
-        weight: 589,
-        quantity: 5,
-      },
-    ],
-  },
-  {
-    id: 6,
-    date: '2025-01-06',
-    total: 650,
-    status: 'completed',
-    products: [
-      {
-        id: 6,
-        name: 'Product 6',
-        price: 600,
-        weight: 689,
-        quantity: 6,
-      },
-    ],
-  },
-  {
-    id: 7,
-    date: '2025-01-07',
-    total: 1100,
-    status: 'pending',
-    products: [
-      {
-        id: 7,
-        name: 'Product 7',
-        price: 700,
-        weight: 789,
-        quantity: 7,
-      },
-    ],
-  },
-  {
-    id: 8,
-    date: '2025-01-08',
-    total: 950,
-    status: 'completed',
-    products: [
-      {
-        id: 8,
-        name: 'Product 8',
-        price: 800,
-        weight: 889,
-        quantity: 8,
-      },
-    ],
-  },
-]
+}

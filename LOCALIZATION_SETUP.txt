@@ -1,0 +1,296 @@
+# НАСТРОЙКА ЛОКАЛИЗАЦИИ В ПРОЕКТЕ
+
+## Как работает локализация в этом проекте:
+
+В проекте используется библиотека `next-intl` для поддержки многоязычности.
+Дефолтный адрес (/) использует украинский язык (ua), а для других языков используются префиксы (/pl).
+
+---
+
+## 1. КОНФИГУРАЦИЯ ЛОКАЛЕЙ (i18n/config.ts)
+
+```typescript
+export type Locale = 'ua' | 'pl';
+
+export const locales: Locale[] = ['ua', 'pl'];
+export const defaultLocale: Locale = 'ua';  // Дефолтный язык - украинский
+
+export const localeNames: Record<Locale, string> = {
+  ua: 'Українська',
+  pl: 'Polski',
+};
+```
+
+---
+
+## 2. КОНФИГУРАЦИЯ ЗАПРОСОВ (i18n/request.ts)
+
+```typescript
+import { getRequestConfig } from 'next-intl/server';
+import { locales, type Locale } from './config';
+
+export default getRequestConfig(async ({ requestLocale }) => {
+  let locale = await requestLocale;
+  
+  // Если локаль не указана или невалидна, используем 'ua'
+  if (!locale || !locales.includes(locale as Locale)) {
+    locale = 'ua';
+  }
+
+  return {
+    locale,
+    messages: (await import(`../messages/${locale}.json`)).default
+  };
+});
+```
+
+---
+
+## 3. MIDDLEWARE (middleware.ts)
+
+```typescript
+import createMiddleware from 'next-intl/middleware';
+import { locales, defaultLocale } from './i18n/config';
+
+export default createMiddleware({
+  locales,
+  defaultLocale,
+  localePrefix: 'as-needed',  // Ключевая настройка!
+  // 'as-needed' означает:
+  // - Дефолтная локаль (ua) работает БЕЗ префикса: /
+  // - Другие локали используют префикс: /pl
+});
+
+export const config = {
+  // Исключаем из локализации: api, статику, админку
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|assets|admin|login).*)']
+};
+```
+
+### Важно! localePrefix: 'as-needed' делает следующее:
+- `/` → украинский язык (ua) - дефолтный
+- `/pl` → польский язык
+- `/pl/about-us` → польская версия страницы "О нас"
+- `/about-us` → украинская версия страницы "О нас"
+
+---
+
+## 4. НАВИГАЦИЯ (lib/navigation.ts)
+
+```typescript
+import { createNavigation } from 'next-intl/navigation';
+import { locales } from '@/i18n/config';
+
+// Создаем локализованные компоненты навигации
+export const { Link, redirect, usePathname, useRouter } = 
+  createNavigation({ 
+    locales
+  });
+```
+
+### Использование:
+```typescript
+import { Link } from '@/lib/navigation';
+
+// Автоматически добавит нужный префикс локали
+<Link href="/about-us">О нас</Link>
+```
+
+---
+
+## 5. NEXT.CONFIG (next.config.ts)
+
+```typescript
+import type { NextConfig } from "next";
+import createNextIntlPlugin from 'next-intl/plugin';
+
+// Подключаем плагин next-intl
+const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
+
+const nextConfig: NextConfig = {
+  images: {
+    unoptimized: process.env.NODE_ENV === 'development',
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'storage.googleapis.com',
+        pathname: '/serce-oceanu-71e48.firebasestorage.app/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'firebasestorage.googleapis.com',
+        pathname: '/**',
+      },
+    ],
+  },
+};
+
+export default withNextIntl(nextConfig);
+```
+
+---
+
+## 6. LAYOUT С ЛОКАЛЯМИ (app/[locale]/layout.tsx)
+
+```typescript
+import type { Metadata } from "next";
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
+import { notFound } from 'next/navigation';
+import { locales } from '@/i18n/config';
+
+export const metadata: Metadata = {
+  title: "Cerce Oceanu",
+  description: "Церце Океану",
+};
+
+// Генерируем статические параметры для всех локалей
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
+
+export default async function LocaleLayout({
+  children,
+  params
+}: {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  
+  // Проверяем валидность локали
+  if (!locales.includes(locale as any)) {
+    notFound();
+  }
+
+  // Загружаем переводы
+  const messages = await getMessages();
+
+  return (
+    <html lang={locale}>
+      <body>
+        <NextIntlClientProvider messages={messages}>
+          {children}
+        </NextIntlClientProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+---
+
+## 7. СТРУКТУРА ПАПОК
+
+```
+app/
+├── [locale]/              # Динамический сегмент для локали
+│   ├── layout.tsx         # Layout с NextIntlClientProvider
+│   ├── page.tsx           # Главная страница
+│   ├── about-us/
+│   │   └── page.tsx
+│   ├── catalogue/
+│   │   └── page.tsx
+│   └── privacy-policy/
+│       └── page.tsx
+├── admin/                 # Исключено из локализации
+│   └── ...
+└── api/                   # Исключено из локализации
+    └── ...
+
+messages/
+├── ua.json               # Украинские переводы
+└── pl.json               # Польские переводы
+
+i18n/
+├── config.ts             # Конфигурация локалей
+└── request.ts            # Конфигурация запросов
+```
+
+---
+
+## 8. ФАЙЛЫ ПЕРЕВОДОВ
+
+### messages/ua.json
+```json
+{
+  "header": {
+    "home": "Головна",
+    "about-us": "Про нас",
+    "catalogue": "Асортимент"
+  }
+}
+```
+
+### messages/pl.json
+```json
+{
+  "header": {
+    "home": "Główna",
+    "about-us": "O nas",
+    "catalogue": "Asortyment"
+  }
+}
+```
+
+---
+
+## 9. ИСПОЛЬЗОВАНИЕ В КОМПОНЕНТАХ
+
+```typescript
+'use client';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/lib/navigation';
+
+export default function MyComponent() {
+  const t = useTranslations();
+  
+  return (
+    <div>
+      <h1>{t('header.home')}</h1>
+      <Link href="/about-us">{t('header.about-us')}</Link>
+    </div>
+  );
+}
+```
+
+---
+
+## 10. КАК РАБОТАЮТ URL
+
+### С localePrefix: 'as-needed':
+
+| URL                    | Язык        | Описание                          |
+|------------------------|-------------|-----------------------------------|
+| `/`                    | ua (default)| Главная на украинском             |
+| `/about-us`            | ua (default)| О нас на украинском               |
+| `/pl`                  | pl          | Главная на польском               |
+| `/pl/about-us`         | pl          | О нас на польском                 |
+| `/pl/privacy-policy`   | pl          | Privacy Policy на польском        |
+| `/privacy-policy`      | ua (default)| Privacy Policy на украинском      |
+
+### Если бы было localePrefix: 'always':
+
+| URL                    | Язык        |
+|------------------------|-------------|
+| `/ua`                  | ua          |
+| `/ua/about-us`         | ua          |
+| `/pl`                  | pl          |
+| `/pl/about-us`         | pl          |
+
+---
+
+## РЕЗЮМЕ
+
+1. **defaultLocale: 'ua'** - дефолтный язык украинский
+2. **localePrefix: 'as-needed'** - дефолтный язык работает БЕЗ префикса
+3. **Middleware** обрабатывает все роуты кроме /api, /admin, статики
+4. **[locale]** папка содержит все локализованные страницы
+5. **messages/** содержит переводы для каждого языка
+6. **Link** из '@/lib/navigation' автоматически добавляет префикс локали
+
+Это позволяет:
+- `/` показывать украинскую версию
+- `/pl` показывать польскую версию
+- Легко переключаться между языками
+- Не дублировать код для каждого языка

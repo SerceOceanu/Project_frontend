@@ -19,6 +19,7 @@ import LinkItem from "./LinkItem";
 import { BsHeart, BsPerson } from "react-icons/bs";
 import { RiTelegram2Fill } from "react-icons/ri";
 import { Locale } from "@/i18n/config";
+import { useUser } from "@/hooks/useAuth";
 
 export default function MobileMenu() {
   const locale = useLocale() as Locale;
@@ -30,6 +31,7 @@ export default function MobileMenu() {
   const [filter, setFilter] = useState<Filter | null>(null);
   const searchParams = useSearchParams();
   const activeFilter = searchParams.get('filter') as Filter | null;
+  const { data: user } = useUser();
 
   const languages = [
     { code: "ua" as Locale },
@@ -129,25 +131,29 @@ export default function MobileMenu() {
             onClick={() => setOpen(false)}
           />
 
-          <span className="rubik text-sm text-gray mb-2.5 ">{t('header.personal')}</span>
-          <div className="flex gap-2 mb-6">
-            <Link 
-              href="/profile" 
-              onClick={() => setOpen(false)}
-              className={cn(button,'justify-center gap-2.5',pathname === '/profile' && ' text-orange border-orange')}
-            >
-              <BsPerson size={20} />
-              <span className="rubik text-sm font-light">{t('header.profile')}</span> 
-            </Link>
-            <Link 
-              href="/favorites" 
-              onClick={() => setOpen(false)}
-              className={cn(button,'justify-center gap-2.5',pathname === '/favorites' && ' text-orange border-orange')}
-            >
-              <BsHeart size={20} />
-              <span className="rubik text-sm font-light">{t('header.favorites')}</span>
-            </Link>
-          </div>
+          {user && (
+            <>
+              <span className="rubik text-sm text-gray mb-2.5 ">{t('header.personal')}</span>
+              <div className="flex gap-2 mb-6">
+                <Link 
+                  href="/profile" 
+                  onClick={() => setOpen(false)}
+                  className={cn(button,'justify-center gap-2.5',pathname === '/profile' && ' text-orange border-orange')}
+                >
+                  <BsPerson size={20} />
+                  <span className="rubik text-sm font-light">{t('header.profile')}</span> 
+                </Link>
+                <Link 
+                  href="/profile/favorites" 
+                  onClick={() => setOpen(false)}
+                  className={cn(button,'justify-center gap-2.5',pathname === '/profile/favorites' && ' text-orange border-orange')}
+                >
+                  <BsHeart size={20} />
+                  <span className="rubik text-sm font-light">{t('header.favorites')}</span>
+                </Link>
+              </div>
+            </>
+          )}
 
           <span className="rubik text-sm text-gray mb-2.5 mt-6">{t('header.contacts')}</span>
           <div className={cn(button,'justify-center flex-col mb-2.5')}>

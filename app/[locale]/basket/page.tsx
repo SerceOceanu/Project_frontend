@@ -14,7 +14,10 @@ export default function Basket() {
           <Form />
         </div>
         <div className='col-span-1'>
-          <OrdersCard type="page" setIsSuccessModalOpen={setIsSuccessModalOpen} />
+          <OrdersCard 
+            type="page" 
+            setIsSuccessModalOpen={setIsSuccessModalOpen}
+          />
         </div>
       </div>
       <SuccessOrderModal open={isSuccessModalOpen} onOpenChange={setIsSuccessModalOpen} />

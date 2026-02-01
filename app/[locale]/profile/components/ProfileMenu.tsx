@@ -8,12 +8,23 @@ import { useLogout } from "@/hooks/useAuth";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
+import { useUser } from "@/hooks/useUser";
+import { useState, useEffect } from "react";
 
 export default function ProfileMenu() {
   const t = useTranslations();
   const pathname = usePathname();
-  const name = 'John Week';
-  const phone = '+48 884 826 064';
+  const [mounted, setMounted] = useState(false);
+  const { data: userData, isLoading, error } = useUser();
+  
+  // Fix hydration error by only rendering after mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
+  // Get user name and phone from API
+  const name = userData ? `${userData.firstName} ${userData.lastName}`.trim() : '';
+  const phone = userData?.phone || '';
 
   const menuItems = [
     {
@@ -39,13 +50,29 @@ export default function ProfileMenu() {
       <div className="bg-white rounded-2xl p-5 flex flex-col">
         <div className="mb-3">
           <div className="flex items-center justify-between rubik text-lg font-semibold mb-3">
-            {name}
+            {!mounted || isLoading ? (
+              <span className="text-gray">{t('loading')}</span>
+            ) : error ? (
+              <span className="text-gray text-sm">{t('profile.no-name')}</span>
+            ) : name ? (
+              name
+            ) : (
+              <span className="text-gray">{t('profile.no-name')}</span>
+            )}
             <Link href="/profile/edit">
               <FiEdit size={20}  className='text-gray'/>
             </Link>
           </div>
-          <div>
-            {phone}
+          <div className="text-gray">
+            {!mounted || isLoading ? (
+              <span className="text-gray">{t('loading')}</span>
+            ) : error ? (
+              <span className="text-gray text-sm">{t('profile.no-phone')}</span>
+            ) : phone ? (
+              phone
+            ) : (
+              <span className="text-gray">{t('profile.no-phone')}</span>
+            )}
           </div>
         </div>
         <div className="hidden md:flex flex-col">

@@ -53,9 +53,16 @@ export default function LoginForm() {
     checkRedirectResult();
   }, [queryClient, setIsLoginOpen]);
   
-  // Close on click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      
+      const isPopoverClick = target.closest('[data-radix-popper-content-wrapper]') || 
+                            target.closest('[role="dialog"]') ||
+                            target.closest('[data-radix-portal]');
+      
+      if (isPopoverClick) return;
+      
       if (formRef.current && !formRef.current.contains(event.target as Node)) {
         setIsLoginOpen(false);
       }

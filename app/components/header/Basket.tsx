@@ -10,6 +10,7 @@ import { useEffect, useRef } from "react";
 import OrdersCard from "@/app/[locale]/basket/conponents/OrdersCard";
 import { useBasketStore } from "@/store/useBasketStore";
 import ProfileButton from "./auth/ProfileButton";
+import { useUser } from "@/hooks/useAuth";
 
 
 export default function Basket() {
@@ -17,17 +18,23 @@ export default function Basket() {
   const pathname = usePathname();
   const { isBasketModalOpen, setValue } = useBasketStore();
   const containerRef = useRef<HTMLDivElement>(null);
+  const { data: user } = useUser();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) setValue('isBasketModalOpen', false);
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setValue('isBasketModalOpen', false);
+      }
     };
 
-    if (isBasketModalOpen) document.addEventListener('mousedown', handleClickOutside);
+    if (isBasketModalOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isBasketModalOpen]);
+  }, [isBasketModalOpen, setValue]);
 
 
   const buttons = [
@@ -44,15 +51,17 @@ export default function Basket() {
 
   return (
     <div ref={containerRef} className="flex items-center gap-2 relative">
-        <Link href={buttons[0].href}>
-          <Button 
-            className={cn( pathname === buttons[0].href && ' text-orange border-orange', "flex items-center gap-2 shadow-none rounded-2xl " )} 
-            variant="outline" 
-            size="icon-lg"
-          >
-            {buttons[0].icon}
-          </Button>
-        </Link>
+        {user && (
+          <Link href={buttons[0].href}>
+            <Button 
+              className={cn( pathname === buttons[0].href && ' text-orange border-orange', "flex items-center gap-2 shadow-none rounded-2xl " )} 
+              variant="outline" 
+              size="icon-lg"
+            >
+              {buttons[0].icon}
+            </Button>
+          </Link>
+        )}
         <ProfileButton />
         <Link href={buttons[1].href}>
           <Button 
@@ -78,16 +87,16 @@ export default function Basket() {
         <TbBasket  size={20} className={cn(isBasketModalOpen && "text-orange")} />
         <span className={cn(isBasketModalOpen && "text-orange","rubik text-sm font-light")}>{t('header.basket')}</span>
       </Button>
-      <div
-        className={cn(
-          "absolute top-14  -right-2 z-10 w-[calc(100vw-32px)] max-w-[600px]  transition-all duration-200 origin-top",
-          isBasketModalOpen
-            ? "opacity-100 scale-100 translate-y-0 pointer-events-auto"
-            : "opacity-0 scale-95 -translate-y-2 pointer-events-none"
-        )}
-      >
-        <OrdersCard  type="modal" />
-      </div>
+      {isBasketModalOpen && (
+        <div
+          className={cn(
+            "absolute top-14  -right-2 z-10 w-[calc(100vw-32px)] max-w-[600px]  transition-all duration-200 origin-top",
+            "opacity-100 scale-100 translate-y-0 pointer-events-auto"
+          )}
+        >
+          <OrdersCard  type="modal" />
+        </div>
+      )}
     </div>
   );  
 }

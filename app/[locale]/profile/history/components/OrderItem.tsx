@@ -19,7 +19,7 @@ export default function OrderItem({ order }: { order: any }   ) {
             <Status status={order.status} className="ml-auto lg:ml-0" />
           </div>
           <div className="inter text-2xl font-bold lg:ml-auto self-start mt-6 lg:mt-0">
-            {order.total} {t('currency')}
+            {order.total.toFixed(2)} {t('currency')}
           </div>
         </div>
         <div 
@@ -45,8 +45,8 @@ export const OrderItemProduct = ({ product }: { product: any }) => {
     <div className="flex p-2.5 bg-light rounded-2xl gap-6 items-center pr-5">
       <div className="flex items-center gap-6">
         <Image
-          src="/assets/images/street-1.png"
-          alt="product"
+          src={product.imageUrl || "/assets/images/street-1.png"}
+          alt={product.name}
           width={60}
           height={50}
           className="rounded-lg object-cover w-16 h-[50px]"
@@ -57,7 +57,7 @@ export const OrderItemProduct = ({ product }: { product: any }) => {
           <div className="rubik text-orange">{product.weight} {t('weight')} / {product.quantity} {t('qty')}</div>
         </div>
       </div>
-      <div className="inter text-lg md:text-2xl  ml-auto text-gray">{product.price} {t('currency')}</div>
+      <div className="inter text-lg md:text-2xl  ml-auto text-gray">{product.price.toFixed(2)} {t('currency')}</div>
     </div>
   )
 }

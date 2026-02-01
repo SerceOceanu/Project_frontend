@@ -126,8 +126,22 @@ const CountrySelect = ({
           />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[300px] p-0 rounded-2xl">
-        <Command className="rounded-2xl">
+      <PopoverContent 
+        className="w-[300px] p-0 rounded-2xl"
+        onInteractOutside={(e) => {
+          // Предотвращаем закрытие при клике внутри
+          const target = e.target as HTMLElement;
+          if (target.closest('[role="dialog"]')) {
+            e.preventDefault();
+          }
+        }}
+      >
+        <Command 
+          className="rounded-2xl"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
           <CommandInput
             value={searchValue}
             onValueChange={(value) => {
@@ -196,6 +210,12 @@ const CountrySelectOption = ({
         country === selectedCountry && "bg-orange/5"
       )} 
       onSelect={handleSelect}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+      onPointerDown={(e) => {
+        e.stopPropagation();
+      }}
     >
       <FlagComponent country={country} countryName={countryName} />
       <span className={cn("flex-1 text-sm", country === selectedCountry && "text-orange font-medium")}>{countryName}</span>

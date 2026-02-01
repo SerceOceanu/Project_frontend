@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useTranslations } from "next-intl";
+import { useUser } from "@/hooks/useUser";
+import { useEffect } from "react";
 
 const profileSchema = z.object({
   name: z.string().min(2, "Ім'я має містити мінімум 2 символи"),
@@ -23,27 +25,60 @@ const profileSchema = z.object({
 
 type ProfileFormData = z.infer<typeof profileSchema>;
 export default function Profile() {
-
     const t = useTranslations();
+    const { data: userData, isLoading, error } = useUser();
     
     const {
       register,
       handleSubmit,
       formState: { errors },
+      reset,
     } = useForm<ProfileFormData>({
       resolver: zodResolver(profileSchema),
       defaultValues: {
-        name: "John Week",
-        phone: "+48884826064",
+        name: "",
+        phone: "",
         password: "",
         confirmPassword: "",
       },
     });
+
+    // Update form when user data is loaded
+    useEffect(() => {
+      if (userData) {
+        reset({
+          name: `${userData.firstName} ${userData.lastName}`.trim(),
+          phone: userData.phone,
+          password: "",
+          confirmPassword: "",
+        });
+      }
+    }, [userData, reset]);
   
     const onSubmit = (data: ProfileFormData) => {
       console.log("Form data:", data);
       // Тут будет логика сохранения
     };
+
+  if (isLoading) {
+    return (
+      <div className="bg-white rounded-2xl p-5">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <p className="text-gray">{t('loading')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-white rounded-2xl p-5">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <p className="text-red-500">{t('error')}: {error.message}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-2xl p-5">
@@ -79,6 +114,21 @@ export default function Profile() {
             <p className="text-sm text-red-500">{errors.phone.message}</p>
           )}
         </div>
+
+        {userData?.email && (
+          <div className="space-y-2">
+            <label className="rubik text-sm font-medium text-gray">
+              Email
+            </label>
+            <Input
+              type="email"
+              value={userData.email}
+              disabled
+              className="h-[55px] rounded-2xl bg-gray-100 cursor-not-allowed"
+            />
+            <p className="text-xs text-gray">{t('profile.email-readonly-hint') || 'Email cannot be changed'}</p>
+          </div>
+        )}
 
         <div className="space-y-2">
           <label className="rubik text-sm font-medium text-gray">

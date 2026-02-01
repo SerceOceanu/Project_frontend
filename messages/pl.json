@@ -16,8 +16,16 @@
   "login-button": "Zaloguj się",
   "login-with-google": "Zaloguj się za pomocą Google",
   "loading": "Ładowanie...",
-  "completed": "Dostarczono",
-  "pending": "W przygotowaniu",
+  "error": "Błąd",
+  "no-orders-to-display": "Brak zamówień do wyświetlenia",
+  "all": "Wszystkie",
+  "pending": "Oczekuje",
+  "confirmed": "Potwierdzone",
+  "preparing": "W przygotowaniu",
+  "in_delivery": "W dostawie",
+  "delivered": "Dostarczono",
+  "cancelled": "Anulowano",
+  "select-status": "Wybierz status",
 
   "language": {
     "change-language": "Język",
@@ -138,6 +146,8 @@
     "confirm-password-placeholder": "Powtórz hasło",
     "password-hint": "Pozostaw puste, jeśli nie chcesz zmieniać hasła",
     "save": "Zapisz zmiany",
+    "no-name": "Brak imienia",
+    "no-phone": "Brak telefonu",
     
     "no-orders": "Nie masz jeszcze żadnych zamówień",
     "no-orders-text" : "Tutaj będą wyświetlane twoje poprzednie i aktywne zamówienia, jak tylko zrobisz pierwsze.",
@@ -179,11 +189,11 @@
 
     "delivery-type": "Typ dostawy",
     "delivery-type-1": "Samochód: (możliwa płatność gotówką)",
-    "delivery-type-2": "InPost Paczkomaty: 14,99 zł",
-    "delivery-type-3": "Kurier InPost: 18,99 zł",
+    "delivery-type-2": "InPost Paczkomaty: 12 zł",
+    "delivery-type-3": "Kurier InPost: 15 zł",
 
-    "delivery-type-31": "InPost Paczkomaty: 14,99 zł",
-    "delivery-type-32": "Kurier InPost: 18,99 zł",
+    "delivery-type-31": "InPost Paczkomaty: 12 zł",
+    "delivery-type-32": "Kurier InPost: 15 zł",
 
     "post-box-title": "Paczkomat*",
     "post-box-description": "Wybierz paczkomat",

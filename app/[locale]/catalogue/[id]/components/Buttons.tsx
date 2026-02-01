@@ -6,12 +6,22 @@ import { PiHeart, PiHeartFill } from "react-icons/pi";
 import { Product } from "@/types/types";
 import { useBasketStore } from "@/store/useBasketStore";
 import { FiShoppingBag } from "react-icons/fi";
+import { isAuthenticated } from "@/lib/api-client";
+import { useFavoriteProducts, useToggleFavorite } from "@/hooks/useFavorites";
 
 
 export default function Buttons({product}: {product: Product}) {
   const t = useTranslations();
   const { addToBasket, removeFromBasket, basket, changeQuantity } = useBasketStore();
   const productInBasket = basket.find((p) => p.id === product.id);
+  const { data: favoriteIds = [] } = useFavoriteProducts();
+  const { mutate: toggleFavorite } = useToggleFavorite();
+  const isFavorite = favoriteIds.includes(String(product.id));
+  const isAuth = isAuthenticated();
+
+  const handleToggleFavorite = () => {
+    toggleFavorite({ productId: product.id, currentFavorites: favoriteIds });
+  };
 
   return (
     <div className='flex items-center justify-between self-start'>
@@ -27,9 +37,16 @@ export default function Buttons({product}: {product: Product}) {
             </Button>
         }
       </div>
-      {/* <Button size='icon' variant='outline' className='size-[48px] bg-white hover:bg-white/90 shadow border-none text-orange'>
-        {product.isFavorite ? <PiHeartFill  className="size-[24px]" /> : <PiHeart className="size-[24px]" />}
-      </Button> */}
+      {isAuth && (
+        <Button 
+          size='icon' 
+          variant='outline' 
+          className='size-[48px] bg-white hover:bg-white/90 shadow border-none text-orange'
+          onClick={handleToggleFavorite}
+        >
+          {isFavorite ? <PiHeartFill className="size-[24px]" /> : <PiHeart className="size-[24px]" />}
+        </Button>
+      )}
     </div>
   )
 }
