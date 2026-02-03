@@ -3,12 +3,12 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useDeleteBanner } from "@/hooks/useAdminBaners";
+import { useTranslations } from "next-intl";
 
 
 export default function DeleteAlert({
@@ -18,8 +18,9 @@ export default function DeleteAlert({
 }: {
   isDelete: boolean, 
   setIsDelete: (open: boolean) => void, 
-  id: number,
+  id: string,
 }) {
+  const t = useTranslations();
   const deleteBanner = useDeleteBanner();
 
   const handleDelete = () => {
@@ -33,16 +34,16 @@ export default function DeleteAlert({
     <AlertDialog open={isDelete} onOpenChange={setIsDelete}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Підтвердження видалення</AlertDialogTitle>
+          <AlertDialogTitle>{t('confirm-delete')}</AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Скасувати</AlertDialogCancel>
+          <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
             className="bg-red-500 hover:bg-red-600"
             disabled={deleteBanner.isPending}  
           >
-            {deleteBanner.isPending ? 'Видалення...' : 'Видалити'}
+            {deleteBanner.isPending ? t('deleting') : t('delete')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

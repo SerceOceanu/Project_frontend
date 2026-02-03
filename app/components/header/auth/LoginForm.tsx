@@ -17,6 +17,7 @@ import { useStatesStore } from "@/store/useStatesStore";
 import { useSignInWithGoogle, AUTH_QUERY_KEY } from "@/hooks/useAuth";
 import { setupRecaptcha, sendPhoneVerification, verifyPhoneCode } from "@/lib/auth";
 import { useQueryClient } from '@tanstack/react-query';
+import { useRouter } from '@/lib/navigation';
 import type { ConfirmationResult } from 'firebase/auth';
 
 declare global {  
@@ -57,7 +58,6 @@ export default function LoginForm() {
   
   return (
     <div ref={formRef} className='w-full max-w-[460px] absolute top-16 right-2.5 bg-white rounded-xl shadow-xl p-10'>
-      {/* Один общий контейнер для reCAPTCHA */}
       <div id="recaptcha-container"></div>
       
       <div style={{ display: isCodeSent ? 'none' : 'block' }}>
@@ -93,16 +93,13 @@ const PhoneForm = ({ setConfirmationResult }: { setConfirmationResult: (result: 
     try {
       const phoneNumber = data.phone.startsWith('+') ? data.phone : `+${data.phone}`;
       
-      // Подождите, чтобы DOM был готов
       await new Promise(resolve => setTimeout(resolve, 100));
       
-      // Проверьте, существует ли элемент
       const container = document.getElementById('recaptcha-container');
       if (!container) {
         throw new Error('reCAPTCHA container not found');
       }
       
-      // Очистите старый verifier
       if (window.recaptchaVerifier) {
         try {
           window.recaptchaVerifier.clear();
@@ -112,7 +109,6 @@ const PhoneForm = ({ setConfirmationResult }: { setConfirmationResult: (result: 
         window.recaptchaVerifier = undefined;
       }
       
-      // Создайте новый
       const verifier = await setupRecaptcha('recaptcha-container');
       
       const confirmation = await  sendPhoneVerification(phoneNumber, verifier);
@@ -122,7 +118,6 @@ const PhoneForm = ({ setConfirmationResult }: { setConfirmationResult: (result: 
     } catch (err: any) {
       console.error('Error sending code:', err);
       
-      // Более детальная обработка ошибок
       if (err.code === 'auth/invalid-phone-number') {
         setError(t('invalid-phone-number'));
       } else if (err.code === 'auth/invalid-app-credential') {
@@ -133,7 +128,6 @@ const PhoneForm = ({ setConfirmationResult }: { setConfirmationResult: (result: 
         setError(err.message || t('error-sending-code'));
       }
       
-      // Очистка при ошибке
       if (window.recaptchaVerifier) {
         try {
           window.recaptchaVerifier.clear();
@@ -223,6 +217,7 @@ const VerificationCode = ({
   setConfirmationResult: (result: ConfirmationResult) => void;
 }) => {
   const t = useTranslations();
+  const router = useRouter();
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
@@ -240,6 +235,13 @@ const VerificationCode = ({
       const user = await verifyPhoneCode(confirmationResult, code);
       queryClient.setQueryData(AUTH_QUERY_KEY, user);
       setIsLoginOpen(false);
+      
+      if (typeof window !== 'undefined') {
+        const currentPath = window.location.pathname;
+        if (!currentPath.includes('/basket')) {
+          router.push('/profile/history');
+        }
+      }
     } catch (err: any) {
       console.error('Error verifying code:', err);
       if (err.code === 'auth/invalid-verification-code') {
@@ -259,19 +261,16 @@ const VerificationCode = ({
     setError('');
     
     try {
-      // Очистите старый verifier
       if (window.recaptchaVerifier) {
         window.recaptchaVerifier.clear();
         window.recaptchaVerifier = undefined;
       }
       
-      // Очистите контейнер
       const container = document.getElementById('recaptcha-container');
       if (container) {
         container.innerHTML = '';
       }
       
-      // Подождите немного
       await new Promise(resolve => setTimeout(resolve, 100));
       
       const verifier = await setupRecaptcha('recaptcha-container');
@@ -287,7 +286,6 @@ const VerificationCode = ({
   };
 
   const handleBack = () => {
-    // Очистка
     if (window.recaptchaVerifier) {
       try {
         window.recaptchaVerifier.clear();

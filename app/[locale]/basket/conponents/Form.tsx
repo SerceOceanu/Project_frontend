@@ -15,11 +15,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { useBasketStore } from "@/store/useBasketStore";
 import { useStatesStore } from "@/store/useStatesStore";
 import { useUser } from "@/hooks/useAuth";
+import { useDeliveryAddress } from "@/hooks/useDeliveryAddress";
 
 export default function Form() {
   const { order, setOrder } = useBasketStore();
   const { setIsLoginOpen } = useStatesStore();
   const { data: user } = useUser();
+  const { data: deliveryAddress } = useDeliveryAddress();
   const t = useTranslations();
   // Dynamic Zod schema with i18n validation messages
   const schema = useMemo(() => 
@@ -41,18 +43,15 @@ export default function Form() {
 
   type FormData = z.infer<typeof schema>;
 
-  const { register, formState: { errors }, control, watch } = useForm<FormData>({
+  const { register, formState: { errors }, control, watch, reset } = useForm<FormData>({
     defaultValues: {
       name: order.name,
       surname: order.surname,
       company: order.company,
       address: order.address,
       postalCode: order.postalCode,
-
-
       phone: order.phone,
       email: order.email,
-
       comment: order.comment,
     },
     resolver: zodResolver(schema),
@@ -68,6 +67,31 @@ export default function Form() {
     setOrder('email', watch('email'));
     setOrder('comment', watch('comment') || '');
   });
+
+  // Auto-fill form with saved delivery address
+  useEffect(() => {
+    if (deliveryAddress && user) {
+      const hasEmptyFields = !order.address || !order.postalCode;
+      
+      if (hasEmptyFields) {
+        setOrder('address', deliveryAddress.address);
+        setOrder('postalCode', deliveryAddress.postalCode);
+        setOrder('locality', deliveryAddress.locality);
+        setOrder('isCity', deliveryAddress.isCity);
+        setOrder('deliveryType', deliveryAddress.deliveryType);
+        
+        if (deliveryAddress.lockerNumber) {
+          setOrder('lockerNumber', deliveryAddress.lockerNumber);
+        }
+        
+        reset({
+          ...watch(),
+          address: deliveryAddress.address,
+          postalCode: deliveryAddress.postalCode,
+        });
+      }
+    }
+  }, [deliveryAddress, user, order.address, order.postalCode, setOrder, reset, watch]);
 
   // Auto-switch to payu payment when courier or locker is selected
   useEffect(() => {

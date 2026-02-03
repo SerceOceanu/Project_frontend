@@ -3,7 +3,7 @@ import NoOrders from './NoOrders'
 import OrderItem from './OrderItem'  
 import { Button } from '@/components/ui/button'
 import { useTranslations } from 'next-intl'
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { Link } from '@/lib/navigation'
 import { useBasketStore } from '@/store/useBasketStore'
 import { Checkbox } from '@/components/ui/checkbox';
@@ -19,21 +19,12 @@ interface OrdersCardProps {
 }
 
 export default function OrdersCard({ type, setIsSuccessModalOpen }: OrdersCardProps) {
-  const { basket, order, setValue, deliveryCost } = useBasketStore();
+  const { basket, order } = useBasketStore();
   const t = useTranslations();
   const total = sum(basket.map((item: BasketProduct) => calculateItemTotal(item.price, item.quantity || 1)));
   
-  // Fetch delivery cost based on delivery type
-  const { data: deliveryCostData, isLoading } = useDeliveryPrice({
-    deliveryType: order.deliveryType,
-  });
-  
-  // Update delivery cost in store when data is fetched
-  useEffect(() => {
-    if (deliveryCostData?.cost !== undefined && deliveryCostData.cost !== deliveryCost) {
-      setValue('deliveryCost', deliveryCostData.cost);
-    }
-  }, [deliveryCostData?.cost, deliveryCost, setValue]);
+  const { data: deliveryCosts, isLoading } = useDeliveryPrice();
+  const currentDeliveryCost = deliveryCosts ? deliveryCosts[order.deliveryType] : 0;
   
   return (
     <div className='flex flex-col bg-white rounded-xl p-5 shadow-lg gap-6 '>
@@ -52,7 +43,7 @@ export default function OrdersCard({ type, setIsSuccessModalOpen }: OrdersCardPr
           <TotalPage 
             total={total.toFixed(2)} 
             setIsSuccessModalOpen={setIsSuccessModalOpen}
-            deliveryCostData={deliveryCostData}
+            deliveryCost={currentDeliveryCost}
             isLoading={isLoading}
           />
         )}
@@ -79,20 +70,18 @@ const TotalModal = ({ total }: { total: number }) => {
 }
 
 interface TotalPageProps {
-    total: string;
+  total: string;
   setIsSuccessModalOpen?: (open: boolean) => void;
-  deliveryCostData?: { cost?: number; freeDelivery?: boolean; [key: string]: any };
+  deliveryCost: number;
   isLoading?: boolean;
 }
 
-const TotalPage = ({ total, setIsSuccessModalOpen, deliveryCostData, isLoading: isLoadingDelivery }: TotalPageProps) => {
-  const { deliveryCost, order, basket, clearBasket } = useBasketStore();
+const TotalPage = ({ total, setIsSuccessModalOpen, deliveryCost, isLoading: isLoadingDelivery }: TotalPageProps) => {
+  const { order, basket, clearBasket } = useBasketStore();
   const t = useTranslations();
   const [accept, setAccept] = useState(false);
   
-  // Use delivery cost from API if available, otherwise use from store
-  const currentDeliveryCost = deliveryCostData?.cost !== undefined ? deliveryCostData.cost : deliveryCost;
-  const totalAmount = add(Number(total), currentDeliveryCost || 0);
+  const totalAmount = add(Number(total), deliveryCost || 0);
   const { mutate: createOrder, isPending } = useCreateOrder();
   
   const isValid = useMemo(() => {
@@ -112,11 +101,12 @@ const TotalPage = ({ total, setIsSuccessModalOpen, deliveryCostData, isLoading: 
   }, [order, accept]);
 
   const handleCreateOrder = () => {
-    createOrder(
+      createOrder(
       {
         ...order,
+        locality: order.locality || 'Warszawa',
         basket,
-        deliveryCost: currentDeliveryCost,
+        deliveryCost,
       },
       {
         onSuccess: (data) => {
@@ -149,10 +139,10 @@ const TotalPage = ({ total, setIsSuccessModalOpen, deliveryCostData, isLoading: 
             {t('delivery-form.delivery-cost')}: {
               isLoadingDelivery ? (
                 <span className="text-gray-400">...</span>
-              ) : deliveryCostData?.freeDelivery ? (
-                <span className="text-green-600">{t('free') || 'Безкоштовно'}</span>
+              ) : deliveryCost === 0 ? (
+                <span className="">{t('free')}</span>
               ) : (
-                `${formatCurrency(currentDeliveryCost || 0)}${t('currency')}`
+                `${formatCurrency(deliveryCost)}${t('currency')}`
               )
             }
           </span>
@@ -174,7 +164,7 @@ const TotalPage = ({ total, setIsSuccessModalOpen, deliveryCostData, isLoading: 
         disabled={!isValid || isPending}
         className="bg-orange hover:bg-orange/90 w-full text-lg h-[56px] disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {isPending ? 'Відправка...' : t('basket.button')}
+        {isPending ? t('basket.sending') : t('basket.button')}
       </Button>
     </div>
   )

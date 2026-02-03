@@ -5,27 +5,24 @@ import { PiMapPinThin } from "react-icons/pi";
 import { CiHeart } from "react-icons/ci";
 import { PiHeartFill } from "react-icons/pi";
 import { IoIosLogOut } from "react-icons/io";
-import { useLogout } from "@/hooks/useAuth";
+import { useLogout, useUser as useFirebaseUser } from "@/hooks/useAuth";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
-import { useUser } from "@/hooks/useUser";
 import { useState, useEffect } from "react";
 
 export default function ProfileMenu() {
   const t = useTranslations();
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
-  const { data: userData, isLoading, error } = useUser();
+  const { data: firebaseUser, isLoading } = useFirebaseUser();
   
-  // Fix hydration error by only rendering after mount
   useEffect(() => {
     setMounted(true);
   }, []);
   
-  // Get user name and phone from API
-  const name = userData ? `${userData.firstName} ${userData.lastName}`.trim() : '';
-  const phone = userData?.phone || '';
+  const name = firebaseUser?.displayName || '';
+  const phone = firebaseUser?.phoneNumber || '';
 
   const menuItems = [
     {
@@ -56,8 +53,6 @@ export default function ProfileMenu() {
           <div className="flex items-center justify-between rubik text-lg font-semibold mb-3">
             {!mounted || isLoading ? (
               <span className="text-gray">{t('loading')}</span>
-            ) : error ? (
-              <span className="text-gray text-sm">{t('profile.no-name')}</span>
             ) : name ? (
               name
             ) : (
@@ -70,8 +65,6 @@ export default function ProfileMenu() {
           <div className="text-gray">
             {!mounted || isLoading ? (
               <span className="text-gray">{t('loading')}</span>
-            ) : error ? (
-              <span className="text-gray text-sm">{t('profile.no-phone')}</span>
             ) : phone ? (
               phone
             ) : (

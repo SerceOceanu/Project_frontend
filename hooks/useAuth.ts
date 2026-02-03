@@ -29,7 +29,7 @@ export const useSignInWithGoogle = () => {
         if (typeof window !== 'undefined') {
           const currentPath = window.location.pathname;
           if (!currentPath.includes('/basket')) {
-            router.push('/profile');
+            router.push('/profile/history');
           }
         }
       }

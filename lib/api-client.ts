@@ -35,10 +35,14 @@ export async function apiRequest<T = any>(
   } = options;
 
   let token: string | null = null;
-  if (requireAuth) {
+  try {
     token = await getFirebaseToken();
-    if (!token) {
+    if (requireAuth && !token) {
       throw new Error('Not authenticated. Please login first.');
+    }
+  } catch (error) {
+    if (requireAuth) {
+      throw error;
     }
   }
 
@@ -65,6 +69,10 @@ export async function apiRequest<T = any>(
     cache: 'no-store',
   });
 
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
   if (!response.ok) {
     let errorMessage = `Failed to ${method} ${endpoint}`;
     
@@ -79,8 +87,18 @@ export async function apiRequest<T = any>(
     throw new Error(errorMessage);
   }
 
-  const data: T = await response.json();
-  return data;
+  const text = await response.text();
+  
+  if (!text || text.trim() === '') {
+    return undefined as T;
+  }
+
+  try {
+    const data: T = JSON.parse(text);
+    return data;
+  } catch (e) {
+    return undefined as T;
+  }
 }
 
 export function isAuthenticated(): boolean {

@@ -25,18 +25,22 @@ export default function CreateDialog({
   const { register, control, handleSubmit, formState: { errors }, reset } = useForm<CreateBannerSchema>({
     resolver: zodResolver(createBannerSchema),
     defaultValues: {
-      name: '',
-      image: null,
+      namePL: '',
+      nameUA: '',
+      imagePL: null,
+      imageUA: null,
     },
   });
 
   const onSubmit = (data: CreateBannerSchema) => {
-    if (!data.image) {
+    if (!data.imagePL || !data.imageUA) {
       return;
     }
     mutate({
-      name: data.name,
-      image: data.image,
+      namePL: data.namePL,
+      nameUA: data.nameUA,
+      imagePL: data.imagePL,
+      imageUA: data.imageUA,
     }, {
       onSuccess: () => {
         toast.success('Банер успішно створено!');
@@ -57,29 +61,59 @@ export default function CreateDialog({
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-6'>
           <CustomInput
-            label="Назва*"
-            placeholder="Введіть назву банера"
-            name="name"
+            label="Назва (PL)*"
+            placeholder="Введіть назву банера (PL)"
+            name="namePL"
             register={register}
-            error={errors.name?.message as string}
+            error={errors.namePL?.message as string}
             type="text"
           />
-          <Controller
-            name="image"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <div className="flex flex-col gap-2">
-                <LoadImage
-                  value={value}
-                  currentImage={undefined}
-                  onChange={onChange}
-                />
-                {errors.image && (
-                  <p className="text-red-500 text-xs">{errors.image.message as string}</p>
-                )}
-              </div>
-            )}
+          <CustomInput
+            label="Назва (UA)*"
+            placeholder="Введіть назву банера (UA)"
+            name="nameUA"
+            register={register}
+            error={errors.nameUA?.message as string}
+            type="text"
           />
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium">Фото (PL)*</label>
+            <Controller
+              name="imagePL"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <div className="flex flex-col gap-2">
+                  <LoadImage
+                    value={value}
+                    currentImage={undefined}
+                    onChange={onChange}
+                  />
+                  {errors.imagePL && (
+                    <p className="text-red-500 text-xs">{errors.imagePL.message as string}</p>
+                  )}
+                </div>
+              )}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium">Фото (UA)*</label>
+            <Controller
+              name="imageUA"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <div className="flex flex-col gap-2">
+                  <LoadImage
+                    value={value}
+                    currentImage={undefined}
+                    onChange={onChange}
+                  />
+                  {errors.imageUA && (
+                    <p className="text-red-500 text-xs">{errors.imageUA.message as string}</p>
+                  )}
+                </div>
+              )}
+            />
+          </div>
 
           <Button 
             type="submit" 

@@ -11,21 +11,44 @@ interface LoginCredentials {
 export function useAdminLogin() {
   return useMutation({
     mutationFn: async (credentials: LoginCredentials) => {
-      const response = await fetch(`${API_URL}/auth/login-admin`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(credentials),
-      });
-    
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to login');
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      
+      try {
+        const response = await fetch(`${API_URL}/auth/login-admin`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(credentials),
+          signal: controller.signal,
+        });
+      
+        clearTimeout(timeoutId);
+      
+        if (!response.ok) {
+          let errorMessage = 'Failed to login';
+          try {
+            const error = await response.json();
+            errorMessage = error.message || error.error || errorMessage;
+          } catch (e) {
+            errorMessage = `Server error: ${response.status} ${response.statusText}`;
+          }
+          throw new Error(errorMessage);
+        }
+      
+        const data = await response.json();
+        return data;
+      } catch (error: any) {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+          throw new Error('Request timeout. Please check your connection and try again.');
+        }
+        if (error.message) {
+          throw error;
+        }
+        throw new Error('Network error. Please check your connection and try again.');
       }
-    
-      const data = await response.json();
-      return data;
     },
   });
 }

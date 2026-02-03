@@ -24,7 +24,7 @@ export default function ProfileButton() {
     if (!user) {
       setIsLoginOpen(!isLoginOpen);
     } else {
-      router.push('/profile');
+      router.push('/profile/history');
     }
   };
 

@@ -32,14 +32,20 @@ export type CreateProduct = {
 }
 
 export type CreateBanner = {
-  name: string;
-  image: File;
+  namePL: string;
+  nameUA: string;
+  imagePL: File;
+  imageUA: File;
 }
 
 export type Banner = {
-  id: number;
-  name: string;
-  fileUrl: string;
+  id: string;
+  namePL: string;
+  nameUA: string;
+  fileUrlPL: string;
+  fileUrlUA: string;
+  created: string;
+  updated: string;
 }
 
 export type Modal = {

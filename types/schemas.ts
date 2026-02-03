@@ -36,10 +36,15 @@ export const createProductSchema = z.object({
 export type CreateProductSchema = z.infer<typeof createProductSchema>;
 
 export const createBannerSchema = z.object({
-  name: z.string().min(1, 'Назва обов\'язкова'),
-  image: z.instanceof(File, { message: 'Фото обов\'язкове' }).nullable().refine(
+  namePL: z.string().min(1, 'Назва (PL) обов\'язкова'),
+  nameUA: z.string().min(1, 'Назва (UA) обов\'язкова'),
+  imagePL: z.instanceof(File, { message: 'Фото (PL) обов\'язкове' }).nullable().refine(
     (file) => file !== null,
-    { message: 'Фото обов\'язкове' }
+    { message: 'Фото (PL) обов\'язкове' }
+  ),
+  imageUA: z.instanceof(File, { message: 'Фото (UA) обов\'язкове' }).nullable().refine(
+    (file) => file !== null,
+    { message: 'Фото (UA) обов\'язкове' }
   ),
 });
 

@@ -17,13 +17,20 @@ export default function BannerCard({item}: {item: Banner}) {
   }
   return (
     <>
-      <div key={item.name} className=' flex flex-col relative gap-2'>
-        <Image src={item.fileUrl} alt={item.name} width={222} height={180} className='object-cover rounded-2xl w-full h-[180px]' />
-        <div className='flex items-center justify-between'>
-          <h3 className='text-2xl font-bold'>{item.name}</h3>
-          <Button variant='outline' className='h-10 bg-white border-none w-14' onClick={() => setIsDelete(true)}>
-            <BsTrash3 className='size-5' />
-          </Button>
+      <div key={item.id} className=' flex flex-col relative gap-2'>
+        <div className="relative w-full h-[180px] rounded-2xl overflow-hidden">
+          <Image src={item.fileUrlPL} alt={item.namePL} fill className='object-cover' />
+        </div>
+        <div className='flex flex-col gap-2'>
+          <div className='flex items-center justify-between'>
+            <div className='flex flex-col gap-1'>
+              <h3 className='text-lg font-bold'>PL: {item.namePL}</h3>
+              <h3 className='text-lg font-bold'>UA: {item.nameUA}</h3>
+            </div>
+            <Button variant='outline' className='h-10 bg-white border-none w-14' onClick={() => setIsDelete(true)}>
+              <BsTrash3 className='size-5' />
+            </Button>
+          </div>
         </div>
       </div>
       <DeleteAlert

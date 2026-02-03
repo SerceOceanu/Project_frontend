@@ -1,7 +1,6 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { BasketProduct } from '@/types/types';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://145.239.30.37:3000';
+import { apiRequest } from '@/lib/api-client';
 
 interface OrderData {
   name: string;
@@ -9,6 +8,7 @@ interface OrderData {
   company?: string;
   address: string;
   postalCode: string;
+  locality: string;
   isCity: boolean;
   phone: string;
   email: string;
@@ -29,6 +29,8 @@ interface OrderResponse {
 }
 
 export function useCreateOrder() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (orderData: OrderData): Promise<OrderResponse> => {
       const payload = {
@@ -47,6 +49,7 @@ export function useCreateOrder() {
         },
         deliveryInfo: {
           address: orderData.address,
+          locality: orderData.locality || 'Warszawa',
           postalCode: orderData.postalCode,
           isCity: orderData.isCity,
           deliveryType: orderData.deliveryType,
@@ -56,36 +59,16 @@ export function useCreateOrder() {
         },
       };
 
-      console.log('📦 Creating order with payload:', JSON.stringify(payload, null, 2));
-
-      const response = await fetch(`${API_URL}/orders`, {
+      // requireAuth: false - не требует обязательной авторизации
+      // но если пользователь авторизован, токен будет автоматически добавлен
+      const result = await apiRequest<OrderResponse>('/orders', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
+        body: payload,
+        requireAuth: false,
       });
 
-      console.log('📥 Order response status:', response.status, response.statusText);
-
-      if (!response.ok) {
-        let errorMessage = 'Failed to create order';
-        try {
-          const error = await response.json();
-          errorMessage = error.message || error.error || errorMessage;
-          console.error('❌ Order creation error:', error);
-        } catch (e) {
-          const errorText = await response.text();
-          console.error('❌ Order creation error (text):', errorText);
-          errorMessage = errorText || errorMessage;
-        }
-        throw new Error(errorMessage);
-      }
-
-      const result = await response.json();
-      console.log('✅ Order created successfully!');
-      console.log('📋 Order details:', result.order);
-      console.log('💳 Payment redirect URI:', result.payment?.redirectUri);
+      queryClient.invalidateQueries({ queryKey: ['delivery-addresses'] });
+      
       return result;
     },
   });

@@ -7,7 +7,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useDeleteBanner } from "@/hooks/useAdminBaners";
+import { useDeleteModal } from "@/hooks/useAdminModals";
 
 
 export default function DeleteAlert({
@@ -19,10 +19,10 @@ export default function DeleteAlert({
   setIsDelete: (open: boolean) => void, 
   id: number,
 }) {
-  const deleteBanner = useDeleteBanner();
+  const deleteModal = useDeleteModal();
 
   const handleDelete = () => {
-    deleteBanner.mutate(id, {
+    deleteModal.mutate(id, {
       onSuccess: () => {
         setIsDelete(false);
       },
@@ -39,9 +39,9 @@ export default function DeleteAlert({
           <AlertDialogAction
             onClick={handleDelete}
             className="bg-red-500 hover:bg-red-600"
-            disabled={deleteBanner.isPending}  
+            disabled={deleteModal.isPending}  
           >
-            {deleteBanner.isPending ? 'Видалення...' : 'Видалити'}
+            {deleteModal.isPending ? 'Видалення...' : 'Видалити'}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

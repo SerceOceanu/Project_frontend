@@ -69,7 +69,7 @@ export default function History() {
     });
   }, [ordersData]);
 
-  const totalCount = ordersData?.count ?? 20;
+  const totalCount = ordersData?.metadata?.total ?? 0;
   const pageCount = Math.ceil(totalCount / itemsPerPage);
 
   if (!mounted || isLoading) {

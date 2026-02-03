@@ -8,6 +8,7 @@ interface Order {
   company: string;
   address: string;
   postalCode: string;
+  locality: string;
   isCity: boolean;
   phone: string;
   email: string;
@@ -46,13 +47,14 @@ export const useBasketStore = create<BasketStore>()(
     company: '',
     address: '',
     postalCode: '',
+    locality: 'Warszawa',
     isCity: false,
     phone: '',
     email: '',
     isAnotherAddress: false,
     deliveryType: 'pickup',
     lockerNumber: '',
-        paymentType: 'payu',
+    paymentType: 'payu',
     comment: '',
   },
   

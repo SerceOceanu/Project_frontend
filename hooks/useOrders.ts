@@ -29,8 +29,8 @@ interface OrdersResponse {
   metadata: {
     limit: number;
     offset: number;
+    total: number;
   };
-  count?: number;
 }
 
 interface UseOrdersParams {

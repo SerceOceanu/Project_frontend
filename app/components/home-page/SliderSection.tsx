@@ -3,24 +3,34 @@ import { useCallback, useEffect, useState } from 'react';
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from '@/components/ui/carousel';
 import Image from 'next/image';
 import { Banner } from '@/types/types';
+import { useLocale } from 'next-intl';
 
 type SliderSectionProps = {
   banners: Banner[];
 };
 
 export default function SliderSection({ banners }: SliderSectionProps) {
+  const locale = useLocale();
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
 
-  // If no banners, use default image
   const slides = banners.length > 0 
-    ? banners.map((banner) => ({
-        id: banner.id,
-        imageUrl: banner.fileUrl,
-        name: banner.name,
-      }))
+    ? banners.map((banner) => {
+        const imageUrl = locale === 'pl' 
+          ? (banner.fileUrlPL || '/assets/images/default.webp')
+          : (banner.fileUrlUA || '/assets/images/default.webp');
+        const name = locale === 'pl' 
+          ? (banner.namePL || 'Default Banner')
+          : (banner.nameUA || 'Default Banner');
+        
+        return {
+          id: banner.id,
+          imageUrl,
+          name,
+        };
+      })
     : [{
-        id: 0,
+        id: '0',
         imageUrl: '/assets/images/default.webp',
         name: 'Default Banner',
       }];
@@ -68,7 +78,6 @@ export default function SliderSection({ banners }: SliderSectionProps) {
         </CarouselContent>
       </Carousel>
       
-      {/* Точки навигации */}
       {slides.length > 1 && (
       <div className="absolute bottom-0 lg:bottom-10 left-1/2 -translate-x-1/2 flex gap-2 z-10">
           {Array.from({ length: Math.min(slides.length, 5) }).map((_, index) => (

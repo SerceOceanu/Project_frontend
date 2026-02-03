@@ -3,7 +3,6 @@ import { CreateProduct, Product } from '@/types/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://145.239.30.37:3000';
 
-// Функция для получения токена админа
 export function getAdminToken(): string | null {
   if (typeof window !== 'undefined') {
     const token = localStorage.getItem('admin-token');
@@ -11,8 +10,6 @@ export function getAdminToken(): string | null {
       return token;
     }
   }
-  
-  console.warn('⚠️ No admin token found in localStorage');
   return null;
 }
 
@@ -22,12 +19,97 @@ export function getAuthHeaders(): HeadersInit {
   
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
-    console.log('🔐 Authorization header set:', `Bearer ${token.substring(0, 20)}...`);
-  } else {
-    console.error('❌ No token available! Please login first.');
   }
   
   return headers;
+}
+
+export function handleUnauthorized(): void {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('admin-token');
+    window.location.href = '/admin/login';
+  }
+}
+
+interface AdminApiRequestOptions {
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  body?: BodyInit | object;
+  headers?: HeadersInit;
+  useJson?: boolean;
+}
+
+export async function adminApiRequest<T>(
+  endpoint: string,
+  options: AdminApiRequestOptions = {}
+): Promise<T> {
+  const { method = 'GET', body, headers = {}, useJson = false } = options;
+  
+  const authHeaders = getAuthHeaders();
+  const requestHeaders: Record<string, string> = {};
+  
+  if (authHeaders instanceof Headers) {
+    authHeaders.forEach((value, key) => {
+      requestHeaders[key] = value;
+    });
+  } else if (Array.isArray(authHeaders)) {
+    authHeaders.forEach(([key, value]) => {
+      requestHeaders[key] = value;
+    });
+  } else {
+    Object.assign(requestHeaders, authHeaders);
+  }
+  
+  if (headers instanceof Headers) {
+    headers.forEach((value, key) => {
+      requestHeaders[key] = value;
+    });
+  } else if (Array.isArray(headers)) {
+    headers.forEach(([key, value]) => {
+      requestHeaders[key] = value;
+    });
+  } else if (headers) {
+    Object.assign(requestHeaders, headers);
+  }
+  
+  let requestBody: BodyInit | undefined = body as BodyInit;
+  if (useJson && body && typeof body === 'object' && !(body instanceof FormData)) {
+    requestBody = JSON.stringify(body);
+    requestHeaders['Content-Type'] = 'application/json';
+  } else if (body) {
+    requestBody = body as BodyInit;
+  }
+  
+  const response = await fetch(`${API_URL}${endpoint}`, {
+    method,
+    headers: requestHeaders,
+    body: requestBody,
+    cache: 'no-store',
+  });
+  
+  if (!response.ok) {
+    if (response.status === 401) {
+      handleUnauthorized();
+      throw new Error('Unauthorized');
+    }
+    
+    let errorMessage = `Request failed: ${response.status} ${response.statusText}`;
+    try {
+      const error = await response.json();
+      errorMessage = error.message || error.error || errorMessage;
+    } catch (e) {
+      const errorText = await response.text();
+      if (errorText) {
+        errorMessage = errorText;
+      }
+    }
+    throw new Error(errorMessage);
+  }
+  
+  if (response.status === 204 || method === 'DELETE') {
+    return undefined as T;
+  }
+  
+  return await response.json();
 }
 
 interface UseProductsParams {
@@ -40,22 +122,8 @@ export function useProducts(params?: UseProductsParams) {
   return useQuery({
     queryKey: ['admin-products', category],
     queryFn: async () => {
-      const url = new URL(`${API_URL}/products`);
-      if (category) {
-        url.searchParams.append('category', category);
-      }
-      
-      const response = await fetch(url.toString(), {
-        cache: 'no-store',
-        headers: getAuthHeaders(),
-      });
-    
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || error.error || 'Failed to fetch products');
-      }
-    
-      const data: { items: Product[] } = await response.json();
+      const endpoint = category ? `/products?category=${category}` : '/products';
+      const data = await adminApiRequest<{ items: Product[] }>(endpoint);
       return data.items;
     },
     staleTime: 1000 * 60 * 5,
@@ -67,15 +135,9 @@ export function useDeleteProduct() {
 
   return useMutation({
     mutationFn: async (id: number): Promise<void> => {
-      const response = await fetch(`${API_URL}/products/${id}`, {
+      return adminApiRequest<void>(`/products/${id}`, {
         method: 'DELETE',
-        headers: getAuthHeaders(),
       });
-    
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to delete product');
-      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-products'] });
@@ -88,21 +150,11 @@ export function useUpdateProductStatus() {
 
   return useMutation({
     mutationFn: async ({ id, inStock }: { id: number; inStock: boolean }): Promise<void> => {
-      const headers = {
-        'Content-Type': 'application/json',
-        ...getAuthHeaders(),
-      };
-
-      const response = await fetch(`${API_URL}/products/${id}/status`, {
+      return adminApiRequest<void>(`/products/${id}/status`, {
         method: 'PATCH',
-        headers: headers,
-        body: JSON.stringify({ inStock }),
+        body: { inStock },
+        useJson: true,
       });
-    
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || error.message || 'Failed to update product status');
-      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-products'] });
@@ -138,33 +190,10 @@ export function useCreateProduct() {
       
       formData.append('file', productData.file);
 
-      const headers = getAuthHeaders();
-
-
-      const response = await fetch(`${API_URL}/products`, {
+      return adminApiRequest<Product>('/products', {
         method: 'POST',
-        headers: headers, // Отправляем Bearer токен в заголовке Authorization
         body: formData,
       });
-    
-      console.log('📥 Create product response status:', response.status, response.statusText);
-    
-      if (!response.ok) {
-        let errorMessage = 'Failed to create product';
-        try {
-        const error = await response.json();
-          errorMessage = error.error || error.message || errorMessage;
-          console.error('❌ Create product error:', error);
-        } catch (e) {
-          const errorText = await response.text();
-          console.error('❌ Create product error (text):', errorText);
-          errorMessage = errorText || errorMessage;
-        }
-        throw new Error(errorMessage);
-      }
-    
-      const data: Product = await response.json();
-      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-products'] });
@@ -198,22 +227,10 @@ export function useUpdateProduct() {
         formData.append('file', productData.file);
       }
 
-      const headers = getAuthHeaders();
-      // НЕ добавляем Content-Type для FormData - браузер сам установит multipart/form-data с boundary
-
-      const response = await fetch(`${API_URL}/products/${id}`, {
+      return adminApiRequest<Product>(`/products/${id}`, {
         method: 'PUT',
-        headers: headers, // Отправляем Bearer токен в заголовке Authorization
         body: formData,
       });
-    
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to update product');
-      }
-    
-      const data: Product = await response.json();
-      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-products'] });

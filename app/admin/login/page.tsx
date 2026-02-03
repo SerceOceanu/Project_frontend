@@ -36,33 +36,32 @@ export default function AdminLoginPage() {
   const onSubmit = async (data: LoginFormValues) => {
     loginMutation.mutate(data, {
       onSuccess: (response) => {
-        console.log('✅ Login successful, response:', response);
-        
         // Get token from response: response.tokens.accessToken
         const token = response?.tokens?.accessToken || response?.token || response?.accessToken;
         
         if (!token) {
-          console.error('❌ No token in response!', response);
-          alert('Ошибка: токен не получен от сервера');
+          alert('Помилка: токен не отримано від сервера');
           return;
         }
         
         // Save token to localStorage
-        localStorage.setItem('admin-token', token);
-        console.log('💾 Token saved to localStorage:', token.substring(0, 20) + '...');
-        
-        // Verify token was saved
-        const savedToken = localStorage.getItem('admin-token');
-        if (savedToken === token) {
-          console.log('✅ Token verified in localStorage');
-        } else {
-          console.error('❌ Token verification failed!');
+        try {
+          localStorage.setItem('admin-token', token);
+          
+          // Verify token was saved
+          const savedToken = localStorage.getItem('admin-token');
+          if (savedToken !== token) {
+            throw new Error('Token verification failed');
+          }
+          
+          // Redirect to admin panel
+          router.replace('/admin');
+        } catch (error) {
+          alert('Помилка збереження токена. Спробуйте ще раз.');
         }
-        
-        router.push('/admin');
       },
-      onError: (error) => {
-        console.error('❌ Login error:', error);
+      onError: (error: any) => {
+        // Error is already handled by the mutation
       },
     });
   };

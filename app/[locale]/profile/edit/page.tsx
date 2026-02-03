@@ -5,6 +5,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useTranslations } from "next-intl";
+import { useUser as useFirebaseUser } from "@/hooks/useAuth";
+import { useUpdateProfile } from "@/hooks/useProfile";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 const profileSchema = z.object({
   name: z.string().min(2, "Ім'я має містити мінімум 2 символи"),
@@ -25,24 +29,82 @@ type ProfileFormData = z.infer<typeof profileSchema>;
 
 export default function Edit() {
   const t = useTranslations();
+  const { data: firebaseUser, isLoading } = useFirebaseUser();
+  const { mutate: updateProfile, isPending } = useUpdateProfile();
   
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      name: "John Week",
-      phone: "+48884826064",
+      name: "",
+      phone: "",
       password: "",
       confirmPassword: "",
     },
   });
 
+  useEffect(() => {
+    if (firebaseUser) {
+      const displayName = firebaseUser.displayName || "";
+      
+      reset({
+        name: displayName,
+        phone: firebaseUser.phoneNumber || "",
+        password: "",
+        confirmPassword: "",
+      });
+    }
+  }, [firebaseUser, reset]);
+
   const onSubmit = (data: ProfileFormData) => {
-    console.log("Form data:", data);
+    const [firstName = "", ...lastNameParts] = data.name.split(" ");
+    const lastName = lastNameParts.join(" ");
+    
+    updateProfile(
+      {
+        firstName,
+        lastName,
+        password: data.password || undefined,
+      },
+      {
+        onSuccess: () => {
+          toast.success(t('profile.save-success') || 'Профіль оновлено успішно!');
+          reset({
+            ...data,
+            password: "",
+            confirmPassword: "",
+          });
+        },
+        onError: (error: any) => {
+          toast.error(error.message || t('error'));
+        },
+      }
+    );
   };
+
+  if (isLoading) {
+    return (
+      <div className="bg-white rounded-2xl p-5">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <p className="text-gray">{t('loading')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!firebaseUser) {
+    return (
+      <div className="bg-white rounded-2xl p-5">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <p className="text-red-500">{t('error')}: User not found</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-2xl p-5">
@@ -110,11 +172,27 @@ export default function Edit() {
           <p className="text-xs text-gray">{t('profile.password-hint')}</p>
         </div>
 
+        {firebaseUser?.email && (
+          <div className="space-y-2">
+            <label className="rubik text-sm font-medium text-gray">
+              Email
+            </label>
+            <Input
+              type="email"
+              value={firebaseUser.email}
+              disabled
+              className="h-[55px] rounded-2xl bg-gray-100 cursor-not-allowed"
+            />
+            <p className="text-xs text-gray">{t('profile.email-readonly-hint') || 'Email cannot be changed'}</p>
+          </div>
+        )}
+
         <Button
           type="submit"
-          className="w-full h-[55px] bg-orange hover:bg-orange/90 text-white rounded-2xl rubik text-base font-medium"
+          disabled={isPending}
+          className="w-full h-[55px] bg-orange hover:bg-orange/90 text-white rounded-2xl rubik text-base font-medium disabled:opacity-50"
         >
-          {t('profile.save')}
+          {isPending ? t('loading') : t('profile.save')}
         </Button>
       </form>
     </div>
