@@ -12,17 +12,6 @@ import { toast } from "sonner";
 
 const profileSchema = z.object({
   name: z.string().min(2, "Ім'я має містити мінімум 2 символи"),
-  phone: z.string().regex(/^\+?[0-9]{10,15}$/, "Невірний формат телефону"),
-  password: z.string().min(6, "Пароль має містити мінімум 6 символів").optional().or(z.literal('')),
-  confirmPassword: z.string().optional().or(z.literal('')),
-}).refine((data) => {
-  if (data.password && data.password.length > 0) {
-    return data.password === data.confirmPassword;
-  }
-  return true;
-}, {
-  message: "Паролі не співпадають",
-  path: ["confirmPassword"],
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
@@ -39,12 +28,9 @@ export default function Edit() {
     reset,
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
-    defaultValues: {
-      name: "",
-      phone: "",
-      password: "",
-      confirmPassword: "",
-    },
+      defaultValues: {
+        name: "",
+      },
   });
 
   useEffect(() => {
@@ -53,9 +39,6 @@ export default function Edit() {
       
       reset({
         name: displayName,
-        phone: firebaseUser.phoneNumber || "",
-        password: "",
-        confirmPassword: "",
       });
     }
   }, [firebaseUser, reset]);
@@ -64,19 +47,16 @@ export default function Edit() {
     const [firstName = "", ...lastNameParts] = data.name.split(" ");
     const lastName = lastNameParts.join(" ");
     
-    updateProfile(
-      {
-        firstName,
-        lastName,
-        password: data.password || undefined,
-      },
+      updateProfile(
+        {
+          firstName,
+          lastName,
+        },
       {
         onSuccess: () => {
           toast.success(t('profile.save-success') || 'Профіль оновлено успішно!');
           reset({
             ...data,
-            password: "",
-            confirmPassword: "",
           });
         },
         onError: (error: any) => {
@@ -126,51 +106,19 @@ export default function Edit() {
           )}
         </div>
 
-        <div className="space-y-2">
-          <label className="rubik text-sm font-medium text-gray">
-            {t('profile.phone')}
-          </label>
-          <Input
-            {...register("phone")}
-            type="tel"
-            placeholder="+48 884 826 064"
-            className="h-[55px] rounded-2xl"
-          />
-          {errors.phone && (
-            <p className="text-sm text-red-500">{errors.phone.message}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <label className="rubik text-sm font-medium text-gray">
-            {t('profile.password')}
-          </label>
-          <Input
-            {...register("password")}
-            type="password"
-            placeholder={t('profile.password-placeholder')}
-            className="h-[55px] rounded-2xl"
-          />
-          {errors.password && (
-            <p className="text-sm text-red-500">{errors.password.message}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <label className="rubik text-sm font-medium text-gray">
-            {t('profile.confirm-password')}
-          </label>
-          <Input
-            {...register("confirmPassword")}
-            type="password"
-            placeholder={t('profile.confirm-password-placeholder')}
-            className="h-[55px] rounded-2xl"
-          />
-          {errors.confirmPassword && (
-            <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>
-          )}
-          <p className="text-xs text-gray">{t('profile.password-hint')}</p>
-        </div>
+        {firebaseUser?.phoneNumber && (
+          <div className="space-y-2">
+            <label className="rubik text-sm font-medium text-gray">
+              {t('profile.phone')}
+            </label>
+            <Input
+              type="tel"
+              value={firebaseUser.phoneNumber}
+              disabled
+              className="h-[55px] rounded-2xl bg-gray-100 cursor-not-allowed"
+            />
+          </div>
+        )}
 
         {firebaseUser?.email && (
           <div className="space-y-2">

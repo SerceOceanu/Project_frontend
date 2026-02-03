@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { auth } from '@/lib/firebase';
-import { updateProfile, updateEmail, updatePassword, User } from 'firebase/auth';
+import { updateProfile, updateEmail, User } from 'firebase/auth';
 
 interface UpdateProfileData {
   displayName?: string;
@@ -11,7 +11,6 @@ interface UpdateProfileParams {
   firstName?: string;
   lastName?: string;
   email?: string;
-  password?: string;
 }
 
 export function useUpdateProfile() {
@@ -34,10 +33,6 @@ export function useUpdateProfile() {
 
       if (data.email && data.email !== user.email) {
         await updateEmail(user, data.email);
-      }
-
-      if (data.password) {
-        await updatePassword(user, data.password);
       }
 
       await user.reload();
