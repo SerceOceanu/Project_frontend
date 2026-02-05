@@ -7,8 +7,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useDeleteBanner } from "@/hooks/useAdminBaners";
-import { toast } from "sonner";
+import { useDeleteModal } from "@/hooks/useAdminModals";
 
 
 export default function DeleteAlert({
@@ -18,44 +17,31 @@ export default function DeleteAlert({
 }: {
   isDelete: boolean, 
   setIsDelete: (open: boolean) => void, 
-  id: string,
+  id: number,
 }) {
-  const deleteBanner = useDeleteBanner();
+  const deleteModal = useDeleteModal();
 
   const handleDelete = () => {
-    deleteBanner.mutate(id, {
+    deleteModal.mutate(id, {
       onSuccess: () => {
-        toast.success('Банер успішно видалено!');
         setIsDelete(false);
-      },
-      onError: (error) => {
-        toast.error(`Помилка видалення банера: ${error.message}`);
       },
     });
   };
-
-  const handleOpenChange = (open: boolean) => {
-    if (!deleteBanner.isPending) {
-      setIsDelete(open);
-    }
-  };
-
   return (
-    <AlertDialog open={isDelete} onOpenChange={handleOpenChange}>
+    <AlertDialog open={isDelete} onOpenChange={setIsDelete}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Підтвердження видалення</AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={deleteBanner.isPending}>
-            Скасувати
-          </AlertDialogCancel>
+          <AlertDialogCancel>Скасувати</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
             className="bg-red-500 hover:bg-red-600"
-            disabled={deleteBanner.isPending}  
+            disabled={deleteModal.isPending}  
           >
-            {deleteBanner.isPending ? 'Видалення...' : 'Видалити'}
+            {deleteModal.isPending ? 'Видалення...' : 'Видалити'}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -18,7 +18,7 @@ export function useToggleFavorite() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ productId, currentFavorites }: { productId: number; currentFavorites: string[] }) => {
+    mutationFn: async ({ productId, currentFavorites }: { productId: string; currentFavorites: string[] }) => {
       const productIdString = String(productId);
       const isFavorite = currentFavorites.includes(productIdString);
       

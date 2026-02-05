@@ -2,7 +2,7 @@
 import { PiHeart, PiHeartFill } from "react-icons/pi";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { FaPlus } from "react-icons/fa6";
 import Counter from "@/components/Counter";
 import { Link } from "@/lib/navigation";
@@ -11,6 +11,7 @@ import { Product } from "@/types/types";
 import { isAuthenticated } from "@/lib/api-client";
 import { useFavoriteProducts, useToggleFavorite } from "@/hooks/useFavorites";
 import { formatCurrency } from "@/lib/currency";
+import { getProductName, getProductDescription, getProductImage } from "@/lib/product-utils";
 
 export default function ProductCard({ product }: { product: Product }) {
   const { addToBasket, removeFromBasket, basket, changeQuantity } = useBasketStore();
@@ -19,7 +20,12 @@ export default function ProductCard({ product }: { product: Product }) {
   const { mutate: toggleFavorite } = useToggleFavorite();
   const isFavorite = favoriteIds.includes(String(product.id));
   const t = useTranslations();
+  const locale = useLocale() as 'pl' | 'ua';
   const isAuth = isAuthenticated();
+  
+  const productName = getProductName(product, locale);
+  const productDescription = getProductDescription(product, locale);
+  const productImage = getProductImage(product, locale);
 
   const handleToggleFavorite = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -55,8 +61,8 @@ export default function ProductCard({ product }: { product: Product }) {
           </div>
         )}
         <Image
-            src={product.imageUrl || ''}
-            alt={product.name}
+            src={productImage}
+            alt={productName}
             width={275}
             height={215}
             className="object-cover rounded-2xl w-full h-[215px] "
@@ -64,11 +70,11 @@ export default function ProductCard({ product }: { product: Product }) {
       </div>
       <div className='flex flex-col px-2 flex-1'>
         <div className='flex items-start justify-between mb-2'>
-          <h3 className="rubik text-2xl font-semibold w-3/4">{product.name}</h3>
+          <h3 className="rubik text-2xl font-semibold w-3/4">{productName}</h3>
           <span className="text-blue font-bold text-lg inter ">{product.gramsPerServing}{t('weight')}</span>
         </div>
         <p className="text-gray text-sm inter mb-6">
-          {product.description}
+          {productDescription}
         </p>
         <div className='flex items-center justify-between mt-auto'>
           <div className="inter text-[28px] font-bold">

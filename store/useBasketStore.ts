@@ -29,9 +29,9 @@ interface BasketStore {
   order: Order;
   setOrder: (key: keyof Order, value: boolean | string | number) => void;
   addToBasket: (product: BasketProduct) => void;
-  removeFromBasket: (id: number) => void;
+  removeFromBasket: (id: string) => void;
   clearBasket: () => void;
-  changeQuantity: (id: number, quantity: number) => void;
+  changeQuantity: (id: string, quantity: number) => void;
   setValue: (key: string, value: boolean | string | number) => void
 }
 
@@ -60,8 +60,8 @@ export const useBasketStore = create<BasketStore>()(
   
   setOrder: (key: keyof Order, value: boolean | string | number) => set((state) => ({ order: { ...state.order, [key]: value } })),
   addToBasket: (product) => set((state) => ({ basket: [...state.basket, product] })),
-  removeFromBasket: (id: number) => set((state) => ({ basket: state.basket.filter((p) => p.id !== id) })),
-      changeQuantity: (id: number, quantity: number) => set((state) => ({ basket: state.basket.map((p) => p.id === id ? { ...p, quantity: quantity } : p) })),
+  removeFromBasket: (id: string) => set((state) => ({ basket: state.basket.filter((p) => p.id !== id) })),
+      changeQuantity: (id: string, quantity: number) => set((state) => ({ basket: state.basket.map((p) => p.id === id ? { ...p, quantity: quantity } : p) })),
   clearBasket: () => set({ basket: [] }),
   setValue: (key: string, value: boolean | string | number) => set({ [key]: value }),
     }),

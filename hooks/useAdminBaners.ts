@@ -18,8 +18,8 @@ export function useCreateBanner() {
       const formData = new FormData();
       formData.append('namePL', bannerData.namePL);
       formData.append('nameUA', bannerData.nameUA);
-      formData.append('filePL', bannerData.imagePL);
-      formData.append('fileUA', bannerData.imageUA);
+      formData.append('bannerFilePL', bannerData.imagePL);
+      formData.append('bannerFileUA', bannerData.imageUA);
       
       return adminApiRequest<Banner>('/banners', {
         method: 'POST',

@@ -134,7 +134,7 @@ export function useDeleteProduct() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id: number): Promise<void> => {
+    mutationFn: async (id: string): Promise<void> => {
       return adminApiRequest<void>(`/products/${id}`, {
         method: 'DELETE',
       });
@@ -149,7 +149,7 @@ export function useUpdateProductStatus() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, inStock }: { id: number; inStock: boolean }): Promise<void> => {
+    mutationFn: async ({ id, inStock }: { id: string; inStock: boolean }): Promise<void> => {
       return adminApiRequest<void>(`/products/${id}/status`, {
         method: 'PATCH',
         body: { inStock },
@@ -168,27 +168,28 @@ export function useCreateProduct() {
   return useMutation({
     mutationFn: async (productData: CreateProduct): Promise<Product> => {
       // Проверяем обязательные поля
-      if (!productData.name) throw new Error('Name is required');
+      if (!productData.name?.pl || !productData.name?.ua) throw new Error('Name is required for both languages');
       if (!productData.category) throw new Error('Category is required');
-      if (!productData.description) throw new Error('Description is required');
+      if (!productData.description?.pl || !productData.description?.ua) throw new Error('Description is required for both languages');
       if (productData.gramsPerServing === undefined || productData.gramsPerServing === null) throw new Error('GramsPerServing is required');
       if (productData.quantityPerServing === undefined || productData.quantityPerServing === null) throw new Error('QuantityPerServing is required');
       if (productData.price === undefined || productData.price === null) throw new Error('Price is required');
-      if (!productData.file) throw new Error('File is required');
+      if (!productData.filePL || !productData.fileUA) throw new Error('Files are required for both languages');
       
       const formData = new FormData();
-      formData.append('name', productData.name);
+      formData.append('name', JSON.stringify({ pl: productData.name.pl, ua: productData.name.ua }));
       formData.append('category', productData.category);
-      formData.append('description', productData.description);
+      formData.append('description', JSON.stringify({ pl: productData.description.pl, ua: productData.description.ua }));
       formData.append('price', productData.price.toString());
       formData.append('gramsPerServing', productData.gramsPerServing.toString());
       formData.append('quantityPerServing', productData.quantityPerServing.toString());
       
-      if (productData.label) {
+      if (productData.label && productData.label !== 'none') {
         formData.append('label', productData.label);
       }
       
-      formData.append('file', productData.file);
+      formData.append('filePL', productData.filePL);
+      formData.append('fileUA', productData.fileUA);
 
       return adminApiRequest<Product>('/products', {
         method: 'POST',
@@ -205,26 +206,36 @@ export function useUpdateProduct() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, productData }: { id: number; productData: CreateProduct }): Promise<Product> => {
-      // Создаем FormData для отправки файла
+    mutationFn: async ({ id, productData }: { id: string; productData: CreateProduct }): Promise<Product> => {
+      // Создаем FormData для отправки файлов
       const formData = new FormData();
-      formData.append('name', productData.name);
+      
+      if (productData.name) {
+        formData.append('name', JSON.stringify({ pl: productData.name.pl, ua: productData.name.ua }));
+      }
       formData.append('category', productData.category);
-      formData.append('description', productData.description);
+      
+      if (productData.description) {
+        formData.append('description', JSON.stringify({ pl: productData.description.pl, ua: productData.description.ua }));
+      }
       formData.append('price', productData.price.toString());
       formData.append('gramsPerServing', productData.gramsPerServing.toString());
       formData.append('quantityPerServing', productData.quantityPerServing.toString());
       
       if (productData.enabled !== undefined) {
-      formData.append('enabled', productData.enabled.toString());
+        formData.append('enabled', productData.enabled.toString());
       }
       
-      if (productData.label) {
+      if (productData.label && productData.label !== 'none') {
         formData.append('label', productData.label);
       }
       
-      if (productData.file) {
-        formData.append('file', productData.file);
+      if (productData.filePL) {
+        formData.append('filePL', productData.filePL);
+      }
+      
+      if (productData.fileUA) {
+        formData.append('fileUA', productData.fileUA);
       }
 
       return adminApiRequest<Product>(`/products/${id}`, {

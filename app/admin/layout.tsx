@@ -3,8 +3,7 @@ import { Geist, Geist_Mono, Rubik, Roboto, Inter } from "next/font/google";
 import "../globals.css";
 import { ReactQueryProvider } from "../providers";
 import { Toaster } from "@/components/ui/sonner";
-import AuthGuard from "./components/AuthGuard";
-import AdminShell from "./components/AdminShell";
+
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 const rubik = Rubik({ variable: "--font-rubik", subsets: ["latin"] });
@@ -27,12 +26,8 @@ export default function AdminLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${rubik.variable} ${roboto.variable} ${inter.variable} antialiased`}
       >
         <ReactQueryProvider>
-          <AuthGuard>
-            <AdminShell>
-                {children}
-            </AdminShell>
+          {children}
           <Toaster position="top-left" />
-          </AuthGuard>
         </ReactQueryProvider>
       </body>
     </html>

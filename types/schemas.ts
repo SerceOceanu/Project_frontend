@@ -18,11 +18,13 @@ export const phoneSchema = z.object({
 });
 
 export const createProductSchema = z.object({
-  name: z.string().min(1, 'Назва обов\'язкова'),
+  namePL: z.string().min(1, 'Назва (PL) обов\'язкова'),
+  nameUA: z.string().min(1, 'Назва (UA) обов\'язкова'),
   category: z.enum(['chilled', 'frozen', 'ready', 'marinated', 'snacks', 'other'], {
     message: 'Категорія обов\'язкова',
   }),
-  description: z.string().min(1, 'Опис обов\'язковий'),
+  descriptionPL: z.string().min(1, 'Опис (PL) обов\'язковий'),
+  descriptionUA: z.string().min(1, 'Опис (UA) обов\'язковий'),
   gramsPerServing: z.coerce.number().min(1, 'Вага повинна бути більше 0'),
   quantityPerServing: z.coerce.number().min(1, 'Кількість повинна бути більше 0'),
   price: z.string().transform((val) => {
@@ -30,7 +32,8 @@ export const createProductSchema = z.object({
     return Number(normalized);
   }).pipe(z.number().gt(0, 'Ціна повинна бути більше 0')),
   label: z.enum(['top', 'new', 'none']).optional(),
-  file: z.instanceof(File).nullable(),
+  filePL: z.instanceof(File).nullable(),
+  fileUA: z.instanceof(File).nullable(),
 });
 
 export type CreateProductSchema = z.infer<typeof createProductSchema>;

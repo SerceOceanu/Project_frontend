@@ -60,7 +60,11 @@ export function useAdminLogout() {
     logout: () => {
       // Очищаем токен из localStorage
       localStorage.removeItem('admin-token');
-      console.log('🚪 Logged out, token removed from localStorage');
+      
+      // Удаляем токен из cookies
+      document.cookie = 'admin-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      
+      console.log('🚪 Logged out, token removed from localStorage and cookies');
       
       // Redirect to admin login page
       router.push('/admin/login');

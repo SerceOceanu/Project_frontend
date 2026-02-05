@@ -2,13 +2,15 @@
 export type Filter = 'chilled' | 'frozen' | 'ready' | 'marinated' | 'snacks';
 export type Label = 'none' | 'top' | 'new';
 export type Product = {
-  id: number;
-  name: string;
-  description: string;
+  id: string;
+  name: string | { pl: string; ua: string };
+  description: string | { pl: string; ua: string };
   price: number;
   gramsPerServing: number;
   quantityPerServing: number;
-  imageUrl: string;
+  imageUrl: string | { pl: string; ua: string };
+  imageUrlPL?: string;
+  imageUrlUA?: string;
   category: Filter;
   inStock: boolean;
   label: Label;
@@ -20,14 +22,15 @@ export type BasketProduct = Product & {
 
 
 export type CreateProduct = {
-  name: string;
+  name: { pl: string; ua: string };
   category: Filter;
-  description: string;
+  description: { pl: string; ua: string };
   price: number;
   gramsPerServing: number;
   quantityPerServing: number;
-  label: Label;
-  file?: File; 
+  label?: Label;
+  filePL?: File;
+  fileUA?: File;
   enabled?: boolean;
 }
 

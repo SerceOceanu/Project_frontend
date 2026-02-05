@@ -11,7 +11,7 @@ type CataloguePageProps = {
 
 export default async function Catalogue({ searchParams }: CataloguePageProps) {
   const { category } = await searchParams;
-  const products = await getProductsByCategory(category).then(res => res.filter(product => product.inStock));
+  const products = await getProductsByCategory(category)
   const hasProducts = products.length > 0;
   
   return (

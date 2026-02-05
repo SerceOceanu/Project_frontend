@@ -2,8 +2,9 @@
 import Image from "next/image";
 import { IoIosLogOut } from "react-icons/io";
 import { useAdminLogout } from "@/hooks/useAdminLogin";
+import { memo } from "react";
 
-export default function Header() {
+function Header() {
   const { logout } = useAdminLogout();
 
   return (
@@ -21,10 +22,12 @@ export default function Header() {
           className='flex items-center gap-3 ml-10 cursor-pointer hover:opacity-70 transition-opacity'
         >
           <IoIosLogOut size={24} />
-          Вийти
+          Війти
         </button>
             
        
       </header>
   );
 }
+
+export default memo(Header);

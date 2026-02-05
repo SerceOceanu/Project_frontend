@@ -2,16 +2,23 @@
 import ProductCard from '@/app/components/ProductCard'
 import { Product } from '@/types/types'
 import { useCatalogueStore } from '@/store/useCatalogue';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
+import { getProductName } from '@/lib/product-utils';
 
 export default function ProductsList({products}: {products: Product[]}) {
   const { filter, search } = useCatalogueStore();
   const t = useTranslations();
+  const locale = useLocale();
   
   let filteredProducts: Product[] = products;
 
   filteredProducts = filter === 'cheap'?   filteredProducts.sort((a, b) => a.price - b.price) : filteredProducts.sort((a, b) => b.price - a.price);
-  if(search) filteredProducts = filteredProducts.filter((product) => product.name.toLowerCase().includes(search.toLowerCase()));
+  if(search) {
+    filteredProducts = filteredProducts.filter((product) => {
+      const productName = getProductName(product, locale);
+      return productName.toLowerCase().includes(search.toLowerCase());
+    });
+  }
 
   // If search is active but no results found
   if(search && filteredProducts.length === 0) {

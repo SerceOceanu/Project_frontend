@@ -44,9 +44,12 @@ export default function AdminLoginPage() {
           return;
         }
         
-        // Save token to localStorage
+        // Save token to both localStorage and cookies
         try {
           localStorage.setItem('admin-token', token);
+          
+          // Сохраняем токен в cookies для middleware
+          document.cookie = `admin-token=${token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
           
           // Verify token was saved
           const savedToken = localStorage.getItem('admin-token');
@@ -54,8 +57,8 @@ export default function AdminLoginPage() {
             throw new Error('Token verification failed');
           }
           
-          // Redirect to admin panel
-          router.replace('/admin');
+          // Redirect to admin dashboard
+          router.replace('/admin/dashboard');
         } catch (error) {
           alert('Помилка збереження токена. Спробуйте ще раз.');
         }

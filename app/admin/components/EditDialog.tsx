@@ -18,6 +18,7 @@ import { useUpdateProduct } from "@/hooks/useAdminProducts";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { createProductSchema } from "@/types/schemas";
+import { useEffect } from "react";
 
 const menuItems = [
   {
@@ -37,7 +38,7 @@ const menuItems = [
     value: 'marinated' as Filter,
   },
   {
-    label: 'Сніданки',
+    label: 'Снеки',
     value: 'snacks' as Filter,
   },
 ];
@@ -70,32 +71,55 @@ export default function EditDialog({
     item: Product;
 }) {
   const { mutate, isPending } = useUpdateProduct();
-  const { register, control, handleSubmit, formState: { errors } } = useForm({
+  const { register, control, handleSubmit, formState: { errors }, reset } = useForm({
     resolver: zodResolver(createProductSchema),
     defaultValues: {
-      name: item.name,
-      category: item.category || 'chilled' as Filter,
-      description: item.description || '',
-      price: String(item.price || 0),
-      gramsPerServing: item.gramsPerServing || 0,
-      quantityPerServing: item.quantityPerServing || 0,
-      label: item.label || 'none' as Label,
-      file: null as File | null,
+      namePL: '',
+      nameUA: '',
+      category: 'chilled' as Filter,
+      descriptionPL: '',
+      descriptionUA: '',
+      price: '0',
+      gramsPerServing: 0,
+      quantityPerServing: 0,
+      label: 'none' as Label,
+      filePL: null as File | null,
+      fileUA: null as File | null,
     },
   });
 
+  // Заполняем поля при открытии диалога
+  useEffect(() => {
+    if (isEdit) {
+      reset({
+        namePL: typeof item.name === 'string' ? item.name : item.name.pl || '',
+        nameUA: typeof item.name === 'string' ? item.name : item.name.ua || '',
+        category: item.category || 'chilled' as Filter,
+        descriptionPL: typeof item.description === 'string' ? item.description : item.description.pl || '',
+        descriptionUA: typeof item.description === 'string' ? item.description : item.description.ua || '',
+        price: String(item.price || 0),
+        gramsPerServing: item.gramsPerServing || 0,
+        quantityPerServing: item.quantityPerServing || 0,
+        label: item.label || 'none' as Label,
+        filePL: null as File | null,
+        fileUA: null as File | null,
+      });
+    }
+  }, [isEdit, item, reset]);
+
   const onSubmit = (data: any) => {
     const formData = {
-      name: data.name,
+      name: { pl: data.namePL, ua: data.nameUA },
       category: data.category,
-      description: data.description,
+      description: { pl: data.descriptionPL, ua: data.descriptionUA },
       price: typeof data.price === 'string' 
         ? parseFloat(data.price.replace(',', '.')) 
         : Number(data.price),
       gramsPerServing: Number(data.gramsPerServing) || 0,
       quantityPerServing: Number(data.quantityPerServing) || 0,
-      label: data.label === 'none' ? null : data.label,
-      file: data.file || undefined, // Файл не обязателен при обновлении (остается старое изображение)
+      label: data.label === 'none' ? 'none' : data.label,
+      filePL: data.filePL || undefined,
+      fileUA: data.fileUA || undefined,
     };
     
     mutate(
@@ -116,17 +140,27 @@ export default function EditDialog({
     <Dialog open={isEdit} onOpenChange={setIsEdit}>
       <DialogContent className="!max-w-[1000px] !w-full bg-white">
         <DialogHeader>
-          <DialogTitle className='Poppins text-xl'>Редагувати товар "{item.name}"</DialogTitle>
+          <DialogTitle className='Poppins text-xl'>
+            Редагувати товар "{typeof item.name === 'string' ? item.name : `${item.name.pl} / ${item.name.ua}`}"
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col p-6'>
           <div className="grid grid-cols-2 gap-5 mb-3">
             <div className="flex flex-col gap-5">
               <CustomInput
-                label="Назва*"
-                placeholder="Введіть назву товару"
-                name="name"
+                label="Назва (PL)*"
+                placeholder="Введіть назву товару (PL)"
+                name="namePL"
                 register={register}
-                error={errors.name?.message}
+                error={errors.namePL?.message as string}
+                type="text"
+              />
+              <CustomInput
+                label="Назва (UA)*"
+                placeholder="Введіть назву товару (UA)"
+                name="nameUA"
+                register={register}
+                error={errors.nameUA?.message as string}
                 type="text"
               />
               <Controller
@@ -149,23 +183,45 @@ export default function EditDialog({
                 )}
               />
               <Controller
-                name="description"
+                name="descriptionPL"
                 control={control}
                 render={({ field }) => (
                   <div className="flex flex-col gap-2 relative">
-                    <label htmlFor="description" className="text-sm text-gray">Опис*</label>
+                    <label htmlFor="descriptionPL" className="text-sm text-gray">Опис (PL)*</label>
                     <Textarea
-                      id="description"
+                      id="descriptionPL"
                       {...field}
-                      placeholder="Введіть опис товару"
+                      placeholder="Введіть опис товару (PL)"
                       className={`w-full min-h-[120px] border-solid rounded-xl ${
-                        errors.description 
+                        errors.descriptionPL 
                           ? '!border-red text-red focus:border-red !ring-red/20 !focus:ring-red' 
                           : 'border-gray-200'
                       }`}
                     />
-                    {errors.description && (
-                      <p className="absolute -bottom-5 left-2 text-red-500 text-xs">{errors.description.message}</p>
+                    {errors.descriptionPL && (
+                      <p className="absolute -bottom-5 left-2 text-red-500 text-xs">{errors.descriptionPL.message as string}</p>
+                    )}
+                  </div>
+                )}
+              />
+              <Controller
+                name="descriptionUA"
+                control={control}
+                render={({ field }) => (
+                  <div className="flex flex-col gap-2 relative">
+                    <label htmlFor="descriptionUA" className="text-sm text-gray">Опис (UA)*</label>
+                    <Textarea
+                      id="descriptionUA"
+                      {...field}
+                      placeholder="Введіть опис товару (UA)"
+                      className={`w-full min-h-[120px] border-solid rounded-xl ${
+                        errors.descriptionUA 
+                          ? '!border-red text-red focus:border-red !ring-red/20 !focus:ring-red' 
+                          : 'border-gray-200'
+                      }`}
+                    />
+                    {errors.descriptionUA && (
+                      <p className="absolute -bottom-5 left-2 text-red-500 text-xs">{errors.descriptionUA.message as string}</p>
                     )}
                   </div>
                 )}
@@ -230,17 +286,34 @@ export default function EditDialog({
                   </div>
                 )}
               />
-              <Controller
-                name="file"
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <LoadImage
-                    value={value}
-                    currentImage={item.imageUrl}
-                    onChange={onChange}
-                  />
-                )}
-              />
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium">Фото (PL)*</label>
+                <Controller
+                  name="filePL"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <LoadImage
+                      value={value}
+                      currentImage={typeof item.imageUrl === 'object' && item.imageUrl !== null && 'pl' in item.imageUrl ? item.imageUrl.pl : (typeof item.imageUrl === 'string' ? item.imageUrl : '')}
+                      onChange={onChange}
+                    />
+                  )}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium">Фото (UA)*</label>
+                <Controller
+                  name="fileUA"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <LoadImage
+                      value={value}
+                      currentImage={typeof item.imageUrl === 'object' && item.imageUrl !== null && 'ua' in item.imageUrl ? item.imageUrl.ua : (typeof item.imageUrl === 'string' ? item.imageUrl : '')}
+                      onChange={onChange}
+                    />
+                  )}
+                />
+              </div>
             </div>
           </div>
           <Button 

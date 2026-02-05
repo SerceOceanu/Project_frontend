@@ -31,33 +31,37 @@ export default function CreateDialog({
   const { register, control, handleSubmit, formState: { errors }, reset } = useForm({
     resolver: zodResolver(createProductSchema),
     defaultValues: {
-      name: '',
+      namePL: '',
+      nameUA: '',
       category: 'chilled' as Filter,
-      description: '',
+      descriptionPL: '',
+      descriptionUA: '',
       price: '',
       gramsPerServing: 0,
       quantityPerServing: 0,
       label: 'none' as const,
-      file: null,
+      filePL: null,
+      fileUA: null,
     },
   });
 
   const onSubmit = (data: any) => {
-    if (!data.file) {
-      toast.error('Завантажте зображення товару');
+    if (!data.filePL || !data.fileUA) {
+      toast.error('Завантажте зображення товару для обох мов');
       return;
     }
     const formData = {
-      name: data.name,
+      name: { pl: data.namePL, ua: data.nameUA },
       category: data.category,
-      description: data.description,
+      description: { pl: data.descriptionPL, ua: data.descriptionUA },
       price: typeof data.price === 'string' 
         ? parseFloat(data.price.replace(',', '.')) 
         : Number(data.price),
       gramsPerServing: Number(data.gramsPerServing) || 0,
       quantityPerServing: Number(data.quantityPerServing) || 0,
-      label: data.label === 'none' ? null : data.label,
-      file: data.file,
+      label: data.label === 'none' ? 'none' : data.label,
+      filePL: data.filePL,
+      fileUA: data.fileUA,
     };
     
     mutate(formData, {
@@ -82,11 +86,19 @@ export default function CreateDialog({
           <div className="grid grid-cols-2 gap-5 mb-3">
             <div className="flex flex-col gap-5">
               <CustomInput
-                label="Назва*"
-                placeholder="Введіть назву товару"
-                name="name"
+                label="Назва (PL)*"
+                placeholder="Введіть назву товару (PL)"
+                name="namePL"
                 register={register}
-                error={errors.name?.message as string}
+                error={errors.namePL?.message as string}
+                type="text"
+              />
+              <CustomInput
+                label="Назва (UA)*"
+                placeholder="Введіть назву товару (UA)"
+                name="nameUA"
+                register={register}
+                error={errors.nameUA?.message as string}
                 type="text"
               />
               <Controller
@@ -109,23 +121,45 @@ export default function CreateDialog({
                 )}
               />
               <Controller
-                name="description"
+                name="descriptionPL"
                 control={control}
                 render={({ field }) => (
                   <div className="flex flex-col gap-2 relative">
-                    <label htmlFor="description" className="text-sm text-gray">Опис*</label>
+                    <label htmlFor="descriptionPL" className="text-sm text-gray">Опис (PL)*</label>
                     <Textarea
-                      id="description"
+                      id="descriptionPL"
                       {...field}
-                      placeholder="Введіть опис товару"
+                      placeholder="Введіть опис товару (PL)"
                       className={`w-full min-h-[120px] border-solid rounded-xl ${
-                        errors.description 
+                        errors.descriptionPL 
                           ? '!border-red text-red focus-visible:!border-red focus-visible:!ring-red/20 focus-visible:!ring-[3px]' 
                           : 'border-gray-200'
                       }`}
                     />
-                    {errors.description && (
-                      <p className="absolute -bottom-5 left-2 text-red-500 text-xs">{errors.description.message as string}</p>
+                    {errors.descriptionPL && (
+                      <p className="absolute -bottom-5 left-2 text-red-500 text-xs">{errors.descriptionPL.message as string}</p>
+                    )}
+                  </div>
+                )}
+              />
+              <Controller
+                name="descriptionUA"
+                control={control}
+                render={({ field }) => (
+                  <div className="flex flex-col gap-2 relative">
+                    <label htmlFor="descriptionUA" className="text-sm text-gray">Опис (UA)*</label>
+                    <Textarea
+                      id="descriptionUA"
+                      {...field}
+                      placeholder="Введіть опис товару (UA)"
+                      className={`w-full min-h-[120px] border-solid rounded-xl ${
+                        errors.descriptionUA 
+                          ? '!border-red text-red focus-visible:!border-red focus-visible:!ring-red/20 focus-visible:!ring-[3px]' 
+                          : 'border-gray-200'
+                      }`}
+                    />
+                    {errors.descriptionUA && (
+                      <p className="absolute -bottom-5 left-2 text-red-500 text-xs">{errors.descriptionUA.message as string}</p>
                     )}
                   </div>
                 )}
@@ -190,17 +224,44 @@ export default function CreateDialog({
                   </div>
                 )}
               />
-              <Controller
-                name="file"
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <LoadImage
-                    value={value}
-                    currentImage={null as unknown as string}
-                    onChange={onChange}
-                  />
-                )}
-              />
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium">Фото (PL)*</label>
+                <Controller
+                  name="filePL"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <div className="flex flex-col gap-2">
+                      <LoadImage
+                        value={value}
+                        currentImage={null as unknown as string}
+                        onChange={onChange}
+                      />
+                      {errors.filePL && (
+                        <p className="text-red-500 text-xs">{errors.filePL.message as string}</p>
+                      )}
+                    </div>
+                  )}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium">Фото (UA)*</label>
+                <Controller
+                  name="fileUA"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <div className="flex flex-col gap-2">
+                      <LoadImage
+                        value={value}
+                        currentImage={null as unknown as string}
+                        onChange={onChange}
+                      />
+                      {errors.fileUA && (
+                        <p className="text-red-500 text-xs">{errors.fileUA.message as string}</p>
+                      )}
+                    </div>
+                  )}
+                />
+              </div>
             </div>
           </div>
           <Button 
@@ -234,7 +295,7 @@ const menuItems = [
     value: 'marinated' as Filter,
   },
   {
-    label: 'Сніданки',
+    label: 'Снеки',
     value: 'snacks' as Filter,
   },
 ];

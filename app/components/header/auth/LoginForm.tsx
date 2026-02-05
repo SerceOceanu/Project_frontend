@@ -109,9 +109,9 @@ const PhoneForm = ({ setConfirmationResult }: { setConfirmationResult: (result: 
         window.recaptchaVerifier = undefined;
       }
       
-      const verifier = await setupRecaptcha('recaptcha-container');
+      const verifier = setupRecaptcha('recaptcha-container');
       
-      const confirmation = await  sendPhoneVerification(phoneNumber, verifier);
+      const confirmation = await sendPhoneVerification(phoneNumber, verifier);
       setConfirmationResult(confirmation);
       setPhoneNumber(phoneNumber);
       setIsCodeSent(true);

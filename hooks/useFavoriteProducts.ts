@@ -20,7 +20,7 @@ export function useFavoriteProducts() {
         return [];
       }
 
-      const productsData = await apiRequest<ProductsResponse>('/products', { requireAuth: false });
+      const productsData = await apiRequest<ProductsResponse>('/products/in-stock/list', { requireAuth: false });
       
       const favoriteProducts = productsData.items.filter(product =>
         favoritesData.favoriteProductIds.includes(String(product.id))

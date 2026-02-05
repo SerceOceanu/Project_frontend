@@ -11,7 +11,7 @@ import {
 import { useDeleteProduct } from "@/hooks/useAdminProducts";
 import { toast } from "sonner";
 
-export default function DeleteAlert({isDelete, setIsDelete, id, name}: {isDelete: boolean, setIsDelete: (open: boolean) => void, id: number, name: string}) {
+export default function DeleteAlert({isDelete, setIsDelete, id, name}: {isDelete: boolean, setIsDelete: (open: boolean) => void, id: string, name: string}) {
   const deleteProduct = useDeleteProduct();
 
   const handleDelete = () => {
