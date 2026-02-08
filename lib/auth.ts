@@ -42,15 +42,16 @@ export const handleRedirectResult = async (): Promise<User | null> => {
   return null;
 };
 
-export const setupRecaptcha = async (buttonId: string, onSignInSubmit: () => void): Promise<RecaptchaVerifier> => {
+export const setupRecaptcha = async (onSignInSubmit: () => void): Promise<RecaptchaVerifier> => {
   cleanupRecaptcha();
   
-  const button = document.getElementById(buttonId);
-  if (!button) {
-    throw new Error(`Button with id "${buttonId}" not found`);
+  const containerId = 'recaptcha-container';
+  const container = document.getElementById(containerId);
+  if (!container) {
+    throw new Error(`Container with id "${containerId}" not found`);
   }
 
-  const recaptchaVerifier = new RecaptchaVerifier(auth, buttonId, {
+  const recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
     size: 'invisible',
     callback: (response: any) => {
       onSignInSubmit();

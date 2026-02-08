@@ -12,6 +12,7 @@ import { isAuthenticated } from "@/lib/api-client";
 import { useFavoriteProducts, useToggleFavorite } from "@/hooks/useFavorites";
 import { formatCurrency } from "@/lib/currency";
 import { getProductName, getProductDescription, getProductImage } from "@/lib/product-utils";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function ProductCard({ product }: { product: Product }) {
   const { addToBasket, removeFromBasket, basket, changeQuantity } = useBasketStore();
@@ -71,10 +72,26 @@ export default function ProductCard({ product }: { product: Product }) {
       <div className='flex flex-col px-2 flex-1'>
         <div className='flex items-start justify-between mb-2'>
           <h3 className="rubik text-2xl font-semibold w-3/4">{productName}</h3>
-          <span className="text-blue font-bold text-lg inter ">
-            {product.gramsPerServing}
-            {product.maxGramsPerServing && ` - ${product.maxGramsPerServing}`}{t('weight')}
-          </span>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="text-blue font-bold text-lg inter cursor-help">
+                  {product.gramsPerServing}
+                  {product.maxGramsPerServing && ` - ${product.maxGramsPerServing}`}{t('weight')}
+                </span>
+              </TooltipTrigger>
+              {product.maxGramsPerServing && (
+                <TooltipContent className="max-w-[250px] bg-white border-gray-200">
+                  <p className="text-sm">
+                    {t('weight-tooltip', { 
+                      min: product.gramsPerServing, 
+                      max: product.maxGramsPerServing 
+                    })}
+                  </p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
         </div>
         <p className="text-gray text-sm inter mb-6">
           {productDescription}

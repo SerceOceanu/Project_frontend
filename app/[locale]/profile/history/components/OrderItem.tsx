@@ -4,7 +4,8 @@ import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import Status from '@/components/Status';
 import { IoIosArrowForward } from 'react-icons/io';
-import { formatCurrency } from '@/lib/currency'; 
+import { formatCurrency } from '@/lib/currency';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"; 
 
 
 export default function OrderItem({ order }: { order: any }   ) {
@@ -65,9 +66,25 @@ export const OrderItemProduct = ({ product }: { product: any }) => {
 
         <div className="flex flex-col min-w-0 flex-1">
           <div className="rubik font-semibold text-sm md:text-lg truncate">{productName}</div>
-          <div className="rubik text-sm md:text-base text-orange">
-            {product.weight}{product.maxWeight && ` - ${product.maxWeight}`} {t('weight')}
-          </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="rubik text-sm md:text-base text-orange cursor-help">
+                  {product.weight}{product.maxWeight && ` - ${product.maxWeight}`} {t('weight')}
+                </div>
+              </TooltipTrigger>
+              {product.maxWeight && (
+                <TooltipContent className="max-w-[250px] bg-white border-gray-200">
+                  <p className="text-sm">
+                    {t('weight-tooltip', { 
+                      min: product.weight, 
+                      max: product.maxWeight 
+                    })}
+                  </p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
       <div className="inter text-sm md:text-2xl ml-auto text-gray flex-shrink-0">{formatCurrency(product.price)} {t('currency')}</div>

@@ -134,9 +134,15 @@ const PhoneForm = ({ setConfirmationResult }: { setConfirmationResult: (result: 
       window.recaptchaVerifier = undefined;
     }
     
-    await setupRecaptcha('sign-in-button', () => {
-      sendSMS(phoneNumber);
-    });
+    try {
+      await setupRecaptcha(() => {
+        sendSMS(phoneNumber);
+      });
+    } catch (err: any) {
+      console.error('Setup recaptcha error:', err);
+      setError('Failed to initialize reCAPTCHA');
+      setLoading(false);
+    }
   };
 
   return (
@@ -176,7 +182,6 @@ const PhoneForm = ({ setConfirmationResult }: { setConfirmationResult: (result: 
         )}
         
         <Button 
-          id="sign-in-button"
           type="submit" 
           disabled={loading}
           className="w-full h-10 text-base bg-orange text-white rounded hover:bg-orange/90"
@@ -290,9 +295,15 @@ const VerificationCode = ({
       window.recaptchaVerifier = undefined;
     }
     
-    await setupRecaptcha('resend-button', () => {
-      resendSMS();
-    });
+    try {
+      await setupRecaptcha(() => {
+        resendSMS();
+      });
+    } catch (err: any) {
+      console.error('Setup recaptcha error:', err);
+      setError('Failed to initialize reCAPTCHA');
+      setLoading(false);
+    }
   };
 
   const handleBack = () => {
@@ -353,7 +364,6 @@ const VerificationCode = ({
           {loading ? t('verifying') : t('login-button')} 
         </Button>
         <Button 
-          id="resend-button"
           onClick={handleResend}
           disabled={loading}
           variant="outline" 

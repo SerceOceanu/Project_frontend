@@ -5,10 +5,17 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { useTranslations, useLocale } from 'next-intl';
 import Script from 'next/script';
+import { toast } from 'sonner';
 
 interface InpostLockerSearchProps {
   value: string;
-  onChange: (value: string) => void;
+  onChange: (value: string, lockerData?: {
+    id?: string;
+    name: string;
+    address: string;
+    postalCode?: string;
+    locality?: string;
+  }) => void;
   placeholder?: string;
   className?: string;
 }
@@ -36,7 +43,12 @@ export default function InpostLockerSearch({
   const selectedPointRef = useRef<any>(null);
 
   useEffect(() => {
-    if (value && selectedPointRef.current) {
+    // Если value изменился извне (автозаполнение) и это не полный адрес
+    if (value && !value.includes(' - ')) {
+      // Просто показываем значение как есть (название локера)
+      setDisplayValue(value);
+    } else if (value && selectedPointRef.current) {
+      // Если есть сохраненная точка, форматируем с адресом
       const point = selectedPointRef.current;
       const address = `${point.address?.line1 || ''} ${point.address?.line2 || ''}`.trim();
       setDisplayValue(`${point.name} - ${address}`);
@@ -48,15 +60,30 @@ export default function InpostLockerSearch({
   useEffect(() => {
     const handlePointSelect = (event: CustomEvent) => {
       const point = event.detail;
-      console.log('📍 Point selected:', point);
       
       selectedPointRef.current = point;
       
       const address = `${point.address?.line1 || ''} ${point.address?.line2 || ''}`.trim();
       const displayText = `${point.name} - ${address}`;
       
+      // Извлекаем ID локера (может быть в разных полях)
+      const lockerId = point.locationId || point.id || point.name;
+      
+      // Извлекаем адресные данные
+      const fullAddress = `${point.address?.line1 || ''} ${point.address?.line2 || ''}`.trim();
+      const postalCode = point.address_details?.post_code || point.address?.postCode || '';
+      const locality = point.address_details?.city || point.address?.city || '';
+      
       setDisplayValue(displayText);
-      onChange(point.name);
+      
+      // Отправляем ID локера и полные данные
+      onChange(lockerId, {
+        id: lockerId,
+        name: point.name,
+        address: fullAddress,
+        postalCode,
+        locality,
+      });
       
       if (geowidgetRef.current) {
         geowidgetRef.current.remove();
@@ -74,18 +101,28 @@ export default function InpostLockerSearch({
 
   const openWidget = () => {
     if (scriptError) {
-      alert(t('post-box-loading-error'));
+      toast.error(t('post-box-loading-error'), {
+        description: t('post-box-reload-message'),
+        action: {
+          label: t('post-box-reload-button'),
+          onClick: () => window.location.reload(),
+        },
+      });
       return;
     }
 
     if (!scriptLoaded) {
-      alert(t('post-box-loading-error') + ' ' + t('loading'));
       return;
     }
 
     if (typeof customElements === 'undefined' || !customElements.get('inpost-geowidget')) {
-      console.error('InPost Geowidget web component not available');
-      alert(t('post-box-loading-error'));
+      toast.error(t('post-box-loading-error'), {
+        description: t('post-box-reload-message'),
+        action: {
+          label: t('post-box-reload-button'),
+          onClick: () => window.location.reload(),
+        },
+      });
       return;
     }
 
@@ -95,7 +132,6 @@ export default function InpostLockerSearch({
     }
 
     if (!widgetContainerRef.current) {
-      console.error('Widget container not found');
       return;
     }
 
@@ -120,8 +156,13 @@ export default function InpostLockerSearch({
       geowidgetRef.current = geowidgetElement;
       setIsWidgetOpen(true);
     } catch (error) {
-      console.error('Error creating InPost widget:', error);
-      alert(t('post-box-loading-error'));
+      toast.error(t('post-box-loading-error'), {
+        description: t('post-box-reload-message'),
+        action: {
+          label: t('post-box-reload-button'),
+          onClick: () => window.location.reload(),
+        },
+      });
     }
   };
 
@@ -136,14 +177,19 @@ export default function InpostLockerSearch({
         src="https://geowidget.inpost.pl/inpost-geowidget.js"
         strategy="lazyOnload"
         onLoad={() => {
-          console.log('✅ InPost script loaded');
           setScriptLoaded(true);
           setScriptError(false);
         }}
         onError={() => {
-          console.error('❌ Failed to load InPost script');
           setScriptError(true);
           setScriptLoaded(false);
+          toast.error(t('post-box-loading-error'), {
+            description: t('post-box-reload-message'),
+            action: {
+              label: t('post-box-reload-button'),
+              onClick: () => window.location.reload(),
+            },
+          });
         }}
       />
       
@@ -153,9 +199,15 @@ export default function InpostLockerSearch({
           value={displayValue}
           readOnly
           placeholder={placeholder || t('post-box-search')}
-          className={cn('w-full cursor-pointer', className)}
+          className={cn(
+            'w-full cursor-pointer',
+            scriptError && 'opacity-50 cursor-not-allowed',
+            !scriptLoaded && 'cursor-wait',
+            className
+          )}
           onClick={handleInputClick}
           disabled={scriptError}
+          title={scriptError ? t('post-box-loading-error') : scriptLoaded ? t('post-box-description') : t('loading')}
         />
         
         {isWidgetOpen && (

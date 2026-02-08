@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import ProductCard from "@/app/components/ProductCard";
 import Buttons from "./components/Buttons";
+import WeightWithTooltip from "./components/WeightWithTooltip";
 import { getProductsByCategory } from "@/services/getProducts";
 import { getProduct } from "@/services/getProduct";
 import { getProductName, getProductDescription, getProductImage } from "@/lib/product-utils";
@@ -37,9 +38,10 @@ export default async function ProductPage({ params }: { params: { id: string } }
             <div className="col-span-1 flex  flex-col py-10 px-4 md:pl-10 xl:pl-25">
               <div className="rounded-md px-2.5 py-2 bg-blue text-white text-xs inter self-start mb-3"> {t('new')} </div>
               <h1 className="text-2xl md:text-[42px] rubik font-bold mb-4 md:mb-6 line-clamp-2 break-words">{productName}</h1>
-              <span className="text-blue font-bold text-base md:text-2xl inter mb-4 md:mb-7">
-                {product.gramsPerServing}{product.maxGramsPerServing && ` - ${product.maxGramsPerServing}`} {t('weight')}
-              </span>
+              <WeightWithTooltip 
+                gramsPerServing={product.gramsPerServing} 
+                maxGramsPerServing={product.maxGramsPerServing}
+              />
               <p className="text-gray text-base inter mb-4 md:mb-10">{productDescription}</p>
 
               <Buttons product={product} />

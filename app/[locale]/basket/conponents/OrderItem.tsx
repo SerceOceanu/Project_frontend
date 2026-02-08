@@ -6,6 +6,7 @@ import { BasketProduct } from "@/types/types";
 import { useBasketStore } from "@/store/useBasketStore";
 import { calculateItemTotal, formatCurrency } from "@/lib/currency";
 import { getProductName, getProductImage } from "@/lib/product-utils";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function OrderItem({ product }: { product: BasketProduct }) {
   const t = useTranslations();
@@ -33,9 +34,25 @@ export default function OrderItem({ product }: { product: BasketProduct }) {
 
           <div className="flex flex-col w-2/3">
             <div className="rubik font-semibold text-lg truncate ">{productName}</div>
-            <div className="rubik text-orange">
-              {product.gramsPerServing}{product.maxGramsPerServing && ` - ${product.maxGramsPerServing}`} {t('weight')}
-            </div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="rubik text-orange cursor-help">
+                    {product.gramsPerServing}{product.maxGramsPerServing && ` - ${product.maxGramsPerServing}`} {t('weight')}
+                  </div>
+                </TooltipTrigger>
+                {product.maxGramsPerServing && (
+                  <TooltipContent className="max-w-[250px] bg-white border-gray-200">
+                    <p className="text-sm">
+                      {t('weight-tooltip', { 
+                        min: product.gramsPerServing, 
+                        max: product.maxGramsPerServing 
+                      })}
+                    </p>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
         <div className="inter text-lg md:text-2xl text-gray flex ml-auto mr-5">{formatCurrency(totalPrice)} {t('currency')}</div>

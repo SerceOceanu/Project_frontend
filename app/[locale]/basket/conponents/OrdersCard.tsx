@@ -101,34 +101,35 @@ const TotalPage = ({ total, setIsSuccessModalOpen, deliveryCost, isLoading: isLo
   }, [order, accept]);
 
   const handleCreateOrder = () => {
-      createOrder(
-      {
+      const orderData = {
         ...order,
         locality: order.locality || 'Warszawa',
         basket,
         deliveryCost,
-      },
-      {
-        onSuccess: (data) => {
-          if (order.paymentType === 'cash') {
-            setIsSuccessModalOpen?.(true);
-            clearBasket();
-          } 
-          else if (data?.payment?.redirectUri) {
-            clearBasket();
-            window.location.href = data.payment.redirectUri;
-          }
-          else {
-            setIsSuccessModalOpen?.(true);
-            clearBasket();
-          }
-        },
-        onError: (error) => {
-          toast.error(`Помилка: ${error.message}`);
-          console.error('Order creation failed:', error);
-        },
-      }
-    );
+      };
+      
+      createOrder(
+        orderData,
+        {
+          onSuccess: (data) => {
+            if (order.paymentType === 'cash') {
+              setIsSuccessModalOpen?.(true);
+              clearBasket();
+            } 
+            else if (data?.payment?.redirectUri) {
+              clearBasket();
+              window.location.href = data.payment.redirectUri;
+            }
+            else {
+              setIsSuccessModalOpen?.(true);
+              clearBasket();
+            }
+          },
+          onError: (error) => {
+            toast.error(`Помилка: ${error.message}`);
+          },
+        }
+      );
   };
   
   return (

@@ -9,6 +9,7 @@
   "weekend-days": "sb-nd",
   "qty": "szt",
   "weight": "g",
+  "weight-tooltip": "Ten produkt jest sprzedawany po stałej cenie. Rzeczywista waga może wynosić {min}–{max} g i nie wpływa na koszt.",
   "delete": "Usuń",
   "cancel": "Anuluj",
   "confirm-delete": "Potwierdzenie usunięcia",
@@ -210,6 +211,8 @@
     "post-box-description": "Wybierz paczkomat",
     "post-box-search": "Szukaj paczkomatu...",
     "post-box-loading-error": "Błąd podczas ładowania paczkomatów",
+    "post-box-reload-message": "Proszę odświeżyć stronę",
+    "post-box-reload-button": "Odśwież",
     "post-box-not-found": "Nie znaleziono paczkomatów",
     "post-box-no-results": "Brak dostępnych paczkomatów",
 

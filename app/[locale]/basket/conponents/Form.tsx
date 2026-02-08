@@ -13,15 +13,15 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from "@/components/ui/textarea";
 import { useBasketStore } from "@/store/useBasketStore";
 import { useStatesStore } from "@/store/useStatesStore";
-import { useUser } from "@/hooks/useAuth";
+import { useUser as useFirebaseUser } from "@/hooks/useAuth";
 import { useDeliveryAddress } from "@/hooks/useDeliveryAddress";
 import InpostLockerSearch from "@/components/InpostLockerSearch";
 
 export default function Form() {
   const { order, setOrder } = useBasketStore();
   const { setIsLoginOpen } = useStatesStore();
-  const { data: user } = useUser();
-  const { data: deliveryAddress } = useDeliveryAddress();
+  const { data: firebaseUser, isLoading: isLoadingUser } = useFirebaseUser();
+  const { data: deliveryAddress, isLoading: isLoadingAddress } = useDeliveryAddress();
   const t = useTranslations();
   // Dynamic Zod schema with i18n validation messages
   const schema = useMemo(() => 
@@ -68,12 +68,57 @@ export default function Form() {
     setOrder('comment', watch('comment') || '');
   });
 
-  // Auto-fill form with saved delivery address
+  // Sync form with store when data is loaded from localStorage
   useEffect(() => {
-    if (deliveryAddress && user) {
-      const hasEmptyFields = !order.address || !order.postalCode;
+    // Wait for store to hydrate from localStorage
+    if (order.name || order.surname || order.address || order.phone || order.email) {
+      reset({
+        name: order.name,
+        surname: order.surname,
+        company: order.company,
+        address: order.address,
+        postalCode: order.postalCode,
+        phone: order.phone,
+        email: order.email,
+        comment: order.comment,
+      });
+    }
+  }, [order.name, order.surname, order.address, order.phone, order.email, order.company, order.postalCode, order.comment, reset]);
+
+  // Auto-fill from Firebase User and saved delivery address
+  useEffect(() => {
+    if (!firebaseUser) return;
+    
+    const displayName = firebaseUser.displayName || '';
+    const [firstName = '', ...lastNameParts] = displayName.split(' ');
+    const lastName = lastNameParts.join(' ');
+    
+    // Auto-fill user data if fields are empty
+    const hasEmptyNameFields = !order.name || !order.surname;
+    const hasEmptyEmail = !order.email;
+    const hasEmptyPhone = !order.phone;
+    
+    if (hasEmptyNameFields && firstName) {
+      setOrder('name', firstName);
+    }
+    
+    if (hasEmptyNameFields && lastName) {
+      setOrder('surname', lastName);
+    }
+    
+    if (hasEmptyEmail && firebaseUser.email) {
+      setOrder('email', firebaseUser.email);
+    }
+    
+    if (hasEmptyPhone && firebaseUser.phoneNumber) {
+      setOrder('phone', firebaseUser.phoneNumber);
+    }
+    
+    // Auto-fill delivery address if available
+    if (deliveryAddress) {
+      const hasEmptyAddressFields = !order.address || !order.postalCode;
       
-      if (hasEmptyFields) {
+      if (hasEmptyAddressFields) {
         setOrder('address', deliveryAddress.address);
         setOrder('postalCode', deliveryAddress.postalCode);
         setOrder('locality', deliveryAddress.locality);
@@ -83,15 +128,21 @@ export default function Form() {
         if (deliveryAddress.lockerNumber) {
           setOrder('lockerNumber', deliveryAddress.lockerNumber);
         }
-        
-        reset({
-          ...watch(),
-          address: deliveryAddress.address,
-          postalCode: deliveryAddress.postalCode,
-        });
       }
     }
-  }, [deliveryAddress, user, order.address, order.postalCode, setOrder, reset, watch]);
+    
+    // Update form with current order state
+    reset({
+      name: order.name || firstName || '',
+      surname: order.surname || lastName || '',
+      company: order.company,
+      address: order.address,
+      postalCode: order.postalCode,
+      phone: order.phone || firebaseUser.phoneNumber || '',
+      email: order.email || firebaseUser.email || '',
+      comment: order.comment,
+    });
+  }, [firebaseUser, deliveryAddress, reset]);
 
   // Auto-switch to payu payment when courier or locker is selected
   useEffect(() => {
@@ -103,7 +154,7 @@ export default function Form() {
   return (
     <form >
       <h2 className="font-bold w-full rubik text-[32px] mb-6"> {t('basket.main-title')} </h2>
-      {!user && (
+      {!firebaseUser && (
       <>
       <p className="rubik text-gray  mb-3 "> {t('basket.main-tooltip')} </p>
         <Button 
@@ -220,7 +271,31 @@ export default function Form() {
               <label htmlFor="postBox" className="text-sm text-gray"> {t('delivery-form.post-box-title')} </label>
               <InpostLockerSearch
                 value={order.lockerNumber || ''}
-                onChange={(value) => { setOrder('lockerNumber', value) }}
+                onChange={(lockerId, lockerData) => {
+                  // Сохраняем ID локера
+                  setOrder('lockerNumber', lockerId);
+                  
+                  // Если есть полные данные адреса, заполняем форму
+                  if (lockerData) {
+                    if (lockerData.address) {
+                      setOrder('address', lockerData.address);
+                      reset({
+                        ...watch(),
+                        address: lockerData.address,
+                      });
+                    }
+                    if (lockerData.postalCode) {
+                      setOrder('postalCode', lockerData.postalCode);
+                      reset({
+                        ...watch(),
+                        postalCode: lockerData.postalCode,
+                      });
+                    }
+                    if (lockerData.locality) {
+                      setOrder('locality', lockerData.locality);
+                    }
+                  }
+                }}
                 placeholder={t('delivery-form.post-box-description')}
                 className="w-full !border-solid shadow-none !border-gray-200"
               />
