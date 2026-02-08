@@ -31,14 +31,39 @@ export default function Form() {
       company: z.string().optional(),
       address: z.string().min(5, t('validation.address-min')),
       postalCode: z.string().min(4, t('validation.postal-code-min')),
-
-
+      locality: z.string().min(2, t('validation.locality-min') || 'Locality must be at least 2 characters'),
       phone: z.string().min(10, t('validation.phone-min')),
       email: z.string().email(t('validation.email-invalid')),
-
       comment: z.string().optional(),
+      billAddress: z.string().optional(),
+      billPostalCode: z.string().optional(),
+      billLocality: z.string().optional(),
+    }).superRefine((data, ctx) => {
+      if (order.isWaybillToAnotherAddress) {
+        if (!data.billAddress || data.billAddress.length < 5) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: t('validation.address-min'),
+            path: ['billAddress'],
+          });
+        }
+        if (!data.billPostalCode || data.billPostalCode.length < 4) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: t('validation.postal-code-min'),
+            path: ['billPostalCode'],
+          });
+        }
+        if (!data.billLocality || data.billLocality.length < 2) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: t('validation.locality-min') || 'Locality must be at least 2 characters',
+            path: ['billLocality'],
+          });
+        }
+      }
     }),
-    [t]
+    [t, order.isWaybillToAnotherAddress]
   );
 
   type FormData = z.infer<typeof schema>;
@@ -50,9 +75,13 @@ export default function Form() {
       company: order.company,
       address: order.address,
       postalCode: order.postalCode,
+      locality: order.locality,
       phone: order.phone,
       email: order.email,
       comment: order.comment,
+      billAddress: order.billAddress,
+      billPostalCode: order.billPostalCode,
+      billLocality: order.billLocality,
     },
     resolver: zodResolver(schema),
   });
@@ -63,9 +92,13 @@ export default function Form() {
     setOrder('company', watch('company') || '');
     setOrder('address', watch('address'));
     setOrder('postalCode', watch('postalCode'));
+    setOrder('locality', watch('locality'));
     setOrder('phone', watch('phone'));
     setOrder('email', watch('email'));
     setOrder('comment', watch('comment') || '');
+    setOrder('billAddress', watch('billAddress') || '');
+    setOrder('billPostalCode', watch('billPostalCode') || '');
+    setOrder('billLocality', watch('billLocality') || '');
   });
 
   // Sync form with store when data is loaded from localStorage
@@ -78,12 +111,16 @@ export default function Form() {
         company: order.company,
         address: order.address,
         postalCode: order.postalCode,
+        locality: order.locality,
         phone: order.phone,
         email: order.email,
         comment: order.comment,
+        billAddress: order.billAddress,
+        billPostalCode: order.billPostalCode,
+        billLocality: order.billLocality,
       });
     }
-  }, [order.name, order.surname, order.address, order.phone, order.email, order.company, order.postalCode, order.comment, reset]);
+  }, [order.name, order.surname, order.address, order.phone, order.email, order.company, order.postalCode, order.locality, order.comment, order.billAddress, order.billPostalCode, order.billLocality, reset]);
 
   // Auto-fill from Firebase User and saved delivery address
   useEffect(() => {
@@ -122,7 +159,6 @@ export default function Form() {
         setOrder('address', deliveryAddress.address);
         setOrder('postalCode', deliveryAddress.postalCode);
         setOrder('locality', deliveryAddress.locality);
-        setOrder('isCity', deliveryAddress.isCity);
         setOrder('deliveryType', deliveryAddress.deliveryType);
         
         if (deliveryAddress.lockerNumber) {
@@ -138,9 +174,13 @@ export default function Form() {
       company: order.company,
       address: order.address,
       postalCode: order.postalCode,
+      locality: order.locality,
       phone: order.phone || firebaseUser.phoneNumber || '',
       email: order.email || firebaseUser.email || '',
       comment: order.comment,
+      billAddress: order.billAddress,
+      billPostalCode: order.billPostalCode,
+      billLocality: order.billLocality,
     });
   }, [firebaseUser, deliveryAddress, reset]);
 
@@ -196,6 +236,13 @@ export default function Form() {
           error={errors.company?.message?.toString()}
         />
         <CustomInput
+          label={t('delivery-form.locality')} 
+          placeholder={t('delivery-form.locality-placeholder')} 
+          register={register} 
+          name="locality" 
+          error={errors.locality?.message?.toString()}
+        />
+        <CustomInput
           label={t('delivery-form.address')} 
           placeholder={t('delivery-form.address')} 
           register={register} 
@@ -208,11 +255,6 @@ export default function Form() {
           register={register} 
           name="postalCode" 
           error={errors.postalCode?.message?.toString()}
-        />
-        <RadioGroupComponent 
-          items={[{ value: 'city', label: t('delivery-form.city') }, { value: 'village', label: t('delivery-form.village') }]} 
-          value={order.isCity ? 'city' : 'village'} 
-          onChange={(value) => { setOrder('isCity', value === 'city') }} 
         />  
         
         <div className="relative flex flex-col gap-2">
@@ -253,9 +295,36 @@ export default function Form() {
         />
       </div>
       <div className="flex items-center gap-2 mt-3 mb-5 cursor-pointer">
-        <Checkbox id="anotherAddress" checked={order.isAnotherAddress} onCheckedChange={(checked) => setOrder('isAnotherAddress', checked === 'indeterminate' ? false : checked)} />
+        <Checkbox id="anotherAddress" checked={order.isWaybillToAnotherAddress} onCheckedChange={(checked) => setOrder('isWaybillToAnotherAddress', checked === 'indeterminate' ? false : checked)} />
         <label htmlFor="anotherAddress" className="text-sm text-gray cursor-pointer"> {t('delivery-form.another-address-checkbox')} </label>
       </div>
+      
+      {order.isWaybillToAnotherAddress && (
+        <div className="flex flex-col gap-5 bg-white px-6 py-7 rounded-xl mb-3">
+          <h3 className="font-bold w-full rubik text-[24px]"> {t('delivery-form.another-address-title')} </h3>
+          <CustomInput
+            label={t('delivery-form.address')} 
+            placeholder={t('delivery-form.address')} 
+            register={register} 
+            name="billAddress" 
+            error={errors.billAddress?.message?.toString()}
+          />
+          <CustomInput
+            label={t('delivery-form.postal-code')} 
+            placeholder={t('delivery-form.postal-code')} 
+            register={register} 
+            name="billPostalCode" 
+            error={errors.billPostalCode?.message?.toString()}
+          />
+          <CustomInput
+            label={t('delivery-form.locality')} 
+            placeholder={t('delivery-form.locality-placeholder')} 
+            register={register} 
+            name="billLocality" 
+            error={errors.billLocality?.message?.toString()}
+          />
+        </div>
+      )}
       <div className="flex flex-col gap-5 bg-white px-6 py-7 rounded-xl mb-3">
         <h3 className="font-bold w-full rubik text-[24px]"> {t('delivery-form.delivery-type')} </h3>
           <RadioGroupComponent 

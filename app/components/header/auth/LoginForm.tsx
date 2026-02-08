@@ -87,15 +87,34 @@ const PhoneForm = ({ setConfirmationResult }: { setConfirmationResult: (result: 
     defaultValues: { phone: "" },
   });
 
-  const sendSMS = async (phoneNumber: string) => {
+  const onSubmit = async (data: FormValues) => {
+    setLoading(true);
+    setError('');
+    
+    const phoneNumber = data.phone.startsWith('+') ? data.phone : `+${data.phone}`;
+    
+    // Cleanup any existing reCAPTCHA
+    if (window.recaptchaVerifier) {
+      try {
+        window.recaptchaVerifier.clear();
+      } catch (e) {
+        // Ignore
+      }
+      window.recaptchaVerifier = undefined;
+    }
+    
     try {
-      const confirmation = await sendPhoneVerification(phoneNumber, window.recaptchaVerifier);
+      // Setup reCAPTCHA
+      const appVerifier = setupRecaptcha();
+      
+      // Send SMS
+      const confirmation = await sendPhoneVerification(phoneNumber, appVerifier);
       setConfirmationResult(confirmation);
       setPhoneNumber(phoneNumber);
       setIsCodeSent(true);
       setLoading(false);
     } catch (err: any) {
-      console.error('Error sending code:', err);
+      console.error('Error sending verification code:', err);
       
       if (err.code === 'auth/invalid-phone-number') {
         setError(t('invalid-phone-number'));
@@ -107,40 +126,6 @@ const PhoneForm = ({ setConfirmationResult }: { setConfirmationResult: (result: 
         setError(err.message || t('error-sending-code'));
       }
       
-      if (window.recaptchaVerifier) {
-        try {
-          window.recaptchaVerifier.clear();
-          window.recaptchaVerifier = undefined;
-        } catch (e) {
-          console.warn('Error clearing recaptcha', e);
-        }
-      }
-      setLoading(false);
-    }
-  };
-
-  const onSubmit = async (data: FormValues) => {
-    setLoading(true);
-    setError('');
-    
-    const phoneNumber = data.phone.startsWith('+') ? data.phone : `+${data.phone}`;
-    
-    if (window.recaptchaVerifier) {
-      try {
-        window.recaptchaVerifier.clear();
-      } catch (e) {
-        console.warn('Clear error:', e);
-      }
-      window.recaptchaVerifier = undefined;
-    }
-    
-    try {
-      await setupRecaptcha(() => {
-        sendSMS(phoneNumber);
-      });
-    } catch (err: any) {
-      console.error('Setup recaptcha error:', err);
-      setError('Failed to initialize reCAPTCHA');
       setLoading(false);
     }
   };
@@ -260,48 +245,32 @@ const VerificationCode = ({
     }
   };
 
-  const resendSMS = async () => {
-    try {
-      const confirmation = await sendPhoneVerification(phoneNumber, window.recaptchaVerifier);
-      setConfirmationResult(confirmation);
-      setCode('');
-      setLoading(false);
-    } catch (err: any) {
-      console.error('Error resending code:', err);
-      setError(t('error-sending-code'));
-      setLoading(false);
-      
-      if (window.recaptchaVerifier) {
-        try {
-          window.recaptchaVerifier.clear();
-          window.recaptchaVerifier = undefined;
-        } catch (e) {
-          console.warn('Error clearing recaptcha', e);
-        }
-      }
-    }
-  };
-
   const handleResend = async () => {
     setLoading(true);
     setError('');
     
+    // Cleanup any existing reCAPTCHA
     if (window.recaptchaVerifier) {
       try {
         window.recaptchaVerifier.clear();
       } catch (e) {
-        console.warn('Clear error:', e);
+        // Ignore
       }
       window.recaptchaVerifier = undefined;
     }
     
     try {
-      await setupRecaptcha(() => {
-        resendSMS();
-      });
+      // Setup reCAPTCHA
+      const appVerifier = setupRecaptcha();
+      
+      // Resend SMS
+      const confirmation = await sendPhoneVerification(phoneNumber, appVerifier);
+      setConfirmationResult(confirmation);
+      setCode('');
+      setLoading(false);
     } catch (err: any) {
-      console.error('Setup recaptcha error:', err);
-      setError('Failed to initialize reCAPTCHA');
+      console.error('Error resending verification code:', err);
+      setError(t('error-sending-code'));
       setLoading(false);
     }
   };

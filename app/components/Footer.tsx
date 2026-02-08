@@ -85,11 +85,11 @@ export default function Footer() {
             {t('header.contact')}
           </h3>
           <ul className="flex flex-col gap-4 text-center lg:text-left">
-            <li rel="tel:+48884826064" className="font-semibold">
-              {t('header.phone')}
+            <li className="font-semibold">
+              <a href="tel:+48884826064" className="hover:underline">{t('header.phone')}</a>
             </li>
-            <li rel="mailto:info@serceoceanu.com.pl" className="font-semibold">
-              {t('header.email')}
+            <li className="font-semibold">
+              <a href="mailto:info@serceoceanu.com.pl" className="hover:underline">{t('header.email')}</a>
             </li>
           </ul>
         </div>
@@ -115,18 +115,20 @@ export default function Footer() {
               <a 
                 href="https://www.instagram.com/serce.oceanu.pl" 
                 target="_blank" 
-                rel="noopener noreferrer"
+                rel="noopener noreferrer nofollow"
                 className="block"
+                aria-label="Instagram Serce Oceanu"
               >
-                <Image src="/assets/images/inst-icon.png" alt="Instagram" width={36} height={36} className="cursor-pointer size-10 hover:opacity-80 transition-opacity" />
+                <Image src="/assets/images/inst-icon.png" alt="Instagram Serce Oceanu" width={36} height={36} className="cursor-pointer size-10 hover:opacity-80 transition-opacity" />
               </a>
             </li>
             <li className="flex justify-center items-center">
               <a 
                 href="https://www.tiktok.com/@serce_oceanu" 
                 target="_blank" 
-                rel="noopener noreferrer"
+                rel="noopener noreferrer nofollow"
                 className=""
+                aria-label="TikTok Serce Oceanu"
               >
                 <FaTiktok size={36} className="cursor-pointer size-8 hover:opacity-80 transition-opacity text-black " />
               </a>
@@ -135,8 +137,9 @@ export default function Footer() {
           <a 
             href="https://t.me/Serce_Oceanu" 
             target="_blank" 
-            rel="noopener noreferrer"
+            rel="noopener noreferrer nofollow"
             className="block"
+            aria-label="Telegram Serce Oceanu"
           >
             <Button size="lg" className="w-full bg-[#1599DA] h-[48px] rounded-2xl text-lg font-light rubik flex items-center justify-center gap-3 mb-6 hover:opacity-90 transition-opacity">
               <RiTelegram2Fill size={20} />

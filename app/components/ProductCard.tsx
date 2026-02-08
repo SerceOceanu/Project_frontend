@@ -67,6 +67,7 @@ export default function ProductCard({ product }: { product: Product }) {
             width={275}
             height={215}
             className="object-cover rounded-2xl w-full h-[215px] "
+            loading="lazy"
           />
       </div>
       <div className='flex flex-col px-2 flex-1'>

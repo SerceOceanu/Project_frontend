@@ -13,7 +13,10 @@ interface Order {
   phone: string;
   email: string;
 
-  isAnotherAddress: boolean;
+  isWaybillToAnotherAddress: boolean;
+  billAddress: string;
+  billPostalCode: string;
+  billLocality: string;
 
   deliveryType: 'pickup' | 'courier' | 'locker';
   lockerNumber?: string;
@@ -51,7 +54,10 @@ export const useBasketStore = create<BasketStore>()(
     isCity: false,
     phone: '',
     email: '',
-    isAnotherAddress: false,
+    isWaybillToAnotherAddress: false,
+    billAddress: '',
+    billPostalCode: '',
+    billLocality: '',
     deliveryType: 'pickup',
     lockerNumber: '',
     paymentType: 'payu',
@@ -74,7 +80,10 @@ export const useBasketStore = create<BasketStore>()(
       isCity: false,
       phone: '',
       email: '',
-      isAnotherAddress: false,
+      isWaybillToAnotherAddress: false,
+      billAddress: '',
+      billPostalCode: '',
+      billLocality: '',
       deliveryType: 'pickup',
       lockerNumber: '',
       paymentType: 'payu',

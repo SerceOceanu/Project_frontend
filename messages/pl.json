@@ -193,11 +193,14 @@
     "company": "Nazwa firmy (opcjonalnie)",
     "address": "Ulica i numer domu*",
     "postal-code": "Kod pocztowy*",
+    "locality": "Miasto/Wieś*",
+    "locality-placeholder": "Wprowadź nazwę miasta lub wsi",
     "city": "Miasto",
     "village": "Wieś",
     "phone" : "Numer telefonu*",
     "phone-placeholder" : "Wprowadź numer telefonu",
     "another-address-checkbox": "Nałożenie na inny adres",
+    "another-address-title": "Adres do naklejki",
 
     "delivery-type": "Typ dostawy",
     "delivery-type-1": "Samochód: (możliwa płatność gotówką)",
@@ -235,6 +238,8 @@
     "surname-min": "Nazwisko musi zawierać minimum 2 znaki",
     "address-min": "Adres musi zawierać minimum 5 znaków",
     "postal-code-min": "Kod pocztowy musi zawierać minimum 4 znaki",
+    "locality-min": "Miasto/Wieś musi zawierać minimum 2 znaki",
+    "another-address-required": "Pola adresu do naklejki są wymagane",
     "phone-min": "Numer telefonu musi zawierać minimum 10 znaków",
     "email-invalid": "Nieprawidłowy adres email",
     "code-invalid": "Nieprawidłowy kod weryfikacyjny"
@@ -252,5 +257,41 @@
   "accept-regulations": "Zapoznałem się z Regulaminem i Warunkami",
   "order-success-title": "Zamówienie zostało pomyślnie złożone!",
   "order-success-description": "Dziękujemy za zamówienie! Już starannie pakujemy Twoje owoce morza i przygotowujemy je do wysyłki",
-  "order-success-button": "Na stronę główną"
+  "order-success-button": "Na stronę główną",
+  "seo": {
+    "home": {
+      "title": "Serce Oceanu - Świeże owoce morza i ryby z dostawą w całej Polsce | Kup online",
+      "description": "Serce Oceanu - rodzinny biznes z dostawą świeżych owoców morza w całej Polsce. Szeroki asortyment: chłodzone ryby, mrożone owoce morza, gotowe produkty, marynowane ryby i przekąski. Szybka dostawa InPost w ciągu 1 dnia. Zamawiaj świeże owoce morza online z gwarancją jakości.",
+      "keywords": "owoce morza Polska, świeże ryby dostawa, kup owoce morza online, chłodzone ryby, mrożone owoce morza, marynowane ryby, gotowe produkty z ryb, przekąski z owoców morza, dostawa owoców morza InPost, świeże owoce morza Warszawa, ryby online Polska, owoce morza dla rodziny, jakościowe owoce morza, rodzinny biznes owoce morza",
+      "intro-title": "Świeże owoce morza z dostawą w całej Polsce",
+      "intro-text": "Serce Oceanu to rodzinny biznes stworzony z miłością do wysokiej jakości owoców morza i tradycji. Oferujemy szeroki asortyment świeżych owoców morza: od chłodzonych ryb po gotowe dania i przekąski. Każdy produkt jest starannie wybierany, abyś otrzymywał tylko najlepsze dla swojej rodziny.",
+      "why-us-title": "Dlaczego wybierają nas",
+      "why-us-1": "Świeżość bez kompromisów - każdy produkt jest wybierany z najwyższą starannością",
+      "why-us-2": "Szybka dostawa - w ciągu 1 dnia w całej Polsce przez InPost",
+      "why-us-3": "Niezawodne pakowanie - termoboxy z chłodzącymi elementami",
+      "why-us-4": "Rodzinne tradycje - wybieramy to, co podalibyśmy na własny stół"
+    },
+    "catalogue": {
+      "title": "Katalog owoców morza - Serce Oceanu",
+      "description": "Szeroki asortyment świeżych owoców morza: produkty chłodzone, mrożone, gotowe, marynowane i przekąski. Dostawa w całej Polsce."
+    },
+    "product": {
+      "title": "{name} - Kup w Serce Oceanu",
+      "description": "{name} - {description}. Świeże owoce morza z dostawą w Polsce. Zamawiaj online w Serce Oceanu."
+    },
+    "about": {
+      "title": "O nas - Serce Oceanu | Rodzinny biznes owoców morza",
+      "description": "Serce Oceanu - rodzinny biznes z dostawą świeżych owoców morza w Polsce. Stworzony na podstawie szacunku dla tradycji i wierzącym w to, że jedzenie łączy ludzi. Ponad 42 000 zadowolonych klientów. Wysokiej jakości owoce morza, które łączą rodzinę przy jednym stole. Świeżość bez kompromisów, zaufanie i otwartość.",
+      "keywords": "o nas Serce Oceanu, rodzinny biznes owoce morza, historia firmy owoce morza, jakościowe owoce morza Polska, tradycje owoców morza, świeżość owoców morza, zaufanie klientów, owoce morza dla rodziny"
+    },
+    "delivery": {
+      "title": "Dostawa - Serce Oceanu | Szybka dostawa owoców morza w Polsce",
+      "description": "Dostawa świeżych owoców morza w całej Polsce. InPost Paczkomaty (12 zł) i dostawa kurierska InPost (15 zł). Szybka dostawa w ciągu 1 dnia. Niezawodne pakowanie w termoboxach z chłodzącymi elementami. Darmowa dostawa przy zamówieniu od określonej kwoty.",
+      "keywords": "dostawa owoców morza Polska, dostawa InPost, dostawa kurierska owoców morza, szybka dostawa ryb, dostawa w ciągu 1 dnia, termoboxy dla owoców morza, dostawa InPost Paczkomaty"
+    },
+    "basket": {
+      "title": "Koszyk - Serce Oceanu",
+      "description": "Składanie zamówienia na owoce morza. Szybkie i wygodne zamówienie z dostawą w Polsce."
+    }
+  }
 }

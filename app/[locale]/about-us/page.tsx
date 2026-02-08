@@ -46,7 +46,7 @@ export default function AboutUs() {
         <div className='absolute top-0 left-0 w-full h-full bg-white/80 rounded-[40px] z-10' />
         <div className='bg-transparent flex flex-col lg:flex-row justify-between relative z-10'>
           <div className="flex flex-col p-5 lg:p-[60px] justify-between flex-1">
-            <Image src="/assets/images/logo.png" alt="logo" width={84} height={70} className="hidden lg:block size-[84px] h-[70px]" />
+            <Image src="/assets/images/logo.png" alt={t('name')} width={84} height={70} className="hidden lg:block size-[84px] h-[70px]" />
             <div>
               <h1 className="text-[32px] font-bold rubik text-orange mb-5">
                 {t('header.about-us')}
@@ -58,7 +58,7 @@ export default function AboutUs() {
 
           </div>
           <div className="w-full h-[300px] lg:w-[430px] lg:h-[430px] xl:w-[490px] xl:h-[490px] flex-shrink-0 p-5 lg:p-0">
-            <Image src="/assets/images/image-about-us.png" alt="about-us" width={490} height={490} className="rounded-[16px] w-full h-full object-cover" />
+            <Image src="/assets/images/image-about-us.png" alt={t('header.about-us')} width={490} height={490} className="rounded-[16px] w-full h-full object-cover" />
           </div>
         </div>
       </div>
@@ -104,10 +104,10 @@ export default function AboutUs() {
           </div>
 
           <div className='col-span-1 grid grid-cols-1 md:grid-cols-2 gap-3 '>
-            <Image src="/assets/images/history-1.png" alt="about-us" width={335} height={467} className="rounded-[16px] object-cover h-[225px] md:h-full w-full" />
+            <Image src="/assets/images/history-1.png" alt={`${t('about-us.history')} - ${t('name')}`} width={335} height={467} className="rounded-[16px] object-cover h-[225px] md:h-full w-full" />
             <div className='flex flex-col gap-5'>
-              <Image src="/assets/images/history-2.png" alt="about-us" width={335} height={223} className="rounded-[16px] object-cover h-full w-full max-h-[223px] md:max-h-full" />
-              <Image src="/assets/images/history-3.png" alt="about-us" width={335} height={223} className="rounded-[16px] object-cover h-full w-full max-h-[223px] md:max-h-full" />
+              <Image src="/assets/images/history-2.png" alt={`${t('about-us.history')} - ${t('name')}`} width={335} height={223} className="rounded-[16px] object-cover h-full w-full max-h-[223px] md:max-h-full" />
+              <Image src="/assets/images/history-3.png" alt={`${t('about-us.history')} - ${t('name')}`} width={335} height={223} className="rounded-[16px] object-cover h-full w-full max-h-[223px] md:max-h-full" />
             </div>
           </div>
         </div>

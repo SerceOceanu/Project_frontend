@@ -21,7 +21,7 @@ export default function Header() {
               <Link href="/" className="flex items-center mr-2 xl:mr-[30px] ml-2.5">
                 <Image 
                   src="/assets/images/logo.png" 
-                  alt="Cerce Oceanu" 
+                  alt={t('name')} 
                   width={50} 
                   height={40} 
                 />

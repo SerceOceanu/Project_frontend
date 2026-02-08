@@ -12,7 +12,10 @@ interface OrderData {
   isCity: boolean;
   phone: string;
   email: string;
-  isAnotherAddress: boolean;
+  isWaybillToAnotherAddress: boolean;
+  billAddress?: string;
+  billPostalCode?: string;
+  billLocality?: string;
   deliveryType: 'pickup' | 'courier' | 'locker';
   lockerNumber?: string;
   paymentType: 'cash' | 'payu';
@@ -51,11 +54,14 @@ export function useCreateOrder() {
           address: orderData.address,
           locality: orderData.locality || 'Warszawa',
           postalCode: orderData.postalCode,
-          isCity: orderData.isCity,
+          isCity: false, // Deprecated: теперь используется только locality
           deliveryType: orderData.deliveryType,
           lockerNumber: orderData.lockerNumber || '',
           paymentType: orderData.paymentType,
-          isAnotherAddress: orderData.isAnotherAddress,
+          isWaybillToAnotherAddress: orderData.isWaybillToAnotherAddress,
+          billAddress: orderData.billAddress || '',
+          billPostalCode: orderData.billPostalCode || '',
+          billLocality: orderData.billLocality || '',
         },
       };
 

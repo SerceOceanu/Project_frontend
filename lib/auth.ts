@@ -42,10 +42,9 @@ export const handleRedirectResult = async (): Promise<User | null> => {
   return null;
 };
 
-export const setupRecaptcha = async (onSignInSubmit: () => void): Promise<RecaptchaVerifier> => {
+export const setupRecaptcha = (containerId: string = 'recaptcha-container'): RecaptchaVerifier => {
   cleanupRecaptcha();
   
-  const containerId = 'recaptcha-container';
   const container = document.getElementById(containerId);
   if (!container) {
     throw new Error(`Container with id "${containerId}" not found`);
@@ -54,17 +53,14 @@ export const setupRecaptcha = async (onSignInSubmit: () => void): Promise<Recapt
   const recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
     size: 'invisible',
     callback: (response: any) => {
-      onSignInSubmit();
+      // reCAPTCHA solved, allow signInWithPhoneNumber.
     },
     'expired-callback': () => {
-      console.warn('⚠️ reCAPTCHA expired');
+      // Response expired. Ask user to solve reCAPTCHA again.
     }
   });
 
   (window as any).recaptchaVerifier = recaptchaVerifier;
-  
-  const widgetId = await recaptchaVerifier.render();
-  (window as any).recaptchaWidgetId = widgetId;
   
   return recaptchaVerifier;
 };
@@ -73,12 +69,13 @@ export const cleanupRecaptcha = () => {
   if ((window as any).recaptchaVerifier) {
     try {
       (window as any).recaptchaVerifier.clear();
-      console.log('✅ reCAPTCHA verifier cleared');
     } catch (e) {
-      console.warn('⚠️ Error clearing verifier:', e);
+      // Ignore errors during cleanup
     }
     (window as any).recaptchaVerifier = null;
   }
+  
+  (window as any).recaptchaWidgetId = undefined;
   
   const container = document.getElementById('recaptcha-container');
   if (container) {
@@ -106,20 +103,15 @@ export const sendPhoneVerification = async (
     (window as any).confirmationResult = confirmationResult;
     return confirmationResult;
   } catch (error: any) {
+    // Error; SMS not sent
+    // Reset the reCAPTCHA
     if ((window as any).recaptchaWidgetId !== undefined) {
       (window as any).grecaptcha?.reset((window as any).recaptchaWidgetId);
-    } else if ((window as any).recaptchaVerifier) {
-      (window as any).recaptchaVerifier.render().then((widgetId: number) => {
+    } else {
+      // Or, if you haven't stored the widget ID:
+      (window as any).recaptchaVerifier?.render().then((widgetId: number) => {
         (window as any).grecaptcha?.reset(widgetId);
       });
-    }
-    
-    if (error.code === 'auth/invalid-phone-number') {
-      throw new Error('Неправильний формат номера телефону');
-    } else if (error.code === 'auth/too-many-requests') {
-      throw new Error('Забагато спроб. Спробуйте пізніше');
-    } else if (error.code === 'auth/quota-exceeded') {
-      throw new Error('Перевищено ліміт SMS. Спробуйте пізніше');
     }
     
     throw error;
@@ -131,10 +123,9 @@ export const verifyPhoneCode = async (
   code: string
 ): Promise<User> => {
   try {
-    console.log('🔐 Verifying code:', code);
     const result = await confirmationResult.confirm(code);
     const user = result.user;
-    console.log('✅ Phone verification successful, user:', user.uid);
+    // User signed in successfully.
     
     const token = await user.getIdToken();
     
@@ -154,14 +145,7 @@ export const verifyPhoneCode = async (
     
     return user;
   } catch (error: any) {
-    console.error('❌ Error verifying code:', error);
-    
-    if (error.code === 'auth/invalid-verification-code') {
-      throw new Error('Неправильний код підтвердження');
-    } else if (error.code === 'auth/code-expired') {
-      throw new Error('Код підтвердження застарів');
-    }
-    
+    // User couldn't sign in (bad verification code?)
     throw error;
   }
 };
