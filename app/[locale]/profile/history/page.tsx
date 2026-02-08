@@ -62,6 +62,7 @@ export default function History() {
           name: item.product.name,
           price: item.totalPrice,
           weight: item.product.gramsPerServing,
+          maxWeight: item.product.maxGramsPerServing,
           quantity: item.quantity,
           imageUrl: item.product.imageUrl,
         })),

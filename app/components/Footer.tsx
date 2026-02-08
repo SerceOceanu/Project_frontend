@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/lib/navigation";
 import { Button } from "@/components/ui/button";
 import { RiTelegram2Fill } from "react-icons/ri";
+import { FaTiktok } from "react-icons/fa6";
 export default function Footer() {
   const t = useTranslations(); 
 
@@ -111,16 +112,37 @@ export default function Footer() {
           </h3>
           <ul className="flex gap-5 mb-10 justify-center lg:justify-start">
             <li className="">
-              <Image src="/assets/images/inst-icon.png" alt="icon" width={36} height={36} className="cursor-pointer h-[36px] w-[36px]" />
+              <a 
+                href="https://www.instagram.com/serce.oceanu.pl" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <Image src="/assets/images/inst-icon.png" alt="Instagram" width={36} height={36} className="cursor-pointer size-10 hover:opacity-80 transition-opacity" />
+              </a>
             </li>
-            <li className="">
-              <Image src="/assets/images/fb-icon.png" alt="icon" width={36} height={36} className="cursor-pointer h-[36px] w-[36px]" />
+            <li className="flex justify-center items-center">
+              <a 
+                href="https://www.tiktok.com/@serce_oceanu" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className=""
+              >
+                <FaTiktok size={36} className="cursor-pointer size-8 hover:opacity-80 transition-opacity text-black " />
+              </a>
             </li>
           </ul>
-          <Button size="lg" className=" bg-[#1599DA] h-[48px] rounded-2xl text-lg font-light rubik flex items-center justify-center gap-3 mb-6">
-            <RiTelegram2Fill size={20} />
-            {t('header.support')}
-          </Button>
+          <a 
+            href="https://t.me/Serce_Oceanu" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="block"
+          >
+            <Button size="lg" className="w-full bg-[#1599DA] h-[48px] rounded-2xl text-lg font-light rubik flex items-center justify-center gap-3 mb-6 hover:opacity-90 transition-opacity">
+              <RiTelegram2Fill size={20} />
+              {t('header.support')}
+            </Button>
+          </a>
         </div>
       </section>
       <section className="container border-t py-8 px-4">

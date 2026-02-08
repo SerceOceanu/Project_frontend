@@ -71,7 +71,10 @@ export default function ProductCard({ product }: { product: Product }) {
       <div className='flex flex-col px-2 flex-1'>
         <div className='flex items-start justify-between mb-2'>
           <h3 className="rubik text-2xl font-semibold w-3/4">{productName}</h3>
-          <span className="text-blue font-bold text-lg inter ">{product.gramsPerServing}{t('weight')}</span>
+          <span className="text-blue font-bold text-lg inter ">
+            {product.gramsPerServing}
+            {product.maxGramsPerServing && ` - ${product.maxGramsPerServing}`}{t('weight')}
+          </span>
         </div>
         <p className="text-gray text-sm inter mb-6">
           {productDescription}

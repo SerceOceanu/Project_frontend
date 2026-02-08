@@ -208,6 +208,10 @@
 
     "post-box-title": "Paczkomat*",
     "post-box-description": "Wybierz paczkomat",
+    "post-box-search": "Szukaj paczkomatu...",
+    "post-box-loading-error": "Błąd podczas ładowania paczkomatów",
+    "post-box-not-found": "Nie znaleziono paczkomatów",
+    "post-box-no-results": "Brak dostępnych paczkomatów",
 
     "payment-type": "Typ płatności",
     "payment-type-cash": "Gotówką",

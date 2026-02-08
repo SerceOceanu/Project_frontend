@@ -23,10 +23,10 @@ interface DeliveryAddressesResponse {
 export function useDeliveryAddress() {
   return useQuery<DeliveryAddress | null>({
     queryKey: ['delivery-address', 'latest'],
-    queryFn: async () => {
+    queryFn: async (): Promise<DeliveryAddress | null> => {
       try {
         const response = await apiRequest<DeliveryAddress>('/orders/delivery-info/latest');
-        return response;
+        return response || null;
       } catch (error: any) {
         if (error?.status === 404 || error?.message?.includes('not found')) {
           return null;

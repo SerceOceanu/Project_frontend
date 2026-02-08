@@ -42,20 +42,18 @@ export const handleRedirectResult = async (): Promise<User | null> => {
   return null;
 };
 
-export const setupRecaptcha = (elementId: string): RecaptchaVerifier => {
+export const setupRecaptcha = async (buttonId: string, onSignInSubmit: () => void): Promise<RecaptchaVerifier> => {
   cleanupRecaptcha();
   
-  const container = document.getElementById(elementId);
-  if (!container) {
-    throw new Error(`reCAPTCHA container with id "${elementId}" not found`);
+  const button = document.getElementById(buttonId);
+  if (!button) {
+    throw new Error(`Button with id "${buttonId}" not found`);
   }
-  
-  container.innerHTML = '';
 
-  const recaptchaVerifier = new RecaptchaVerifier(auth, elementId, {
-    size: 'normal',
+  const recaptchaVerifier = new RecaptchaVerifier(auth, buttonId, {
+    size: 'invisible',
     callback: (response: any) => {
-      console.log('✅ reCAPTCHA solved');
+      onSignInSubmit();
     },
     'expired-callback': () => {
       console.warn('⚠️ reCAPTCHA expired');
@@ -63,6 +61,9 @@ export const setupRecaptcha = (elementId: string): RecaptchaVerifier => {
   });
 
   (window as any).recaptchaVerifier = recaptchaVerifier;
+  
+  const widgetId = await recaptchaVerifier.render();
+  (window as any).recaptchaWidgetId = widgetId;
   
   return recaptchaVerifier;
 };
@@ -106,6 +107,10 @@ export const sendPhoneVerification = async (
   } catch (error: any) {
     if ((window as any).recaptchaWidgetId !== undefined) {
       (window as any).grecaptcha?.reset((window as any).recaptchaWidgetId);
+    } else if ((window as any).recaptchaVerifier) {
+      (window as any).recaptchaVerifier.render().then((widgetId: number) => {
+        (window as any).grecaptcha?.reset(widgetId);
+      });
     }
     
     if (error.code === 'auth/invalid-phone-number') {

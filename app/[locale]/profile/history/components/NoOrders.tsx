@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { Link } from "@/lib/navigation";
+
 export default function History() {
   const t = useTranslations();
 
@@ -28,8 +30,10 @@ export default function History() {
           <p className=" text-gray text-center lg:text-left">
             {t('profile.no-orders-text')}
           </p>
-          <Button  className="text-2xl self-center lg:self-start h-[44px] px-6">
-            {t('profile.make-order')}
+          <Button asChild className="text-2xl self-center lg:self-start h-[44px] px-6">
+            <Link href="/catalogue">
+              {t('profile.make-order')}
+            </Link>
           </Button>
         </div>
       </div>

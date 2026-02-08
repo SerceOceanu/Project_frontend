@@ -13,7 +13,7 @@ import { formatCurrency } from "@/lib/currency";
 import ImageSlider from "./ImageSlider";
 
 export default function ProductCardEdit({item}: {item: Product  }) {
-  const { name, description, price, gramsPerServing, imageUrl, imageUrlPL, imageUrlUA, id, inStock } = item;
+  const { name, description, price, gramsPerServing, maxGramsPerServing, imageUrl, imageUrlPL, imageUrlUA, id, inStock } = item;
   
   // Создаем массив изображений из доступных URL
   const images = (() => {
@@ -88,7 +88,9 @@ export default function ProductCardEdit({item}: {item: Product  }) {
                 </h3>
               </>
             )}
-            <span className="text-blue font-bold text-base inter">{gramsPerServing} г</span>
+            <span className="text-blue font-bold text-base inter">
+              {gramsPerServing}{maxGramsPerServing && ` - ${maxGramsPerServing}`} г
+            </span>
           </div>
           <div className="mb-6">
             {typeof description === 'string' ? (

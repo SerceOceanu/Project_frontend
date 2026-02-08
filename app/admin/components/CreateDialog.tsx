@@ -38,7 +38,7 @@ export default function CreateDialog({
       descriptionUA: '',
       price: '',
       gramsPerServing: 0,
-      quantityPerServing: 0,
+      maxGramsPerServing: undefined,
       label: 'none' as const,
       filePL: null,
       fileUA: null,
@@ -58,7 +58,7 @@ export default function CreateDialog({
         ? parseFloat(data.price.replace(',', '.')) 
         : Number(data.price),
       gramsPerServing: Number(data.gramsPerServing) || 0,
-      quantityPerServing: Number(data.quantityPerServing) || 0,
+      maxGramsPerServing: data.maxGramsPerServing ? Number(data.maxGramsPerServing) : undefined,
       label: data.label === 'none' ? 'none' : data.label,
       filePL: data.filePL,
       fileUA: data.fileUA,
@@ -173,11 +173,11 @@ export default function CreateDialog({
                 type="number"
               />
               <CustomInput
-                label="Кількість в 1 порції*"
-                placeholder="Введіть кількість штук"
-                name="quantityPerServing"
+                label="Максимальна вага порції (г)"
+                placeholder="Введіть максимальну вагу (опціонально)"
+                name="maxGramsPerServing"
                 register={register}
-                error={errors.quantityPerServing?.message}
+                error={errors.maxGramsPerServing?.message}
                 type="number"
               />
               <div className="flex flex-col gap-2 relative">

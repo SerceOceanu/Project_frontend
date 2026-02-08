@@ -65,7 +65,9 @@ export const OrderItemProduct = ({ product }: { product: any }) => {
 
         <div className="flex flex-col min-w-0 flex-1">
           <div className="rubik font-semibold text-sm md:text-lg truncate">{productName}</div>
-          <div className="rubik text-sm md:text-base text-orange">{product.weight} {t('weight')} / {product.quantity} {t('qty')}</div>
+          <div className="rubik text-sm md:text-base text-orange">
+            {product.weight}{product.maxWeight && ` - ${product.maxWeight}`} {t('weight')}
+          </div>
         </div>
       </div>
       <div className="inter text-sm md:text-2xl ml-auto text-gray flex-shrink-0">{formatCurrency(product.price)} {t('currency')}</div>

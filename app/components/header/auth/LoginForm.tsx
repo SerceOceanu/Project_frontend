@@ -58,14 +58,15 @@ export default function LoginForm() {
   
   return (
     <div ref={formRef} className='w-full max-w-[460px] absolute top-16 right-2.5 bg-white rounded-xl shadow-xl p-10'>
-      <div id="recaptcha-container"></div>
-      
       <div style={{ display: isCodeSent ? 'none' : 'block' }}>
         <PhoneForm setConfirmationResult={setConfirmationResult} />
       </div>
       <div style={{ display: isCodeSent ? 'block' : 'none' }}>  
         <VerificationCode confirmationResult={confirmationResult} setConfirmationResult={setConfirmationResult} />
       </div>
+      
+      {/* Hidden container for invisible reCAPTCHA */}
+      <div id="recaptcha-container" className="fixed bottom-0 right-0 opacity-0 pointer-events-none" />
     </div>
   );
 }
@@ -86,35 +87,13 @@ const PhoneForm = ({ setConfirmationResult }: { setConfirmationResult: (result: 
     defaultValues: { phone: "" },
   });
 
-  const onSubmit = async (data: FormValues) => {
-    setLoading(true);
-    setError('');
-    
+  const sendSMS = async (phoneNumber: string) => {
     try {
-      const phoneNumber = data.phone.startsWith('+') ? data.phone : `+${data.phone}`;
-      
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      const container = document.getElementById('recaptcha-container');
-      if (!container) {
-        throw new Error('reCAPTCHA container not found');
-      }
-      
-      if (window.recaptchaVerifier) {
-        try {
-          window.recaptchaVerifier.clear();
-        } catch (e) {
-          console.warn('Clear error:', e);
-        }
-        window.recaptchaVerifier = undefined;
-      }
-      
-      const verifier = setupRecaptcha('recaptcha-container');
-      
-      const confirmation = await sendPhoneVerification(phoneNumber, verifier);
+      const confirmation = await sendPhoneVerification(phoneNumber, window.recaptchaVerifier);
       setConfirmationResult(confirmation);
       setPhoneNumber(phoneNumber);
       setIsCodeSent(true);
+      setLoading(false);
     } catch (err: any) {
       console.error('Error sending code:', err);
       
@@ -136,9 +115,28 @@ const PhoneForm = ({ setConfirmationResult }: { setConfirmationResult: (result: 
           console.warn('Error clearing recaptcha', e);
         }
       }
-    } finally {
       setLoading(false);
     }
+  };
+
+  const onSubmit = async (data: FormValues) => {
+    setLoading(true);
+    setError('');
+    
+    const phoneNumber = data.phone.startsWith('+') ? data.phone : `+${data.phone}`;
+    
+    if (window.recaptchaVerifier) {
+      try {
+        window.recaptchaVerifier.clear();
+      } catch (e) {
+        console.warn('Clear error:', e);
+      }
+      window.recaptchaVerifier = undefined;
+    }
+    
+    await setupRecaptcha('sign-in-button', () => {
+      sendSMS(phoneNumber);
+    });
   };
 
   return (
@@ -178,6 +176,7 @@ const PhoneForm = ({ setConfirmationResult }: { setConfirmationResult: (result: 
         )}
         
         <Button 
+          id="sign-in-button"
           type="submit" 
           disabled={loading}
           className="w-full h-10 text-base bg-orange text-white rounded hover:bg-orange/90"
@@ -256,33 +255,44 @@ const VerificationCode = ({
     }
   };
 
+  const resendSMS = async () => {
+    try {
+      const confirmation = await sendPhoneVerification(phoneNumber, window.recaptchaVerifier);
+      setConfirmationResult(confirmation);
+      setCode('');
+      setLoading(false);
+    } catch (err: any) {
+      console.error('Error resending code:', err);
+      setError(t('error-sending-code'));
+      setLoading(false);
+      
+      if (window.recaptchaVerifier) {
+        try {
+          window.recaptchaVerifier.clear();
+          window.recaptchaVerifier = undefined;
+        } catch (e) {
+          console.warn('Error clearing recaptcha', e);
+        }
+      }
+    }
+  };
+
   const handleResend = async () => {
     setLoading(true);
     setError('');
     
-    try {
-      if (window.recaptchaVerifier) {
+    if (window.recaptchaVerifier) {
+      try {
         window.recaptchaVerifier.clear();
-        window.recaptchaVerifier = undefined;
+      } catch (e) {
+        console.warn('Clear error:', e);
       }
-      
-      const container = document.getElementById('recaptcha-container');
-      if (container) {
-        container.innerHTML = '';
-      }
-      
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      const verifier = await setupRecaptcha('recaptcha-container');
-      const confirmation = await sendPhoneVerification(phoneNumber, verifier);
-      setConfirmationResult(confirmation);
-      setCode('');
-    } catch (err: any) {
-      console.error('Error resending code:', err);
-      setError(t('error-sending-code'));
-    } finally {
-      setLoading(false);
+      window.recaptchaVerifier = undefined;
     }
+    
+    await setupRecaptcha('resend-button', () => {
+      resendSMS();
+    });
   };
 
   const handleBack = () => {
@@ -293,10 +303,6 @@ const VerificationCode = ({
       } catch (e) {
         console.warn('Error clearing recaptcha', e);
       }
-    }
-    const container = document.getElementById('recaptcha-container');
-    if (container) {
-      container.innerHTML = '';
     }
     setIsCodeSent(false);
     setCode('');
@@ -347,6 +353,7 @@ const VerificationCode = ({
           {loading ? t('verifying') : t('login-button')} 
         </Button>
         <Button 
+          id="resend-button"
           onClick={handleResend}
           disabled={loading}
           variant="outline" 

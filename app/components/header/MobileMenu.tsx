@@ -162,10 +162,17 @@ export default function MobileMenu() {
             <span className="rubik font-medium">{t('header.work-hours-description')}: 10:00 - 22:00</span>
           </div>
 
-          <Button size="lg" className="w-full bg-[#1599DA] h-[48px] rounded-2xl text-lg font-light rubik flex items-center justify-center gap-3 mb-6">
-            <RiTelegram2Fill size={20} />
-            {t('header.support')}
-          </Button>
+          <a 
+            href="https://t.me/Serce_Oceanu" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="block"
+          >
+            <Button size="lg" className="w-full bg-[#1599DA] h-[48px] rounded-2xl text-lg font-light rubik flex items-center justify-center gap-3 mb-6 hover:opacity-90 transition-opacity">
+              <RiTelegram2Fill size={20} />
+              {t('header.support')}
+            </Button>
+          </a>
 
           <div className={cn(button,'flex-col mb-2.5 items-start')}>
           <p className="text-sm font-medium rubik mb-2">{t('language.change-language')}</p>

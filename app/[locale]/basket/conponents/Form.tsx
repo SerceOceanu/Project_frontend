@@ -10,12 +10,12 @@ import RadioGroupComponent from "./RadioGroup";
 import { PhoneInput } from "@/components/PhoneInput";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox"
-import CustomSelect from "@/components/CustomSelect";
 import { Textarea } from "@/components/ui/textarea";
 import { useBasketStore } from "@/store/useBasketStore";
 import { useStatesStore } from "@/store/useStatesStore";
 import { useUser } from "@/hooks/useAuth";
 import { useDeliveryAddress } from "@/hooks/useDeliveryAddress";
+import InpostLockerSearch from "@/components/InpostLockerSearch";
 
 export default function Form() {
   const { order, setOrder } = useBasketStore();
@@ -103,8 +103,9 @@ export default function Form() {
   return (
     <form >
       <h2 className="font-bold w-full rubik text-[32px] mb-6"> {t('basket.main-title')} </h2>
-      <p className="rubik text-gray  mb-3 "> {t('basket.main-tooltip')} </p>
       {!user && (
+      <>
+      <p className="rubik text-gray  mb-3 "> {t('basket.main-tooltip')} </p>
         <Button 
           type="button" 
           variant="outline" 
@@ -113,6 +114,7 @@ export default function Form() {
         > 
           {t('basket.main-button-enter')} 
         </Button>
+      </>
       )}
       <div className="flex flex-col gap-5 bg-white px-6 py-7 rounded-xl">
         <h3 className="font-bold w-full rubik text-[24px]"> {t('delivery-form.title')} </h3>
@@ -216,11 +218,11 @@ export default function Form() {
           />
           {order.deliveryType === 'locker' && <div className="relative flex flex-col gap-2">
               <label htmlFor="postBox" className="text-sm text-gray"> {t('delivery-form.post-box-title')} </label>
-              <CustomSelect  
+              <InpostLockerSearch
+                value={order.lockerNumber || ''}
+                onChange={(value) => { setOrder('lockerNumber', value) }}
+                placeholder={t('delivery-form.post-box-description')}
                 className="w-full !border-solid shadow-none !border-gray-200"
-                options={[{ label: "1177077", value: "177077" }, { label: "232323", value: "232323" }]} 
-                placeholder={t('delivery-form.post-box-description')} 
-                value={order.lockerNumber || ''} onChange={(value) => { setOrder('lockerNumber', value) }} 
               />
             </div>
           }

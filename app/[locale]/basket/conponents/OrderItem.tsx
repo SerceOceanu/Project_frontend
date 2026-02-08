@@ -33,7 +33,9 @@ export default function OrderItem({ product }: { product: BasketProduct }) {
 
           <div className="flex flex-col w-2/3">
             <div className="rubik font-semibold text-lg truncate ">{productName}</div>
-            <div className="rubik text-orange">{product.gramsPerServing} {t('weight')} / {product.quantityPerServing} {t('qty')}</div>
+            <div className="rubik text-orange">
+              {product.gramsPerServing}{product.maxGramsPerServing && ` - ${product.maxGramsPerServing}`} {t('weight')}
+            </div>
           </div>
         </div>
         <div className="inter text-lg md:text-2xl text-gray flex ml-auto mr-5">{formatCurrency(totalPrice)} {t('currency')}</div>

@@ -172,7 +172,6 @@ export function useCreateProduct() {
       if (!productData.category) throw new Error('Category is required');
       if (!productData.description?.pl || !productData.description?.ua) throw new Error('Description is required for both languages');
       if (productData.gramsPerServing === undefined || productData.gramsPerServing === null) throw new Error('GramsPerServing is required');
-      if (productData.quantityPerServing === undefined || productData.quantityPerServing === null) throw new Error('QuantityPerServing is required');
       if (productData.price === undefined || productData.price === null) throw new Error('Price is required');
       if (!productData.filePL || !productData.fileUA) throw new Error('Files are required for both languages');
       
@@ -182,7 +181,10 @@ export function useCreateProduct() {
       formData.append('description', JSON.stringify({ pl: productData.description.pl, ua: productData.description.ua }));
       formData.append('price', productData.price.toString());
       formData.append('gramsPerServing', productData.gramsPerServing.toString());
-      formData.append('quantityPerServing', productData.quantityPerServing.toString());
+      
+      if (productData.maxGramsPerServing !== undefined && productData.maxGramsPerServing !== null) {
+        formData.append('maxGramsPerServing', productData.maxGramsPerServing.toString());
+      }
       
       if (productData.label && productData.label !== 'none') {
         formData.append('label', productData.label);
@@ -220,7 +222,10 @@ export function useUpdateProduct() {
       }
       formData.append('price', productData.price.toString());
       formData.append('gramsPerServing', productData.gramsPerServing.toString());
-      formData.append('quantityPerServing', productData.quantityPerServing.toString());
+      
+      if (productData.maxGramsPerServing !== undefined && productData.maxGramsPerServing !== null) {
+        formData.append('maxGramsPerServing', productData.maxGramsPerServing.toString());
+      }
       
       if (productData.enabled !== undefined) {
         formData.append('enabled', productData.enabled.toString());

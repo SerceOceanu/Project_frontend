@@ -75,7 +75,9 @@ export default function AdminLoginPage() {
         src="/assets/images/logo.svg" 
         alt="Cerce Oceanu" 
         width={185} 
-        height={140} 
+        height={140}
+        className="cursor-pointer"
+        onClick={() => router.push('/')}
       />
       <h1 className="Rubik font-[300] text-[30px] text-dark mt-3 mb-8">Admin panel</h1>
       <div className='flex flex-col p-8 rounded-xl shadow bg-white w-full max-w-[550px]'>

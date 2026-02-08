@@ -215,6 +215,11 @@
     "delivery-type-32": "Kurier InPost: 15 zł",
     "post-box-title": "Поштомат*",
     "post-box-description": "Вибери поштомат",
+    "post-box-search": "Шукати поштомат...",
+    "post-box-loading-error": "Помилка завантаження поштоматів",
+    "post-box-not-found": "Поштомати не знайдено",
+    "post-box-no-results": "Немає доступних поштоматів",
+    "loading": "Завантаження...",
 
     "payment-type": "Тип оплати",
     "payment-type-cash": "Готівкою",

@@ -7,7 +7,7 @@ export type Product = {
   description: string | { pl: string; ua: string };
   price: number;
   gramsPerServing: number;
-  quantityPerServing: number;
+  maxGramsPerServing?: number;
   imageUrl: string | { pl: string; ua: string };
   imageUrlPL?: string;
   imageUrlUA?: string;
@@ -27,7 +27,7 @@ export type CreateProduct = {
   description: { pl: string; ua: string };
   price: number;
   gramsPerServing: number;
-  quantityPerServing: number;
+  maxGramsPerServing?: number;
   label?: Label;
   filePL?: File;
   fileUA?: File;

@@ -9,7 +9,7 @@ interface OrderProduct {
     name: string;
     price: number;
     gramsPerServing: number;
-    quantityPerServing: number;
+    maxGramsPerServing?: number;
     imageUrl: string;
   };
   totalPrice: number;

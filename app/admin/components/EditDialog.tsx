@@ -81,7 +81,7 @@ export default function EditDialog({
       descriptionUA: '',
       price: '0',
       gramsPerServing: 0,
-      quantityPerServing: 0,
+      maxGramsPerServing: undefined,
       label: 'none' as Label,
       filePL: null as File | null,
       fileUA: null as File | null,
@@ -99,7 +99,7 @@ export default function EditDialog({
         descriptionUA: typeof item.description === 'string' ? item.description : item.description.ua || '',
         price: String(item.price || 0),
         gramsPerServing: item.gramsPerServing || 0,
-        quantityPerServing: item.quantityPerServing || 0,
+        maxGramsPerServing: item.maxGramsPerServing || undefined,
         label: item.label || 'none' as Label,
         filePL: null as File | null,
         fileUA: null as File | null,
@@ -116,7 +116,7 @@ export default function EditDialog({
         ? parseFloat(data.price.replace(',', '.')) 
         : Number(data.price),
       gramsPerServing: Number(data.gramsPerServing) || 0,
-      quantityPerServing: Number(data.quantityPerServing) || 0,
+      maxGramsPerServing: data.maxGramsPerServing ? Number(data.maxGramsPerServing) : undefined,
       label: data.label === 'none' ? 'none' : data.label,
       filePL: data.filePL || undefined,
       fileUA: data.fileUA || undefined,
@@ -235,11 +235,11 @@ export default function EditDialog({
                 type="number"
               />
               <CustomInput
-                label="Кількість в 1 порції*"
-                placeholder="Введіть кількість штук"
-                name="quantityPerServing"
+                label="Максимальна вага порції (г)"
+                placeholder="Введіть максимальну вагу (опціонально)"
+                name="maxGramsPerServing"
                 register={register}
-                error={errors.quantityPerServing?.message}
+                error={errors.maxGramsPerServing?.message}
                 type="number"
               />
               <div className="flex flex-col gap-2 relative">

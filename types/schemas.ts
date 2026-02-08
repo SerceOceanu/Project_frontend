@@ -26,7 +26,7 @@ export const createProductSchema = z.object({
   descriptionPL: z.string().min(1, 'Опис (PL) обов\'язковий'),
   descriptionUA: z.string().min(1, 'Опис (UA) обов\'язковий'),
   gramsPerServing: z.coerce.number().min(1, 'Вага повинна бути більше 0'),
-  quantityPerServing: z.coerce.number().min(1, 'Кількість повинна бути більше 0'),
+  maxGramsPerServing: z.coerce.number().positive('Максимальна вага повинна бути більше 0').optional().or(z.literal('')).transform(val => val === '' ? undefined : val),
   price: z.string().transform((val) => {
     const normalized = val.replace(',', '.');
     return Number(normalized);
