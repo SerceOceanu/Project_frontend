@@ -66,11 +66,13 @@ export default function Basket() {
           </Link>
         )}
         <ProfileButton />
-        <Link href={buttons[1].href}>
+        
+        {/* Mobile basket button */}
+        <Link href={buttons[1].href} className="lg:hidden">
           <Button 
             className={cn(
               pathname === buttons[1].href && ' text-orange border-orange',
-              "flex lg:hidden items-center gap-2 shadow-none rounded-2xl ", 
+              "flex items-center gap-2 shadow-none rounded-2xl ", 
             )} 
             variant="outline" 
             size="icon-lg"
@@ -79,27 +81,28 @@ export default function Basket() {
           </Button>
         </Link>
 
-
-      <Button 
-        onClick={() => {
-          if (pathname !== '/basket') setValue('isBasketModalOpen', !isBasketModalOpen);
-        }}
-        className={cn((isBasketModalOpen || pathname === '/basket') && 'text-orange border-orange', "hidden lg:flex items-center gap-2 h-10 shadow-none rounded-2xl")} 
-        variant="outline" 
-      >
-        <TbBasket  size={20} className={cn(isBasketModalOpen && "text-orange")} />
-        <span className={cn(isBasketModalOpen && "text-orange","rubik text-sm font-light")}>{t('header.basket')}</span>
-      </Button>
-      {isBasketModalOpen && (
-        <div
-          className={cn(
-            "absolute top-14  -right-2 z-10 w-[calc(100vw-32px)] max-w-[600px]  transition-all duration-200 origin-top",
-            "opacity-100 scale-100 translate-y-0 pointer-events-auto"
-          )}
+        {/* Desktop basket button with modal */}
+        <Button 
+          onClick={() => {
+            if (pathname !== '/basket') setValue('isBasketModalOpen', !isBasketModalOpen);
+          }}
+          className={cn((isBasketModalOpen || pathname === '/basket') && 'text-orange border-orange', "hidden lg:flex items-center gap-2 h-10 shadow-none rounded-2xl")} 
+          variant="outline" 
         >
-          <OrdersCard  type="modal" />
-        </div>
-      )}
+          <TbBasket  size={20} className={cn(isBasketModalOpen && "text-orange")} />
+          <span className={cn(isBasketModalOpen && "text-orange","rubik text-sm font-light")}>{t('header.basket')}</span>
+        </Button>
+        
+        {isBasketModalOpen && (
+          <div
+            className={cn(
+              "absolute top-14  -right-2 z-10 w-[calc(100vw-32px)] max-w-[600px]  transition-all duration-200 origin-top",
+              "opacity-100 scale-100 translate-y-0 pointer-events-auto"
+            )}
+          >
+            <OrdersCard  type="modal" />
+          </div>
+        )}
     </div>
   );  
 }

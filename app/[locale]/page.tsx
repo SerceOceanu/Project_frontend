@@ -9,7 +9,7 @@ export default async function Home() {
   console.log(banners, 'banners');
   return (
     <>
-      <div className="px-4 pt-[140px] md:pt-[160px] lg:pt-0 lg:px-0 mb-[50px] lg:mb-[100px]">
+      <div className="px-4 pt-[140px] md:pt-[160px] lg:pt-0 lg:px-0 mb-10 lg:mb-20">
         <SliderSection banners={banners} />
       </div>
       <div className='flex flex-col  pb-[120px] gap-[60px]'>

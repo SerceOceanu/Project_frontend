@@ -23,23 +23,23 @@ export default function Footer() {
       items:[
         {
           label: t('header.chilled'),
-          href: '/catalogue?filter=chilled'
+          href: '/catalogue?category=chilled'
         },
         {
           label: t('header.frozen'),
-          href: '/catalogue?filter=frozen'
+          href: '/catalogue?category=frozen'
         },
         {
           label: t('header.ready'),
-          href: '/catalogue?filter=ready'
+          href: '/catalogue?category=ready'
         },
         {
           label: t('header.marinated'),
-          href: '/catalogue?filter=marinated'
+          href: '/catalogue?category=marinated'
         },
         {
           label: t('header.snacks'),
-          href: '/catalogue?filter=snacks'
+          href: '/catalogue?category=snacks'
         },
       ]
     },
