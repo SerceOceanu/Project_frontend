@@ -71,7 +71,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     snacks: { ua: t('header.snacks'), pl: t('header.snacks') },
   };
   const categoryName = categoryNames[product.category]?.[locale as 'ua' | 'pl'] || '';
-  const categoryUrl = `/${locale}/catalogue?category=${product.category}`;
+  const categoryUrl = `/catalogue?category=${product.category}`;
   
   // Get similar products from same category
   const similarProducts = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);

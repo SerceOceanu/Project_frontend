@@ -15,7 +15,7 @@ import { OTPInput } from "./OTPInput";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useStatesStore } from "@/store/useStatesStore";
 import { useSignInWithGoogle, AUTH_QUERY_KEY } from "@/hooks/useAuth";
-import { setupRecaptcha, sendPhoneVerification, verifyPhoneCode } from "@/lib/auth";
+import { getOrInitRecaptcha, cleanupRecaptcha, sendPhoneVerification, verifyPhoneCode } from "@/lib/auth";
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from '@/lib/navigation';
 import type { ConfirmationResult } from 'firebase/auth';
@@ -34,6 +34,20 @@ export default function LoginForm() {
   const { isCodeSent, setIsLoginOpen } = useStatesStore();
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
+  
+  // Initialize reCAPTCHA on mount
+  useEffect(() => {
+    try {
+      getOrInitRecaptcha();
+    } catch (e) {
+      console.warn('reCAPTCHA init warning:', e);
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      cleanupRecaptcha();
+    };
+  }, []);
   
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -93,19 +107,9 @@ const PhoneForm = ({ setConfirmationResult }: { setConfirmationResult: (result: 
     
     const phoneNumber = data.phone.startsWith('+') ? data.phone : `+${data.phone}`;
     
-    // Cleanup any existing reCAPTCHA
-    if (window.recaptchaVerifier) {
-      try {
-        window.recaptchaVerifier.clear();
-      } catch (e) {
-        // Ignore
-      }
-      window.recaptchaVerifier = undefined;
-    }
-    
     try {
-      // Setup reCAPTCHA
-      const appVerifier = setupRecaptcha();
+      // Use existing reCAPTCHA or init new one if missing
+      const appVerifier = getOrInitRecaptcha();
       
       // Send SMS
       const confirmation = await sendPhoneVerification(phoneNumber, appVerifier);
@@ -249,19 +253,9 @@ const VerificationCode = ({
     setLoading(true);
     setError('');
     
-    // Cleanup any existing reCAPTCHA
-    if (window.recaptchaVerifier) {
-      try {
-        window.recaptchaVerifier.clear();
-      } catch (e) {
-        // Ignore
-      }
-      window.recaptchaVerifier = undefined;
-    }
-    
     try {
-      // Setup reCAPTCHA
-      const appVerifier = setupRecaptcha();
+      // Use existing reCAPTCHA
+      const appVerifier = getOrInitRecaptcha();
       
       // Resend SMS
       const confirmation = await sendPhoneVerification(phoneNumber, appVerifier);
@@ -276,14 +270,7 @@ const VerificationCode = ({
   };
 
   const handleBack = () => {
-    if (window.recaptchaVerifier) {
-      try {
-        window.recaptchaVerifier.clear();
-        window.recaptchaVerifier = undefined;
-      } catch (e) {
-        console.warn('Error clearing recaptcha', e);
-      }
-    }
+    // Just reset state, don't clear reCAPTCHA as we want to reuse it
     setIsCodeSent(false);
     setCode('');
     setError('');

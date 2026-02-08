@@ -42,9 +42,12 @@ export const handleRedirectResult = async (): Promise<User | null> => {
   return null;
 };
 
-export const setupRecaptcha = (containerId: string = 'recaptcha-container'): RecaptchaVerifier => {
-  cleanupRecaptcha();
-  
+export const getOrInitRecaptcha = (containerId: string = 'recaptcha-container'): RecaptchaVerifier => {
+  // Return existing verifier if available
+  if ((window as any).recaptchaVerifier) {
+    return (window as any).recaptchaVerifier;
+  }
+
   const container = document.getElementById(containerId);
   if (!container) {
     throw new Error(`Container with id "${containerId}" not found`);
