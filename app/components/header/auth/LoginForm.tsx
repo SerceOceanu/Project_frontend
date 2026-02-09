@@ -215,8 +215,28 @@ const VerificationCode = ({
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [resendTimer, setResendTimer] = useState(60); // 60 seconds timer
+  const [canResend, setCanResend] = useState(false);
   const { phoneNumber, setIsCodeSent, setPhoneNumber, setIsLoginOpen } = useStatesStore();
   const queryClient = useQueryClient();
+
+  // Start timer immediately when component mounts (code was sent)
+  useEffect(() => {
+    setResendTimer(60);
+    setCanResend(false);
+  }, []);
+
+  // Timer countdown effect
+  useEffect(() => {
+    if (resendTimer > 0) {
+      const timer = setTimeout(() => {
+        setResendTimer(resendTimer - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else {
+      setCanResend(true);
+    }
+  }, [resendTimer]);
 
   const handleVerify = async () => {
     if (!confirmationResult) return;
@@ -250,8 +270,12 @@ const VerificationCode = ({
   };
 
   const handleResend = async () => {
+    if (!canResend) return;
+    
     setLoading(true);
     setError('');
+    setCanResend(false);
+    setResendTimer(60); // Reset timer to 60 seconds
     
     try {
       // Use existing reCAPTCHA
@@ -266,6 +290,7 @@ const VerificationCode = ({
       console.error('Error resending verification code:', err);
       setError(t('error-sending-code'));
       setLoading(false);
+      setCanResend(true); // Allow retry on error
     }
   };
 
@@ -321,11 +346,11 @@ const VerificationCode = ({
         </Button>
         <Button 
           onClick={handleResend}
-          disabled={loading}
+          disabled={!canResend || loading}
           variant="outline" 
-          className="w-full h-10 text-base border-orange text-orange rounded hover:bg-orange/10"
+          className="w-full h-10 text-base border-orange text-orange rounded hover:bg-orange/10 disabled:opacity-50 disabled:cursor-not-allowed"
         > 
-          {t('send-again')} 
+          {canResend ? t('send-again') : `${t('send-again')} (${resendTimer})`}
         </Button>
       </div>
     </div>
