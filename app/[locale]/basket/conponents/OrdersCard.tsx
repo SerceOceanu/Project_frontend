@@ -32,7 +32,7 @@ export default function OrdersCard({ type, setIsSuccessModalOpen }: OrdersCardPr
       {basket.length > 0 && (
         <>
         <h2 className="text-2xl font-bold w-full "> {t('basket.title')} </h2>
-        <div className='flex flex-col gap-2.5 pr-[30px]'>
+        <div className='flex flex-col gap-2.5 pr-0 md:pr-[30px]'>
           {basket.map((item, index) => (
             <OrderItem key={index} product={item} />
           ))}
@@ -57,7 +57,7 @@ const TotalModal = ({ total }: { total: number }) => {
   const { setValue } = useBasketStore();
 
   return (
-    <div className='flex px-8 py-5 bg-light rounded-2xl items-end justify-between'>
+    <div className='flex px-4 sm:px-8 py-5 bg-light rounded-2xl items-end justify-between'>
       <div className='flex flex-col text-2xl text-gray'>
         {t('total')}
         <span className='rubik text-[500] text-[40px] text-black '>{formatCurrency(total)}{t('currency')}</span>
@@ -133,10 +133,10 @@ const TotalPage = ({ total, setIsSuccessModalOpen, deliveryCost, isLoading: isLo
   };
   
   return (
-    <div className='px-8 py-5 bg-light rounded-2xl  '>
-      <div className='flex justify-between border-b pb-4'>
+    <div className='px-4 sm:px-8 py-5 bg-light rounded-2xl'>
+      <div className='flex flex-col sm:flex-row sm:justify-between gap-4 border-b pb-4'>
         <div className='flex flex-col gap-1 text-gray'>
-          <span className='rubik'>
+          <span className='rubik text-sm sm:text-base'>
             {t('delivery-form.delivery-cost')}: {
               isLoadingDelivery ? (
                 <span className="text-gray-400">...</span>
@@ -147,11 +147,11 @@ const TotalPage = ({ total, setIsSuccessModalOpen, deliveryCost, isLoading: isLo
               )
             }
           </span>
-          <span className='rubik'>{t('delivery-form.order-cost')}: {formatCurrency(Number(total))}{t('currency')}</span>
+          <span className='rubik text-sm sm:text-base'>{t('delivery-form.order-cost')}: {formatCurrency(Number(total))}{t('currency')}</span>
         </div>
-        <div className='flex flex-col text-2xl text-gray'>
+        <div className='flex flex-col text-xl sm:text-2xl text-gray'>
           {t('total')}
-          <span className='rubik text-[500] text-[40px] text-black '>{formatCurrency(totalAmount)}{t('currency')}</span>
+          <span className='rubik text-[500] text-3xl sm:text-[40px] text-black '>{formatCurrency(totalAmount)}{t('currency')}</span>
         </div>
       </div>
       <div className='flex items-center gap-2 py-5'>

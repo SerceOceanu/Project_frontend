@@ -32,22 +32,22 @@ export default function OrderItem({ product }: { product: BasketProduct }) {
   const totalPrice = calculateItemTotal(product.price, product?.quantity || 1);
   
   return (
-      <div className="relative flex p-2.5 bg-light rounded-2xl items-center pr-5">
-        <div className="flex gap-6 items-center w-1/2 ">
+      <div className="relative flex flex-col sm:flex-row p-2.5 bg-light rounded-2xl items-center gap-3 sm:gap-0 pr-5 sm:pr-0">
+        <div className="flex gap-3 sm:gap-6 items-center w-full sm:w-1/2">
           <Image
             src={productImage}
             alt={productName}
             width={60}
             height={60}
-            className="rounded-lg object-cover w-16 h-16"
+            className="rounded-lg object-cover w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0"
           />
 
-          <div className="flex flex-col w-2/3">
-            <div className="rubik font-semibold text-lg truncate ">{productName}</div>
+          <div className="flex flex-col flex-1 min-w-0">
+            <div className="rubik font-semibold text-base sm:text-lg truncate">{productName}</div>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className="rubik text-orange cursor-help">
+                  <div className="rubik text-orange cursor-help text-sm sm:text-base">
                     {product.gramsPerServing}{product.maxGramsPerServing && ` - ${product.maxGramsPerServing}`} {t('weight')}
                   </div>
                 </TooltipTrigger>
@@ -65,9 +65,11 @@ export default function OrderItem({ product }: { product: BasketProduct }) {
             </TooltipProvider>
           </div>
         </div>
-        <div className="inter text-lg md:text-2xl text-gray flex ml-auto mr-5">{formatCurrency(totalPrice)} {t('currency')}</div>
-        <Counter count={product?.quantity || 1} onIncrease={handleIncrease} onDecrease={handleDecrease} />
-        <RxCross2 className="absolute top-1/2 -translate-y-1/2 -right-[30px] size-6 text-gray cursor-pointer" onClick={() => removeFromBasket(product.id)} />
+        <div className="flex items-center gap-3 sm:gap-0 w-full sm:w-auto justify-between sm:justify-end">
+          <div className="inter text-base sm:text-lg md:text-2xl text-gray">{formatCurrency(totalPrice)} {t('currency')}</div>
+          <Counter count={product?.quantity || 1} onIncrease={handleIncrease} onDecrease={handleDecrease} />
+        </div>
+        <RxCross2 className="absolute top-2 right-2 sm:top-1/2 sm:-translate-y-1/2 sm:-right-[30px] size-5 sm:size-6 text-gray cursor-pointer" onClick={() => removeFromBasket(product.id)} />
       </div>
   )
 }

@@ -17,6 +17,7 @@
   "yes": "Tak",
   "no": "Nie",
   "continue":"Kontynuuj",
+  "items": "{count, plural, =1 {produkt} other {produkty}}",
   "apply": "Złóż zamówienie",
   "total": "Razem",
   "free": "Darmowa dostawa",

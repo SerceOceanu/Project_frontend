@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 const rubik = Rubik({ variable: "--font-rubik", subsets: ["latin"] });
 const roboto = Roboto({ variable: "--font-roboto", subsets: ["latin"], weight: ["300", "400", "500", "700"] });
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
-
+import MobileBasket from "../components/home-page/MobileBasket";
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations('seo.home');
@@ -65,6 +65,7 @@ export default async function LocaleLayout({
               <main className="flex-1 bg-background flex flex-col">
                 {children}
               </main>
+              <MobileBasket />
               <Footer />
               <Toaster position="top-left" />
 

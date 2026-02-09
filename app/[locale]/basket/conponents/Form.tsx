@@ -207,9 +207,9 @@ export default function Form() {
         </Button>
       </>
       )}
-      <div className="flex flex-col gap-5 bg-white px-6 py-7 rounded-xl">
+      <div className="flex flex-col gap-5 bg-white px-4 sm:px-6 py-5 sm:py-7 rounded-xl">
         <h3 className="font-bold w-full rubik text-[24px]"> {t('delivery-form.title')} </h3>
-        <div className="grid grid-cols-2 gap-5"> 
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5"> 
           <CustomInput
             label={t('delivery-form.name')} 
             placeholder={t('delivery-form.name')} 
