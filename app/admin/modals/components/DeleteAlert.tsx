@@ -17,12 +17,12 @@ export default function DeleteAlert({
 }: {
   isDelete: boolean, 
   setIsDelete: (open: boolean) => void, 
-  id: number,
+  id: string | number,
 }) {
   const deleteModal = useDeleteModal();
 
   const handleDelete = () => {
-    deleteModal.mutate(id, {
+    deleteModal.mutate(id as string, {
       onSuccess: () => {
         setIsDelete(false);
       },

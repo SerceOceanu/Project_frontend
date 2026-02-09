@@ -3,19 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Modal } from "@/types/types";  
 import DeleteAlert from "./DeleteAlert";
 import { useState } from "react";
-import { useDeleteModal } from "@/hooks/useAdminModals";
 import { Switch } from "@/components/ui/switch";
 export default function ModalCard({item}: {item: Modal}) {
-  const deleteModal = useDeleteModal();
   const [isDelete, setIsDelete] = useState(false);
 
-  const handleDelete = () => {
-      deleteModal.mutate(item.id, {
-      onSuccess: () => {
-        setIsDelete(true);
-      },
-    });
-  }
   const handleUpdateStatus = (checked: boolean) => {
     console.log(checked);
   }

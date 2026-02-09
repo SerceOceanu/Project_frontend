@@ -19,6 +19,10 @@
   "continue":"Kontynuuj",
   "items": "{count, plural, =1 {produkt} other {produkty}}",
   "apply": "Złóż zamówienie",
+  "warning": {
+    "title": "Strona tymczasowo niedostępna",
+    "message": "Przepraszamy, jesteśmy tymczasowo niedostępni. Możliwe, że to przerwa techniczna, dzień wolny lub szczególne wydarzenie. Pracujemy już nad tym, aby wrócić jak najszybciej. Dziękujemy za zrozumienie i czekamy na Ciebie nieco później!"
+  },
   "total": "Razem",
   "free": "Darmowa dostawa",
   "login-button": "Zaloguj się",

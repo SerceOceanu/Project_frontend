@@ -18,6 +18,7 @@ const rubik = Rubik({ variable: "--font-rubik", subsets: ["latin"] });
 const roboto = Roboto({ variable: "--font-roboto", subsets: ["latin"], weight: ["300", "400", "500", "700"] });
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 import MobileBasket from "../components/home-page/MobileBasket";
+import Warning from "../components/Warning";
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations('seo.home');
@@ -67,6 +68,7 @@ export default async function LocaleLayout({
               </main>
               <MobileBasket />
               <Footer />
+              <Warning />
               <Toaster position="top-left" />
 
             </div>

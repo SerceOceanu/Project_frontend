@@ -17,7 +17,7 @@ export default function DeleteAlert({
 }: {
   isDelete: boolean, 
   setIsDelete: (open: boolean) => void, 
-  id: number,
+  id: string,
 }) {
   const deleteModal = useDeleteModal();
 
