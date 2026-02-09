@@ -207,7 +207,7 @@ const VerificationCode = ({
   setConfirmationResult
 }: {
   confirmationResult: ConfirmationResult | null;
-  setConfirmationResult: (result: ConfirmationResult) => void;
+  setConfirmationResult: (result: ConfirmationResult | null) => void;
 }) => {
   const t = useTranslations();
   const router = useRouter();
@@ -247,6 +247,16 @@ const VerificationCode = ({
     try {
       const user = await verifyPhoneCode(confirmationResult, code);
       queryClient.setQueryData(AUTH_QUERY_KEY, user);
+      
+      // Reset all login modal states after successful login
+      setCode('');
+      setAcceptTerms(false);
+      setError('');
+      setResendTimer(60);
+      setCanResend(false);
+      setIsCodeSent(false);
+      setPhoneNumber('');
+      setConfirmationResult(null);
       setIsLoginOpen(false);
       
       if (typeof window !== 'undefined') {
