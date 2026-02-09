@@ -12,10 +12,20 @@ export default function OrderItem({ product }: { product: BasketProduct }) {
   const t = useTranslations();
   const locale = useLocale();
   const { changeQuantity, removeFromBasket } = useBasketStore();
-  const handleRemoveFromBasket = () => {
-    if(product?.quantity && product.quantity > 1) changeQuantity(product.id, product.quantity - 1);
-    else removeFromBasket(product.id);
-  }
+  
+  const handleDecrease = () => {
+    const currentQuantity = product?.quantity || 1;
+    if (currentQuantity > 1) {
+      changeQuantity(product.id, currentQuantity - 1);
+    } else {
+      removeFromBasket(product.id);
+    }
+  };
+
+  const handleIncrease = () => {
+    const currentQuantity = product?.quantity || 1;
+    changeQuantity(product.id, currentQuantity + 1);
+  };
 
   const productName = getProductName(product, locale);
   const productImage = getProductImage(product, locale);
@@ -56,7 +66,7 @@ export default function OrderItem({ product }: { product: BasketProduct }) {
           </div>
         </div>
         <div className="inter text-lg md:text-2xl text-gray flex ml-auto mr-5">{formatCurrency(totalPrice)} {t('currency')}</div>
-        <Counter count={product?.quantity || 1} setCount={(count) => changeQuantity(product.id, count)} handleRemove={handleRemoveFromBasket} />
+        <Counter count={product?.quantity || 1} onIncrease={handleIncrease} onDecrease={handleDecrease} />
         <RxCross2 className="absolute top-1/2 -translate-y-1/2 -right-[30px] size-6 text-gray cursor-pointer" onClick={() => removeFromBasket(product.id)} />
       </div>
   )

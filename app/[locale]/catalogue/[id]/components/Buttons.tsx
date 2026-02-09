@@ -24,13 +24,29 @@ export default function Buttons({product}: {product: Product}) {
     toggleFavorite({ productId: product.id, currentFavorites: favoriteIds });
   };
 
+  const handleDecrease = () => {
+    if (!productInBasket) return;
+    const currentQuantity = productInBasket.quantity || 1;
+    if (currentQuantity > 1) {
+      changeQuantity(product.id, currentQuantity - 1);
+    } else {
+      removeFromBasket(product.id);
+    }
+  };
+
+  const handleIncrease = () => {
+    if (!productInBasket) return;
+    const currentQuantity = productInBasket.quantity || 1;
+    changeQuantity(product.id, currentQuantity + 1);
+  };
+
   return (
     <div className='flex flex-col md:flex-row md:items-center justify-between self-start'>
       <div className="rubik text-[32px] font-bold mr-6"> {formatCurrency(product.price)}{t('currency')} </div>
       <div className="flex items-center gap-2.5">
         <div className='flex  w-[180px] items-center justify-center'>
           {productInBasket  
-            ? <Counter count={productInBasket.quantity || 1} setCount={(count) => changeQuantity(product.id, count)} handleRemove={() => removeFromBasket(product.id)} />
+            ? <Counter count={productInBasket.quantity || 1} onIncrease={handleIncrease} onDecrease={handleDecrease} />
             : <Button 
                 className="bg-orange hover:bg-orange/90 !px-6 h-[48px] text-2xl w-[180px]"
                 onClick={() => addToBasket({ ...product, quantity: 1 })}

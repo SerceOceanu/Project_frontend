@@ -132,16 +132,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
               />
               <p className="text-gray text-base inter mb-4 md:mb-10">
                 {productDescription}
-                {categoryName && (
-                  <> {locale === 'ua' ? 'Перегляньте більше' : 'Zobacz więcej'}{' '}
-                    <NavLink href={categoryUrl} className="text-orange hover:underline font-medium">
-                      {categoryName.toLowerCase()}
-                    </NavLink>{' '}
-                    {locale === 'ua' ? 'в нашому каталозі' : 'w naszym katalogu'}.
-                  </>
-                )}
+ 
               </p>
-
               <Buttons product={product} />
 
             </div>

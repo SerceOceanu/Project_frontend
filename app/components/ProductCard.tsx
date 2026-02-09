@@ -37,16 +37,24 @@ export default function ProductCard({ product }: { product: Product }) {
     toggleFavorite({ productId: product.id, currentFavorites: favoriteIds });
   };
 
-  const handleRemoveFromBasket = () => {
-    if(productInBasket?.quantity && productInBasket.quantity > 1) changeQuantity(product.id, productInBasket.quantity - 1);
-    else removeFromBasket(product.id);
-  }
+  const handleDecrease = () => {
+    if (!productInBasket) return;
+    const currentQuantity = productInBasket.quantity || 1;
+    if (currentQuantity > 1) {
+      changeQuantity(product.id, currentQuantity - 1);
+    } else {
+      removeFromBasket(product.id);
+    }
+  };
+
+  const handleIncrease = () => {
+    if (!productInBasket) return;
+    const currentQuantity = productInBasket.quantity || 1;
+    changeQuantity(product.id, currentQuantity + 1);
+  };
 
   const handleAddToBasket = () => {
     addToBasket({ ...product, quantity: 1 });
-  }
-  const handleChangeQuantity = (quantity: number) => {
-    changeQuantity(product.id, quantity);
   }
 
   const handleDescriptionClick = (e: React.MouseEvent) => {
@@ -125,7 +133,7 @@ export default function ProductCard({ product }: { product: Product }) {
             e.stopPropagation();
           }}>
             {productInBasket  
-              ? <Counter count={productInBasket.quantity || 1} setCount={(quantity) => handleChangeQuantity(quantity)} handleRemove={handleRemoveFromBasket} />
+              ? <Counter count={productInBasket.quantity || 1} onIncrease={handleIncrease} onDecrease={handleDecrease} />
               : <Button className="bg-orange hover:bg-orange/90 !px-6 h-[48px] flex items-center justify-center" onClick={handleAddToBasket}>
                   <FaPlus className="text-white  size-[28px]" />
                 </Button> 
