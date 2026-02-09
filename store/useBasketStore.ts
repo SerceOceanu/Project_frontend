@@ -9,7 +9,6 @@ interface Order {
   address: string;
   postalCode: string;
   locality: string;
-  isCity: boolean;
   phone: string;
   email: string;
 
@@ -51,7 +50,6 @@ export const useBasketStore = create<BasketStore>()(
     address: '',
     postalCode: '',
     locality: 'Warszawa',
-    isCity: false,
     phone: '',
     email: '',
     isWaybillToAnotherAddress: false,
@@ -77,7 +75,6 @@ export const useBasketStore = create<BasketStore>()(
       address: '',
       postalCode: '',
       locality: 'Warszawa',
-      isCity: false,
       phone: '',
       email: '',
       isWaybillToAnotherAddress: false,

@@ -9,7 +9,6 @@ interface OrderData {
   address: string;
   postalCode: string;
   locality: string;
-  isCity: boolean;
   phone: string;
   email: string;
   isWaybillToAnotherAddress: boolean;
@@ -54,7 +53,6 @@ export function useCreateOrder() {
           address: orderData.address,
           locality: orderData.locality || 'Warszawa',
           postalCode: orderData.postalCode,
-          isCity: false, // Deprecated: теперь используется только locality
           deliveryType: orderData.deliveryType,
           lockerNumber: orderData.lockerNumber || '',
           paymentType: orderData.paymentType,
