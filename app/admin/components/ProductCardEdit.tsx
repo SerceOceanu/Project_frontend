@@ -4,6 +4,7 @@ import { useState } from "react";
 import { FiEdit } from "react-icons/fi";
 import { BsTrash3 } from "react-icons/bs";
 import { Switch } from "@/components/ui/switch";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Product } from "@/types/types";
 import DeleteAlert from "./DeleteAlert";
 import EditDialog from "./EditDialog";
@@ -94,15 +95,42 @@ export default function ProductCardEdit({item}: {item: Product  }) {
           </div>
           <div className="mb-6">
             {typeof description === 'string' ? (
-              <p className="text-gray text-xs inter">{description}</p>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <p className="text-gray text-xs inter line-clamp-3 cursor-help">{description}</p>
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-md">
+                    <p className="text-sm">{description}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             ) : (
               <div className="flex flex-col gap-2">
-                <p className="text-gray text-xs inter">
-                  <span className="font-semibold">PL:</span> {description.pl}
-                </p>
-                <p className="text-gray text-xs inter">
-                  <span className="font-semibold">UA:</span> {description.ua}
-                </p>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <p className="text-gray text-xs inter line-clamp-3 cursor-help">
+                        <span className="font-semibold">PL:</span> {description.pl}
+                      </p>
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-md">
+                      <p className="text-sm">{description.pl}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <p className="text-gray text-xs inter line-clamp-3 cursor-help">
+                        <span className="font-semibold">UA:</span> {description.ua}
+                      </p>
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-md">
+                      <p className="text-sm">{description.ua}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
             )}
           </div>
