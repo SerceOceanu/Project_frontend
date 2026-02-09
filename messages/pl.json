@@ -299,5 +299,130 @@
       "title": "Koszyk - Serce Oceanu",
       "description": "Składanie zamówienia na owoce morza. Szybkie i wygodne zamówienie z dostawą w Polsce."
     }
+  },
+  "privacy-policy": {
+    "title": "Polityka Prywatności i Cookies",
+    "subtitle": "Niniejsza Polityka prywatności określa, w jaki sposób zbieramy, wykorzystujemy i chronimy Twoje dane osobowe",
+    "subtitle-2": "Podczas interakcji z naszą witryną i usługami.",
+    "section1": {
+      "title": "1. Administrator danych i definicje",
+      "text": "Niniejsza Polityka prywatności określa, w jaki sposób zbieramy, wykorzystujemy i chronimy Twoje dane osobowe Podczas interakcji z naszą witryną i usługami.",
+      "email": "Email:",
+      "phone": "Telefon:",
+      "nip": "NIP:",
+      "contact-title": "Z Administratorem danych można kontaktować się:",
+      "contact-1": "pod adresem korespondencyjnym: ul. Leonidasa 76, 02-239 Warszawa;",
+      "contact-2": "pod adresem poczty elektronicznej: mariia.diachok@reef-seafood.com.",
+      "definitions": {
+        "user": {
+          "title": "Użytkownik",
+          "text": "osoba fizyczna wchodząca na stronę/strony Sklepu internetowego lub korzystająca z usług lub funkcjonalności opisanych w niniejszej Polityce Prywatności i Cookies."
+        },
+        "client": {
+          "title": "Klient",
+          "text": "osoba fizyczna posiadająca pełną zdolność do czynności prawnych, osoba fizyczna będąca Konsumentem, osoba prawna albo jednostka organizacyjna nieposiadająca osobowości prawnej, której ustawa przyznaje zdolność prawną, która zawiera ze Sprzedawcą Umowę sprzedaży na odległość."
+        },
+        "shop": {
+          "title": "Sklep Internetowy",
+          "text": "serwis internetowy prowadzony przez Sprzedawcę, dostępny pod adresem: https://serceoceanu.pl, za pośrednictwem którego Klient/Użytkownik może uzyskać informacje o Towarze i jego dostępności oraz kupić Towar lub zlecić świadczenie usługi."
+        },
+        "newsletter": {
+          "title": "Newsletter",
+          "text": "informacje, w tym informacje handlowe w rozumieniu ustawy z dnia 18 lipca 2002 r. o świadczeniu usług drogą elektroniczną (Dz. U. z 2020 r. poz. 344) pochodzące od Sprzedawcy wysyłane Klientowi/Użytkownikowi drogą elektroniczną; jego otrzymywanie jest dobrowolne i wymaga zgody Klienta/Użytkownika."
+        },
+        "account": {
+          "title": "Konto",
+          "text": "zbiór danych przechowywanych w Sklepie internetowym oraz w systemie teleinformatycznym Sprzedawcy dotyczący danego Klienta/Użytkownika oraz składanych przez niego zamówień i zawieranych umów."
+        },
+        "rodo": {
+          "title": "RODO",
+          "text": "Rozporządzenie Parlamentu Europejskiego i Rady (UE) 2016/679 z dnia 27 kwietnia 2016 r."
+        }
+      }
+    },
+    "section2": {
+      "title": "2. Cele, podstawy prawne oraz czas przetwarzania danych",
+      "intro": "W celu realizacji Umowy sprzedaży na odległość Sprzedawca przetwarza:",
+      "device-info": {
+        "title": "informacje dotyczące urządzenia Użytkownika",
+        "text": "w celu zapewnienia poprawności działania usług: adres IP komputera, informacje zawarte w plikach cookies lub innych podobnych technologiach, dane dotyczące sesji, dane przeglądarki internetowej, dane dotyczące urządzenia, dane dotyczące aktywności na Stronie, w tym na poszczególnych podstronach;"
+      },
+      "geolocation": {
+        "title": "informacje o geolokalizacji",
+        "text": "jeżeli Użytkownik wyraził zgodę na dostęp usługodawcy do geolokalizacji. Informacja o geolokalizacji jest wykorzystywana w celu dostarczania bardziej dostosowanych ofert produktów i usług;"
+      },
+      "personal-data": {
+        "title": "dane osobowe Użytkowników",
+        "text": "imię, nazwisko, adres siedziby, adres korespondencyjny, adres e-mail, numer telefonu, NIP, numer konta bankowego lub inne dane osobowe, których podanie jest niezbędne do zrealizowania zakupu, a których podania w procesie zakupowym wymaga Administrator."
+      },
+      "note-1": "Informacje te nie zawierają danych dotyczących tożsamości Użytkowników, lecz w połączeniu z innymi informacjami mogą stanowić dane osobowe i w związku z tym Administrator obejmuje je pełną ochroną przysługującą na gruncie RODO.",
+      "note-2": "Dane te są przetwarzane zgodnie z art. 6 ust. 1 lit. b RODO, w celu realizacji usługi, tj. umowy o świadczenie usług drogą elektroniczną zgodnie z Regulaminem oraz zgodnie z art. 6 ust. 1 lit. a RODO, w związku z wyrażeniem zgody na stosowanie określonych plików cookies lub innych podobnych technologii, wyrażonych przez odpowiednie ustawienia przeglądarki internetowej zgodnie z Prawem telekomunikacyjnym lub w związku z wyrażeniem zgody na geolokalizację. Dane są przetwarzane do czasu zakończenia korzystania przez Klienta/Użytkownika ze Sklepu internetowego.",
+      "note-3": "Administrator zobowiązuje się podjąć wszelkie środki wymagane na mocy art. 32 RODO, tj. uwzględniając stan wiedzy technicznej, koszt wdrażania oraz charakter, zakres i cele przetwarzania oraz ryzyko naruszenia praw lub wolności osób fizycznych o różnym prawdopodobieństwie wystąpienia i wadze, Administrator wdraża odpowiednie środki techniczne i organizacyjne, aby zapewnić stopień bezpieczeństwa odpowiadający temu ryzyku."
+    },
+    "section3": {
+      "title": "3. Działania marketingowe administratora",
+      "text": "Na stronie Sklepu internetowego Administrator danych może zamieszczać informacje marketingowe o swoich produktach lub usługach. Wyświetlanie tych treści jest dokonywane przez Administratora danych zgodnie z art. 6 ust.1 lit. f RODO, tj. zgodnie z prawnie uzasadnionym interesem Administratora danych polegającym na publikacji treści związanych ze świadczonymi usługami oraz treści promocyjnych akcji, w które Administrator danych jest zaangażowany. Jednocześnie działanie to nie narusza praw i wolności Klientów/Użytkowników."
+    },
+    "section4": {
+      "title": "4. Odbiorcy danych użytkowników",
+      "text": "Administrator danych ujawnia dane osobowe użytkowników wyłącznie podmiotom przetwarzającym na mocy zawartych umów powierzenia przetwarzania danych osobowych w celu realizacji usług na rzecz Administratora danych, np. hostingu i obsługi Strony, usługi IT, obsługi marketingowej i PR."
+    },
+    "section5": {
+      "title": "5. Przesyłanie danych osobowych do państw trzecich",
+      "text": "Dane osobowe nie będą przetwarzane w państwach trzecich."
+    },
+    "section6": {
+      "title": "6. Prawa osób, których dane dotyczą",
+      "intro": "Każda osoba, której dane dotyczą, ma prawo do:",
+      "rights": {
+        "access": "dostępu (art. 15 RODO);",
+        "copy": "otrzymania kopii danych (art. 15 ust. 3 RODO);",
+        "rectification": "sprostowania (art. 16 RODO);",
+        "deletion": "usunięcia danych (art. 17 RODO);",
+        "limitation": "ograniczenia przetwarzania (art. 18 RODO);",
+        "portability": "przenoszenia danych (art. 20 RODO);",
+        "objection": "sprzeciwu (art. 21 RODO);",
+        "withdrawal": "wycofania zgody w dowolnym momencie."
+      },
+      "note": "W celu realizacji powyższych uprawnień osoba, której dane dotyczą, powinna skontaktować się z Administratorem danych, korzystając z podanych danych kontaktowych."
+    },
+    "section7": {
+      "title": "7. Prezes Urzędu Ochrony Danych Osobowych",
+      "intro": "Osoba, której dane dotyczą, ma prawo wnieść skargę do organu nadzorczego.",
+      "contact-title": "Dane kontaktowe Prezesa Urzędu Ochrony Danych Osobowych:",
+      "contact-1": "ul. Stawki 2, 00-193 Warszawa;",
+      "contact-2": "https://www.uodo.gov.pl/pl/p/kontakt;",
+      "contact-3": "606-950-000."
+    },
+    "section8": {
+      "title": "8. Inspektor Ochrony Danych",
+      "intro": "W każdym przypadku osoba, której dane dotyczą, może również skontaktować się bezpośrednio z Administratorem danych.",
+      "contact-title": "Dane kontaktowe Inspektora Ochrony Danych:",
+      "contact-1": "Mariia.diachok@reef-seafood.com;",
+      "contact-2": "ul. Leonidasa 76, 02-239 Warszawa."
+    },
+    "section9": {
+      "title": "9. Zmiany Polityki Prywatności",
+      "text": "Polityka prywatności i cookies może być uzupełniana lub aktualizowana zgodnie z aktualnymi potrzebami Administratora w celu zapewnienia aktualnych i rzetelnych informacji dla Klientów/Użytkowników."
+    },
+    "section10": {
+      "title": "10. Cookies",
+      "intro": "Sklep internetowy pozyskuje informacje o Klientach, Użytkownikach i ich zachowaniu w następujący sposób:",
+      "methods": {
+        "forms": "poprzez informacje dobrowolnie wprowadzone w formularzach;",
+        "logs": "poprzez gromadzenie plików www server logs przez operatora hostingu Sklepu internetowego."
+      },
+      "storage": "Pliki cookies są przechowywane na urządzeniu końcowym Użytkownika i są przeznaczone do wykorzystania na stronie Sklepu internetowego.",
+      "consent": "Zgoda na cookies jest wyrażana poprzez kliknięcie przycisku \"ZGADZAM SIĘ, CHCĘ PRZEJŚĆ DO STRONY\" lub poprzez zamknięcie komunikatu.",
+      "no-consent": "W przypadku, gdy Klient/Użytkownik nie wyraża zgody, może wybrać opcję \"Nie wyrażam zgody\" lub zmienić ustawienia przeglądarki (może to jednak spowodować nieprawidłowe funkcjonowanie strony).",
+      "types-title": "Wykorzystywane są dwa rodzaje plików cookies:",
+      "types": {
+        "session-name": "sesyjne",
+        "session-desc": "usuwane po wylogowaniu lub zamknięciu przeglądarki;",
+        "persistent-name": "stałe",
+        "persistent-desc": "przechowywane na urządzeniu końcowym przez określony czas w parametrach pliku lub do czasu ręcznego usunięcia."
+      },
+      "legal-basis": "Podstawą prawną przetwarzania danych pochodzących z plików cookies jest prawnie uzasadniony interes Administratora danych, polegający na zapewnieniu wysokiej jakości usług i bezpieczeństwa."
+    }
   }
 }

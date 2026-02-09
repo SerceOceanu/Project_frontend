@@ -101,6 +101,7 @@ export default async function AboutUsLayout({
     <>
       <StructuredDataServer 
         type="Organization" 
+        locale={locale}
         data={{
           name: 'Serce Oceanu',
           url: siteUrl,

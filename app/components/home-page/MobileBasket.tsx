@@ -20,8 +20,8 @@ export default function MobileBasket() {
   const totalPrice = sum(basket.map((item) => calculateItemTotal(item.price, item.quantity || 1)));
 
   return (
-    <div className='fixed bottom-5 left-5 right-5 bg-orange py-4 px-5 rounded-lg z-50'>
-      <div className="flex items-center justify-between text-white">
+    <div className='fixed md:hidden bottom-5 left-5 right-5 bg-orange py-4 px-5 rounded-lg z-50'>
+      <div className="flex items-center justify-around text-white">
         <div className="flex items-center gap-2">
           <span className="font-medium">
             {t('items', { count: totalItems })}, {formatCurrency(totalPrice)}{t('currency')}

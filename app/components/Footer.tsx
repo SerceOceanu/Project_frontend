@@ -46,7 +46,7 @@ export default function Footer() {
 
   ]
   return (
-    <footer className="bg-[url('/assets/images/waves.png')] bg-cover bg-center bg-no-repeat pt-20 bg-white">
+    <footer className="bg-[url('/assets/images/waves.png')] bg-cover bg-center bg-no-repeat pt-20 bg-white pb-20 md:pb-0">
       <section className="container grid lg:grid-cols-5 mb-[50px] gap-6 ">
         <Image 
           className="col-span-1 w-[153px] h-[120px] mx-auto lg:mx-0"

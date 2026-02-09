@@ -52,7 +52,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale}>
       <head>
-        <StructuredDataServer type="Organization" />
+        <StructuredDataServer type="Organization" locale={locale} />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${rubik.variable} ${roboto.variable} ${inter.variable} antialiased`}

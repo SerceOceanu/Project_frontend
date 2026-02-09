@@ -3,9 +3,10 @@ import { generateStructuredData } from '@/lib/seo';
 interface StructuredDataServerProps {
   type: 'Organization' | 'Product' | 'BreadcrumbList';
   data?: any;
+  locale?: string;
 }
 
-export default function StructuredDataServer({ type, data = {} }: StructuredDataServerProps) {
+export default function StructuredDataServer({ type, data = {}, locale = 'pl' }: StructuredDataServerProps) {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://serceoceanu.com.pl';
   
   let schema;
@@ -21,7 +22,7 @@ export default function StructuredDataServer({ type, data = {} }: StructuredData
         contactType: 'customer service',
         email: 'info@serceoceanu.com.pl',
       },
-    });
+    }, locale);
   } else if (type === 'Product' && data) {
     schema = generateStructuredData('Product', {
       name: data.name,
@@ -34,14 +35,14 @@ export default function StructuredDataServer({ type, data = {} }: StructuredData
         availability: 'https://schema.org/InStock',
         url: `${siteUrl}${data.url || ''}`,
       },
-    });
+    }, locale);
   } else if (type === 'BreadcrumbList' && data.items) {
     schema = generateStructuredData('BreadcrumbList', {
       items: data.items.map((item: any, index: number) => ({
         name: item.name,
         url: item.url?.startsWith('http') ? item.url : `${siteUrl}${item.url}`,
       })),
-    });
+    }, locale);
   }
 
   if (!schema) return null;

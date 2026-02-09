@@ -74,7 +74,7 @@ export async function generateMetadata(config: SEOConfig, locale: string): Promi
   };
 }
 
-export function generateStructuredData(type: 'Organization' | 'Product' | 'BreadcrumbList', data: any) {
+export function generateStructuredData(type: 'Organization' | 'Product' | 'BreadcrumbList', data: any, locale?: string) {
   const baseSchema = {
     '@context': 'https://schema.org',
     '@type': type,
@@ -82,11 +82,15 @@ export function generateStructuredData(type: 'Organization' | 'Product' | 'Bread
 
   switch (type) {
     case 'Organization':
+      // Privacy policy URL with proper locale handling
+      const privacyPolicyPath = locale === 'ua' ? '/privacy-policy' : `/${locale}/privacy-policy`;
+      
       return {
         ...baseSchema,
         name: siteName,
         url: siteUrl,
         logo: `${siteUrl}/assets/images/logo.png`,
+        privacyPolicy: `${siteUrl}${privacyPolicyPath}`,
         contactPoint: {
           '@type': 'ContactPoint',
           telephone: '+48-884-826-064',

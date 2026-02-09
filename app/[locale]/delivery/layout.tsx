@@ -102,7 +102,7 @@ export default async function DeliveryLayout({
 
   return (
     <>
-      <StructuredDataServer type="Organization" />
+      <StructuredDataServer type="Organization" locale={locale} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}

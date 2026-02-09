@@ -81,7 +81,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
   return (
     <>
-      <StructuredDataServer type="Organization" />
+      <StructuredDataServer type="Organization" locale={locale} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}

@@ -27,7 +27,7 @@ export default function StructuredData({ type, data = {} }: StructuredDataProps)
         contactType: 'customer service',
         email: 'info@serceoceanu.com.pl',
       },
-    });
+    }, locale);
   } else if (type === 'Product' && data) {
     schema = generateStructuredData('Product', {
       name: data.name,
@@ -40,14 +40,14 @@ export default function StructuredData({ type, data = {} }: StructuredDataProps)
         availability: 'https://schema.org/InStock',
         url: `${siteUrl}${pathname}`,
       },
-    });
+    }, locale);
   } else if (type === 'BreadcrumbList' && data.items) {
     schema = generateStructuredData('BreadcrumbList', {
       items: data.items.map((item: any, index: number) => ({
         name: item.name,
         url: item.url?.startsWith('http') ? item.url : `${siteUrl}${item.url}`,
       })),
-    });
+    }, locale);
   }
 
   if (!schema) return null;
