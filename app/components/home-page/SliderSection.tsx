@@ -51,25 +51,26 @@ export default function SliderSection({ banners }: SliderSectionProps) {
   }, [api]);
 
   return (
-    <section className="relative w-full pb-6 md:px-0  overflow-hidden  lg:pb-0">
+    <section className="relative w-full pb-6 md:px-0 overflow-hidden lg:pb-0">
       <Carousel
         setApi={setApi}
-        className="w-full h-[370px] lg:h-[400px] lg:h-[600px] xl:h-[800px] overflow-hidden rounded-xl lg:rounded-none "
+        className="w-full overflow-hidden rounded-xl lg:rounded-none"
         opts={{
           align: 'start',
           loop: true,
         }}
       >
-        <CarouselContent className="h-screen">
+        <CarouselContent>
           {slides.map((slide) => (
-            <CarouselItem key={slide.id} className="relative w-full h-screen">
-              <div className="relative w-full h-full">
+            <CarouselItem key={slide.id} className="relative w-full">
+              <div className="relative w-full aspect-[16/9] md:aspect-[21/9] lg:aspect-[21/7]">
                 <Image
                   src={slide.imageUrl}
                   alt={slide.name}
                   fill
                   className="object-cover"
                   priority
+                  sizes="100vw"
                 />
               </div>
             </CarouselItem>
@@ -78,7 +79,7 @@ export default function SliderSection({ banners }: SliderSectionProps) {
       </Carousel>
       
       {slides.length > 1 && (
-      <div className="absolute bottom-0 lg:bottom-10 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+      <div className="absolute bottom-0 md:bottom-6 lg:bottom-10 left-1/2 -translate-x-1/2 flex gap-2 z-10">
           {Array.from({ length: Math.min(slides.length, 5) }).map((_, index) => (
           <button
             key={index}

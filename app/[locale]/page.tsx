@@ -95,39 +95,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       </div>
       
       {/* SEO Text Content - Hidden visually but accessible to search engines */}
-      <section className="sr-only" aria-label="SEO Content">
-        <h2>
-          {t('seo.home.intro-title')}
-        </h2>
-        <p>
-          {t('seo.home.intro-text')}{' '}
-          {locale === 'ua' ? 'Перегляньте наш' : 'Zobacz nasz'}{' '}
-          <a href={`/${locale}/catalogue`}>{t('header.catalogue')}</a>{' '}
-          {locale === 'ua' ? 'з широким асортиментом:' : 'z szerokim asortymentem:'}{' '}
-          <a href={`/${locale}/catalogue?category=chilled`}>{t('header.chilled')}</a>,{' '}
-          <a href={`/${locale}/catalogue?category=frozen`}>{t('header.frozen')}</a>,{' '}
-          <a href={`/${locale}/catalogue?category=ready`}>{t('header.ready')}</a>,{' '}
-          <a href={`/${locale}/catalogue?category=marinated`}>{t('header.marinated')}</a>{' '}
-          {locale === 'ua' ? 'та' : 'i'}{' '}
-          <a href={`/${locale}/catalogue?category=snacks`}>{t('header.snacks')}</a>.
-        </p>
-        <div>
-          <h3>{t('seo.home.why-us-title')}</h3>
-          <ul>
-            <li>{t('seo.home.why-us-1')}</li>
-            <li>{t('seo.home.why-us-2')}</li>
-            <li>{t('seo.home.why-us-3')}</li>
-            <li>{t('seo.home.why-us-4')}</li>
-          </ul>
-        </div>
-        <p>
-          {locale === 'ua' ? 'Дізнайтеся більше' : 'Dowiedz się więcej'}{' '}
-          <a href={`/${locale}/about-us`}>{t('header.about-us')}</a>{' '}
-          {locale === 'ua' ? 'та' : 'i'}{' '}
-          <a href={`/${locale}/delivery`}>{t('header.delivery')}</a>.
-        </p>
-      </section>
-      
+
+      <SearchAction t={t} locale={locale} />
       <div className='flex flex-col  pb-[120px] gap-[60px]'>
         <CategorySection category="chilled" title={t('header.chilled')} href="/catalogue?category=chilled" />
         <CategorySection category="frozen" title={t('header.frozen')} href="/catalogue?category=frozen" />
@@ -139,3 +108,40 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   );
 }
 
+
+const SearchAction = ({ t, locale }: { t: any, locale: string }) => {
+  return (
+    <section className="sr-only" aria-label="SEO Content">
+    <h2>
+      {t('seo.home.intro-title')}
+    </h2>
+    <p>
+      {t('seo.home.intro-text')}{' '}
+      {locale === 'ua' ? 'Перегляньте наш' : 'Zobacz nasz'}{' '}
+      <a href={`/${locale}/catalogue`}>{t('header.catalogue')}</a>{' '}
+      {locale === 'ua' ? 'з широким асортиментом:' : 'z szerokim asortymentem:'}{' '}
+      <a href={`/${locale}/catalogue?category=chilled`}>{t('header.chilled')}</a>,{' '}
+      <a href={`/${locale}/catalogue?category=frozen`}>{t('header.frozen')}</a>,{' '}
+      <a href={`/${locale}/catalogue?category=ready`}>{t('header.ready')}</a>,{' '}
+      <a href={`/${locale}/catalogue?category=marinated`}>{t('header.marinated')}</a>{' '}
+      {locale === 'ua' ? 'та' : 'i'}{' '}
+      <a href={`/${locale}/catalogue?category=snacks`}>{t('header.snacks')}</a>.
+    </p>
+    <div>
+      <h3>{t('seo.home.why-us-title')}</h3>
+      <ul>
+        <li>{t('seo.home.why-us-1')}</li>
+        <li>{t('seo.home.why-us-2')}</li>
+        <li>{t('seo.home.why-us-3')}</li>
+        <li>{t('seo.home.why-us-4')}</li>
+      </ul>
+    </div>
+    <p>
+      {locale === 'ua' ? 'Дізнайтеся більше' : 'Dowiedz się więcej'}{' '}
+      <a href={`/${locale}/about-us`}>{t('header.about-us')}</a>{' '}
+      {locale === 'ua' ? 'та' : 'i'}{' '}
+      <a href={`/${locale}/delivery`}>{t('header.delivery')}</a>.
+    </p>
+  </section>
+  )
+}
