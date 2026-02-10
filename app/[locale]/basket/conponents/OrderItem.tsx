@@ -32,18 +32,18 @@ export default function OrderItem({ product }: { product: BasketProduct }) {
   const totalPrice = calculateItemTotal(product.price, product?.quantity || 1);
   
   return (
-      <div className="relative flex flex-col sm:flex-row p-2.5 bg-light rounded-2xl items-center gap-3 sm:gap-0 pr-5 sm:pr-0">
-        <div className="flex gap-3 sm:gap-6 items-center w-full sm:w-1/2">
+      <div className="relative flex p-2.5 bg-white  md:bg-light  rounded-2xl items-center justify-between gap-3">
+        <div className="flex gap-3 sm:gap-6 items-center w-full xl:w-1/2">
           <Image
             src={productImage}
             alt={productName}
             width={60}
             height={60}
-            className="rounded-lg object-cover w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0"
+            className="rounded-lg object-cover  h-18 w-24 md:size-16 "
           />
 
           <div className="flex flex-col flex-1 min-w-0">
-            <div className="rubik font-semibold text-base sm:text-lg truncate">{productName}</div>
+            <div className="rubik font-semibold text-base sm:text-lg truncate w-9/10 ">{productName}</div>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -63,10 +63,14 @@ export default function OrderItem({ product }: { product: BasketProduct }) {
                 )}
               </Tooltip>
             </TooltipProvider>
+            <div className="flex md:hidden items-center gap-3 w-full justify-between">
+              <div className="inter text-base sm:text-lg md:text-2xl text-gray">{formatCurrency(totalPrice)} {t('currency')}</div>
+              <Counter count={product?.quantity || 1} onIncrease={handleIncrease} onDecrease={handleDecrease} />
+            </div>
           </div>
         </div>
-        <div className="flex items-center gap-3 sm:gap-0 w-full sm:w-auto justify-between sm:justify-end">
-          <div className="inter text-base sm:text-lg md:text-2xl text-gray">{formatCurrency(totalPrice)} {t('currency')}</div>
+        <div className="hidden md:flex flex-col xl:flex-row items-center xl:gap-3 ">
+          <div className="inter text-2xl text-gray">{formatCurrency(totalPrice)} {t('currency')}</div>
           <Counter count={product?.quantity || 1} onIncrease={handleIncrease} onDecrease={handleDecrease} />
         </div>
         <RxCross2 className="absolute top-2 right-2 sm:top-1/2 sm:-translate-y-1/2 sm:-right-[30px] size-5 sm:size-6 text-gray cursor-pointer" onClick={() => removeFromBasket(product.id)} />

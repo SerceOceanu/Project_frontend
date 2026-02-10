@@ -3,22 +3,21 @@ import OrdersCard from "./conponents/OrdersCard";
 import Form from "./conponents/Form";
 import SuccessOrderModal from "./conponents/SuccessOrderModal";
 import { useState } from "react";
-
+import OrdersCardMobile from "./conponents/OrdersCardMobile";
+import TotalMobile from "./conponents/TotalMobile";
 export default function Basket() {
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   
   return (
     <>
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 pt-[140px] md:pt-[190px] px-4 md:px-10 xl:px-[100px] container pb-[130px]'>
-        <div className='col-span-1'>
-          <Form />
-        </div>
-        <div className='col-span-1'>
-          <OrdersCard 
-            type="page" 
-            setIsSuccessModalOpen={setIsSuccessModalOpen}
-          />
-        </div>
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 pt-25 md:pt-30 px-4 md:px-10 xl:px-[100px] container pb-[130px]'>
+        <OrdersCardMobile/>
+        <Form />
+        <TotalMobile setIsSuccessModalOpen={setIsSuccessModalOpen} />
+        <OrdersCard 
+          type="page" 
+          setIsSuccessModalOpen={setIsSuccessModalOpen}
+        />
       </div>
       <SuccessOrderModal open={isSuccessModalOpen} onOpenChange={setIsSuccessModalOpen} />
     </>

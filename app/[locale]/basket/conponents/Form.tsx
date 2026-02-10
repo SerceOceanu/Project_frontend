@@ -192,8 +192,8 @@ export default function Form() {
   }, [order.deliveryType, order.paymentType, setOrder]);
 
   return (
-    <form >
-      <h2 className="font-bold w-full rubik text-[32px] mb-6"> {t('basket.main-title')} </h2>
+    <form  >
+      <h2 className="font-bold w-full rubik text-2xl  md:text-[32px] mb-6"> {t('basket.main-title')} </h2>
       {!firebaseUser && (
       <>
       <p className="rubik text-gray  mb-3 "> {t('basket.main-tooltip')} </p>

@@ -78,11 +78,11 @@ export default function CreateDialog({
 
   return (
     <Dialog open={isCreate} onOpenChange={setIsCreate}>
-      <DialogContent className="!max-w-[1000px] !w-full bg-white">
-        <DialogHeader>
+      <DialogContent className="!max-w-[1000px] !w-full bg-white max-h-[90vh] overflow-hidden flex flex-col">
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle className='Poppins text-xl'>Створити товар</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col p-6'>
+        <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col p-6 overflow-y-auto flex-1'>
           <div className="grid grid-cols-2 gap-5 mb-3">
             <div className="flex flex-col gap-5">
               <CustomInput

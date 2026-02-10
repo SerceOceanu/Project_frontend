@@ -1,10 +1,7 @@
 'use client';
-import NoOrders from './NoOrders'
-import OrderItem from './OrderItem'  
 import { Button } from '@/components/ui/button'
 import { useTranslations } from 'next-intl'
 import { useState, useMemo } from 'react'
-import { Link } from '@/lib/navigation'
 import { useBasketStore } from '@/store/useBasketStore'
 import { Checkbox } from '@/components/ui/checkbox';
 import { BasketProduct } from '@/types/types';
@@ -13,74 +10,18 @@ import { toast } from 'sonner';
 import { useDeliveryPrice } from '@/hooks/useDeliveryPrice';
 import { calculateItemTotal, sum, add, formatCurrency } from '@/lib/currency';
 
-interface OrdersCardProps {
-  type: 'modal' | 'page';
+interface TotalMobileProps {
   setIsSuccessModalOpen?: (open: boolean) => void;
 }
 
-export default function OrdersCard({ type, setIsSuccessModalOpen }: OrdersCardProps) {
-  const { basket, order } = useBasketStore();
-  const t = useTranslations();
-  const total = sum(basket.map((item: BasketProduct) => calculateItemTotal(item.price, item.quantity || 1)));
-  
-  const { data: deliveryCosts, isLoading } = useDeliveryPrice();
-  const currentDeliveryCost = deliveryCosts ? deliveryCosts[order.deliveryType] : 0;
-  
-  return (
-    <div className='hidden md:flex flex-col bg-white rounded-xl p-5 shadow-lg gap-6 self-start'>
-      {(basket.length === 0 || !basket.length) && <NoOrders />}
-      {basket.length > 0 && (
-        <>
-        <h2 className="text-2xl font-bold w-full "> {t('basket.title')} </h2>
-        <div className='flex flex-col gap-2.5 pr-0 md:pr-[30px]'>
-          {basket.map((item, index) => (
-            <OrderItem key={index} product={item} />
-          ))}
-        </div>
-        {type === 'modal' ? (
-          <TotalModal total={total} />
-        ) : (
-          <TotalPage 
-            total={total.toFixed(2)} 
-            setIsSuccessModalOpen={setIsSuccessModalOpen}
-            deliveryCost={currentDeliveryCost}
-            isLoading={isLoading}
-          />
-        )}
-      </>)}
-    </div>
-  )
-}
-
-const TotalModal = ({ total }: { total: number }) => {
-  const t = useTranslations();
-  const { setValue } = useBasketStore();
-
-  return (
-    <div className='flex px-4 sm:px-8 py-5 bg-light rounded-2xl items-end justify-between'>
-      <div className='flex flex-col text-2xl text-gray'>
-        {t('total')}
-        <span className='rubik text-[500] text-[40px] text-black '>{formatCurrency(total)}{t('currency')}</span>
-      </div>
-      <Link href={'/basket'}>
-        <Button onClick={() => setValue('isBasketModalOpen', false)} className="bg-orange hover:bg-orange/90 text-lg h-[56px]">{t('basket.button')}</Button>
-      </Link>
-    </div>
-  )
-}
-
-interface TotalPageProps {
-  total: string;
-  setIsSuccessModalOpen?: (open: boolean) => void;
-  deliveryCost: number;
-  isLoading?: boolean;
-}
-
-const TotalPage = ({ total, setIsSuccessModalOpen, deliveryCost, isLoading: isLoadingDelivery }: TotalPageProps) => {
-  const { order, basket, clearBasket } = useBasketStore();
+export default function TotalMobile({ setIsSuccessModalOpen }: TotalMobileProps) {
+  const { basket, order, clearBasket } = useBasketStore();
   const t = useTranslations();
   const [accept, setAccept] = useState(false);
   
+  const total = sum(basket.map((item: BasketProduct) => calculateItemTotal(item.price, item.quantity || 1)));
+  const { data: deliveryCosts, isLoading: isLoadingDelivery } = useDeliveryPrice();
+  const deliveryCost = deliveryCosts ? deliveryCosts[order.deliveryType] : 0;
   const totalAmount = add(Number(total), deliveryCost || 0);
   const { mutate: createOrder, isPending } = useCreateOrder();
   
@@ -133,7 +74,7 @@ const TotalPage = ({ total, setIsSuccessModalOpen, deliveryCost, isLoading: isLo
   };
   
   return (
-    <div className='px-4 sm:px-8 py-5 bg-light rounded-2xl'>
+    <div className='p-5 bg-white rounded-2xl md:hidden'>
       <div className='flex flex-col sm:flex-row sm:justify-between gap-4 border-b pb-4'>
         <div className='flex flex-col gap-1 text-gray'>
           <span className='rubik text-sm sm:text-base'>

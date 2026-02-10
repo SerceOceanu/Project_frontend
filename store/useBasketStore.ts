@@ -9,7 +9,7 @@ interface Order {
   address: string;
   postalCode: string;
   locality: string;
-  phone: string;
+   phone: string;
   email: string;
 
   isWaybillToAnotherAddress: boolean;

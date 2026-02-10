@@ -63,14 +63,15 @@ export default function SliderSection({ banners }: SliderSectionProps) {
         <CarouselContent>
           {slides.map((slide) => (
             <CarouselItem key={slide.id} className="relative w-full">
-              <div className="relative w-full aspect-[16/9] md:aspect-[21/9] lg:aspect-[21/7]">
+              <div className="relative w-full max-h-[70vh] overflow-hidden">
                 <Image
                   src={slide.imageUrl}
                   alt={slide.name}
-                  fill
-                  className="object-cover"
-                  priority
+                  width={1920}
+                  height={1080} 
+                  className="w-full h-auto object-cover"
                   sizes="100vw"
+                  priority
                 />
               </div>
             </CarouselItem>

@@ -24,7 +24,7 @@ export default function MobileBasket() {
       <div className="flex items-center justify-around text-white">
         <div className="flex items-center gap-2">
           <span className="font-medium">
-            {t('items', { count: totalItems })}, {formatCurrency(totalPrice)}{t('currency')}
+            {totalItems} {t('items', { count: totalItems })}, {formatCurrency(totalPrice)} {t('currency')}
           </span>
         </div>
         <div className="h-6 w-px bg-white/30"></div>
