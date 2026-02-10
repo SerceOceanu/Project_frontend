@@ -79,6 +79,46 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     ],
   };
 
+  // FAQPage Schema для SEO
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: t('seo.home.faq-1-q'),
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: t('seo.home.faq-1-a'),
+        },
+      },
+      {
+        '@type': 'Question',
+        name: t('seo.home.faq-2-q'),
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: t('seo.home.faq-2-a'),
+        },
+      },
+      {
+        '@type': 'Question',
+        name: t('seo.home.faq-3-q'),
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: t('seo.home.faq-3-a'),
+        },
+      },
+      {
+        '@type': 'Question',
+        name: t('seo.home.faq-4-q'),
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: t('seo.home.faq-4-a'),
+        },
+      },
+    ],
+  };
+
   return (
     <>
       <StructuredDataServer type="Organization" locale={locale} />
@@ -90,13 +130,16 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       <div className="px-4 pt-[140px] md:pt-[160px] lg:pt-0 lg:px-0 mb-10 lg:mb-20">
         <SliderSection banners={banners} />
       </div>
       
       {/* SEO Text Content - Hidden visually but accessible to search engines */}
 
-      <SearchAction t={t} locale={locale} />
       <div className='flex flex-col  pb-[120px] gap-[60px]'>
         <CategorySection category="chilled" title={t('header.chilled')} href="/catalogue?category=chilled" />
         <CategorySection category="frozen" title={t('header.frozen')} href="/catalogue?category=frozen" />
@@ -104,6 +147,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <CategorySection category="marinated" title={t('header.marinated')} href="/catalogue?category=marinated" />
         <CategorySection category="snacks" title={t('header.snacks')} href="/catalogue?category=snacks" />
       </div>
+      <SearchAction t={t} locale={locale} />
+      <FAQSection t={t} locale={locale} />
     </> 
   );
 }
@@ -117,9 +162,9 @@ const SearchAction = ({ t, locale }: { t: any, locale: string }) => {
     </h2>
     <p>
       {t('seo.home.intro-text')}{' '}
-      {locale === 'ua' ? 'Перегляньте наш' : 'Zobacz nasz'}{' '}
+      {locale === 'ua' ? 'Свіжа риба доставка Польща - це наша спеціалізація. Перегляньте наш' : 'Świeża ryba z dostawą w Polsce - to nasza specjalizacja. Zobacz nasz'}{' '}
       <a href={`/${locale}/catalogue`}>{t('header.catalogue')}</a>{' '}
-      {locale === 'ua' ? 'з широким асортиментом:' : 'z szerokim asortymentem:'}{' '}
+      {locale === 'ua' ? 'з широким асортиментом свіжої риби:' : 'z szerokim asortymentem świeżej ryby:'}{' '}
       <a href={`/${locale}/catalogue?category=chilled`}>{t('header.chilled')}</a>,{' '}
       <a href={`/${locale}/catalogue?category=frozen`}>{t('header.frozen')}</a>,{' '}
       <a href={`/${locale}/catalogue?category=ready`}>{t('header.ready')}</a>,{' '}
@@ -137,11 +182,37 @@ const SearchAction = ({ t, locale }: { t: any, locale: string }) => {
       </ul>
     </div>
     <p>
-      {locale === 'ua' ? 'Дізнайтеся більше' : 'Dowiedz się więcej'}{' '}
+      {locale === 'ua' ? 'Дізнайтеся більше про свіжу рибу та доставку' : 'Dowiedz się więcej o świeżej rybie i dostawie'}{' '}
       <a href={`/${locale}/about-us`}>{t('header.about-us')}</a>{' '}
       {locale === 'ua' ? 'та' : 'i'}{' '}
       <a href={`/${locale}/delivery`}>{t('header.delivery')}</a>.
     </p>
   </section>
+  )
+}
+
+const FAQSection = ({ t, locale }: { t: any, locale: string }) => {
+  return (
+    <section className="sr-only" aria-label="FAQ">
+      <h2>{t('seo.home.faq-title')}</h2>
+      <div>
+        <div>
+          <h3>{t('seo.home.faq-1-q')}</h3>
+          <p>{t('seo.home.faq-1-a')}</p>
+        </div>
+        <div>
+          <h3>{t('seo.home.faq-2-q')}</h3>
+          <p>{t('seo.home.faq-2-a')}</p>
+        </div>
+        <div>
+          <h3>{t('seo.home.faq-3-q')}</h3>
+          <p>{t('seo.home.faq-3-a')}</p>
+        </div>
+        <div>
+          <h3>{t('seo.home.faq-4-q')}</h3>
+          <p>{t('seo.home.faq-4-a')}</p>
+        </div>
+      </div>
+    </section>
   )
 }
