@@ -1,20 +1,31 @@
 import z from "zod";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
+
+const validatePhone = (value: string): boolean => {
+  if (!value || value.trim() === "") {
+    return false;
+  }
+
+  // Определяем страну на основе номера
+  let country: "PL" | "UA" | undefined;
+  if (value.startsWith("+380")) {
+    country = "UA";
+  } else if (value.startsWith("+48")) {
+    country = "PL";
+  }
+
+  // Если страна не определена, пытаемся определить автоматически
+  const phone = parsePhoneNumberFromString(value, country);
+  return phone ? phone.isValid() : false;
+};
 
 export const phoneSchema = z.object({
   phone: z
     .string()
     .min(1, "Phone number is required")
-    .refine(
-      (value) => {
-        const clean = value.replace(/\D/g, "");
-        const isPL = clean.length === 9;
-        const isUA = value.startsWith("+380") && clean.length === 12;
-        return isPL || isUA;
-      },
-      {
-        message: "Invalid phone number",
-      }
-    ),
+    .refine(validatePhone, {
+      message: "Invalid phone number",
+    }),
 });
 
 export const createProductSchema = z.object({
