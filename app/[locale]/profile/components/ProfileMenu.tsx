@@ -97,7 +97,9 @@ export default function ProfileMenu() {
           </div>
 
         </div>
-        <div className="flex md:hidden items-center gap-2 rubik text-sm font-medium  p-2.5 rounded text-gray cursor-pointer active:bg-orange/5 ">
+        <div 
+          onClick={() => logout.mutate()}
+          className="flex md:hidden items-center gap-2 rubik text-sm font-medium  p-2.5 rounded text-gray cursor-pointer active:bg-orange/5 ">
           <div className='size-9 bg-white flex items-center justify-center rounded'><IoIosLogOut size={20} /></div>
           {t('profile.logout')}
         </div>

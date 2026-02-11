@@ -63,7 +63,7 @@ export default function SliderSection({ banners }: SliderSectionProps) {
         <CarouselContent>
           {slides.map((slide) => (
             <CarouselItem key={slide.id} className="relative w-full">
-              <div className="relative w-full max-h-[70vh] overflow-hidden">
+              <div className="relative w-full  overflow-hidden">
                 <Image
                   src={slide.imageUrl}
                   alt={slide.name}

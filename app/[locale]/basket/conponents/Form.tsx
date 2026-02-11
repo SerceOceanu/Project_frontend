@@ -20,8 +20,8 @@ import InpostLockerSearch from "@/components/InpostLockerSearch";
 export default function Form() {
   const { order, setOrder } = useBasketStore();
   const { setIsLoginOpen } = useStatesStore();
-  const { data: firebaseUser, isLoading: isLoadingUser } = useFirebaseUser();
-  const { data: deliveryAddress, isLoading: isLoadingAddress } = useDeliveryAddress();
+  const { data: firebaseUser } = useFirebaseUser();
+  const { data: deliveryAddress } = useDeliveryAddress();
   const t = useTranslations();
   // Dynamic Zod schema with i18n validation messages
   const schema = useMemo(() => 
