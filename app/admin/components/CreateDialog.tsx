@@ -40,6 +40,7 @@ export default function CreateDialog({
       gramsPerServing: 0,
       maxGramsPerServing: undefined,
       label: 'none' as const,
+      syrveProductId: '',
       filePL: null,
       fileUA: null,
     },
@@ -60,6 +61,7 @@ export default function CreateDialog({
       gramsPerServing: Number(data.gramsPerServing) || 0,
       maxGramsPerServing: data.maxGramsPerServing ? Number(data.maxGramsPerServing) : undefined,
       label: data.label === 'none' ? 'none' : data.label,
+      syrveProductId: data.syrveProductId || undefined,
       filePL: data.filePL,
       fileUA: data.fileUA,
     };
@@ -223,6 +225,14 @@ export default function CreateDialog({
                     />
                   </div>
                 )}
+              />
+              <CustomInput
+                label="Syrve Product ID"
+                placeholder="Введіть Syrve Product ID (опціонально)"
+                name="syrveProductId"
+                register={register}
+                error={errors.syrveProductId?.message as string}
+                type="text"
               />
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-medium">Фото (PL)*</label>

@@ -190,6 +190,10 @@ export function useCreateProduct() {
         formData.append('label', productData.label);
       }
       
+      if (productData.syrveProductId) {
+        formData.append('syrveProductId', productData.syrveProductId);
+      }
+      
       formData.append('filePL', productData.filePL);
       formData.append('fileUA', productData.fileUA);
 
@@ -233,6 +237,10 @@ export function useUpdateProduct() {
       
       if (productData.label && productData.label !== 'none') {
         formData.append('label', productData.label);
+      }
+      
+      if (productData.syrveProductId) {
+        formData.append('syrveProductId', productData.syrveProductId);
       }
       
       if (productData.filePL) {

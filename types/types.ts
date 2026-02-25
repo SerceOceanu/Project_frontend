@@ -14,6 +14,7 @@ export type Product = {
   category: Filter;
   inStock: boolean;
   label: Label;
+  syrveProductId?: string;
 }
 
 export type BasketProduct = Product & {
@@ -29,6 +30,7 @@ export type CreateProduct = {
   gramsPerServing: number;
   maxGramsPerServing?: number;
   label?: Label;
+  syrveProductId?: string;
   filePL?: File;
   fileUA?: File;
   enabled?: boolean;

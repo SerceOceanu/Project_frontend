@@ -134,7 +134,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      <div className="px-4 pt-[140px] md:pt-[160px] lg:pt-0 lg:px-0 mb-10 lg:mb-20">
+      <div className="px-4 pt-[140px] md:pt-[160px] lg:px-0 mb-10 lg:mb-20">
         <SliderSection banners={banners} />
       </div>
       

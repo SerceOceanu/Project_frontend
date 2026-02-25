@@ -62,10 +62,11 @@ export function useUpdatePopupStatus() {
       });
     },
     onSuccess: async () => {
-      // Invalidate and refetch both queries to ensure data is updated
+      // Invalidate queries to mark data as stale
       await queryClient.invalidateQueries({ queryKey: ['admin-popups'] });
       await queryClient.invalidateQueries({ queryKey: ['popups'] });
-      // Force refetch to immediately update the data
+      
+      // Refetch to get fresh data from server
       await queryClient.refetchQueries({ queryKey: ['admin-popups'] });
       await queryClient.refetchQueries({ queryKey: ['popups'] });
     },

@@ -83,6 +83,7 @@ export default function EditDialog({
       gramsPerServing: 0,
       maxGramsPerServing: undefined,
       label: 'none' as Label,
+      syrveProductId: '',
       filePL: null as File | null,
       fileUA: null as File | null,
     },
@@ -101,6 +102,7 @@ export default function EditDialog({
         gramsPerServing: item.gramsPerServing || 0,
         maxGramsPerServing: item.maxGramsPerServing || undefined,
         label: item.label || 'none' as Label,
+        syrveProductId: item.syrveProductId || '',
         filePL: null as File | null,
         fileUA: null as File | null,
       });
@@ -118,6 +120,7 @@ export default function EditDialog({
       gramsPerServing: Number(data.gramsPerServing) || 0,
       maxGramsPerServing: data.maxGramsPerServing ? Number(data.maxGramsPerServing) : undefined,
       label: data.label === 'none' ? 'none' : data.label,
+      syrveProductId: data.syrveProductId || undefined,
       filePL: data.filePL || undefined,
       fileUA: data.fileUA || undefined,
     };
@@ -285,6 +288,14 @@ export default function EditDialog({
                     />
                   </div>
                 )}
+              />
+              <CustomInput
+                label="Syrve Product ID"
+                placeholder="Введіть Syrve Product ID (опціонально)"
+                name="syrveProductId"
+                register={register}
+                error={errors.syrveProductId?.message as string}
+                type="text"
               />
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-medium">Фото (PL)*</label>

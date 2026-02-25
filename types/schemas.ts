@@ -43,6 +43,7 @@ export const createProductSchema = z.object({
     return Number(normalized);
   }).pipe(z.number().gt(0, 'Ціна повинна бути більше 0')),
   label: z.enum(['top', 'new', 'none']).optional(),
+  syrveProductId: z.string().optional().or(z.literal('')),
   filePL: z.instanceof(File).nullable(),
   fileUA: z.instanceof(File).nullable(),
 });
