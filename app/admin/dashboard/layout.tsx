@@ -2,6 +2,7 @@
 
 import Header from '../components/Header';
 import Menu from '../components/Menu';
+import MobileMenu from '../components/MobileMenu';
 
 export default function DashboardLayout({
   children,
@@ -12,6 +13,7 @@ export default function DashboardLayout({
     <div className="flex flex-col min-h-screen relative">
       <main className="flex-1 bg-background flex flex-col">
         <Header />
+        <MobileMenu />
         <section className="flex flex-1">
           <Menu />
           {children}

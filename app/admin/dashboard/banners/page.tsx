@@ -10,7 +10,7 @@ export default function AdminPage() {
   const [isCreate, setIsCreate] = useState(false);
   
   return (
-    <div className='w-full flex-1 p-5 flex flex-col max-w-[1440px] mx-auto'>
+    <div className='w-full flex-1 p-5 pb-[100px] md:pb-5 flex flex-col max-w-[1440px] mx-auto'>
       <div className='flex gap-10 text-[32px] text-black font-[700] items-center mb-6'>
         Банери <Button className='h-9' onClick={() => setIsCreate(true)}>Додати Банер</Button>
       </div>

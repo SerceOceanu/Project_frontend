@@ -11,29 +11,27 @@ const menuItems = [
   {
     label: 'Товари',
     href: '/admin/dashboard',
-    icon: <IoGridOutline size={20} />
+    icon: <IoGridOutline size={14} />
   },
   {
     label: 'Банери',
     href: '/admin/dashboard/banners',
-    icon: <IoImagesOutline size={20} />
+    icon: <IoImagesOutline size={14} />
   },
   {
     label: 'Спливаючі вікна',
     href: '/admin/dashboard/modals',
-    icon: <BsWindowStack size={20} />
+    icon: <BsWindowStack size={14} />
   },
 ];
 
-function Menu() {
+function MobileMenu() {
   const pathname = usePathname();
 
   return (
-    <div className='hidden md:flex w-full max-w-[240px] flex-col pt-3 px-4 bg-white shadow flex-1' >
-      <div className='flex flex-col gap-2.5'>
+    <div className="md:hidden bg-white shadow-sm border-b border-gray/10">
+      <div className="flex overflow-x-auto scrollbar-hide">
         {menuItems.map((item) => {
-          // Для вкладки "Товари" (/admin/dashboard) - активна только на точном пути
-          // Для остальных вкладок - активна если путь начинается с href
           const isActive = item.href === '/admin/dashboard' 
             ? pathname === '/admin/dashboard'
             : pathname.startsWith(item.href);
@@ -43,14 +41,13 @@ function Menu() {
               href={item.href} 
               key={item.label} 
               className={cn(
-                'p-3 rounded-lg font-[600] text-sm hover:bg-gray/10 transition-colors',
-                isActive && 'bg-blue text-white'
+                'flex-1 min-w-0 flex items-center justify-center px-3 py-2 font-[600] text-xs transition-colors border-b-2',
+                isActive 
+                  ? 'border-blue text-blue bg-blue/5' 
+                  : 'border-transparent text-gray hover:text-blue hover:bg-gray/5'
               )}
             >
-              <div className='flex items-center gap-4'>
-                {item.icon}
-                {item.label}
-              </div>
+              <span className="whitespace-nowrap">{item.label}</span>
             </Link>
           );
         })}
@@ -59,4 +56,4 @@ function Menu() {
   );
 }
 
-export default memo(Menu);
+export default memo(MobileMenu);

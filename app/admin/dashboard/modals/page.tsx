@@ -12,7 +12,7 @@ export default function AdminPage() {
   console.log(popups);
   if (isLoading) {
     return (
-      <div className='w-full flex-1 p-5 flex flex-col max-w-[1440px] mx-auto'>
+      <div className='w-full flex-1 p-5 pb-[100px] md:pb-5 flex flex-col max-w-[1440px] mx-auto'>
         <div className='flex items-center justify-center h-64'>
           <p className="text-gray-600">Завантаження...</p>
         </div>
@@ -22,7 +22,7 @@ export default function AdminPage() {
 
   if (isError) {
     return (
-      <div className='w-full flex-1 p-5 flex flex-col max-w-[1440px] mx-auto'>
+      <div className='w-full flex-1 p-5 pb-[100px] md:pb-5 flex flex-col max-w-[1440px] mx-auto'>
         <div className='flex items-center justify-center h-64'>
           <p className="text-red-600">Помилка завантаження попапів</p>
         </div>
@@ -31,7 +31,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className='w-full flex-1 p-5 flex flex-col max-w-[1440px] mx-auto'>
+    <div className='w-full flex-1 p-5 pb-[100px] md:pb-5 flex flex-col max-w-[1440px] mx-auto'>
       <div className='flex gap-10 text-[32px] text-black font-[700] items-center mb-6'>
         Спливаючі вікна <Button className='h-9' onClick={() => setIsCreate(true)}>Додати Вікно</Button>
       </div>

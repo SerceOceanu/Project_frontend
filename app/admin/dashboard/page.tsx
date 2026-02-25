@@ -40,16 +40,22 @@ export default function AdminPage() {
   ];
   
   return (
-    <div className='w-full flex-1 p-5 flex flex-col max-w-[1440px] mx-auto'>
-      <div className='flex gap-10 text-[32px] text-black font-[700] items-center mb-6'>
-        Товари <Button className='h-9' onClick={() => setIsCreate(true)}>Створити товар</Button>
+    <div className='w-full flex-1 p-3 sm:p-5 pb-[100px] md:pb-5 flex flex-col max-w-[1440px] mx-auto'>
+      <div className='flex flex-col sm:flex-row gap-4 sm:gap-10 text-xl sm:text-2xl lg:text-[32px] text-black font-[700] items-start sm:items-center mb-4 sm:mb-6'>
+        <h1>Товари</h1>
+        <Button 
+          className='h-9 text-sm sm:text-base w-full sm:w-auto' 
+          onClick={() => setIsCreate(true)}
+        >
+          Створити товар
+        </Button>
       </div>
-      <div className='grid grid-cols-5 items-center gap-10 justify-between px-5 py-3 bg-white shadow rounded-[10px] mb-6'>
+      <div className='flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2 sm:gap-4 lg:gap-6 xl:gap-10 px-3 sm:px-5 py-3 bg-white shadow rounded-[10px] mb-4 sm:mb-6 overflow-x-auto sm:overflow-visible'>
         {menuItems.map((item) => (
           <div 
             key={item.value} 
             className={cn(
-              'px-5 text-center py-2 rounded hover:bg-gray/10 cursor-pointer', 
+              'px-3 sm:px-4 lg:px-5 text-center py-2 rounded hover:bg-gray/10 cursor-pointer text-xs sm:text-sm whitespace-nowrap transition-colors', 
               filter === item.value && 'bg-blue/10 text-blue font-medium'
             )} 
             onClick={() => setFilter(item.value as Filter)}

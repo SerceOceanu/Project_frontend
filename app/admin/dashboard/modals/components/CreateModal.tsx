@@ -50,11 +50,11 @@ export default function CreateModal({
 
   return (
     <Dialog open={isCreate} onOpenChange={setIsCreate}>
-      <DialogContent className="bg-white">
-        <DialogHeader>
-          <DialogTitle className='Poppins text-xl'>Створити спливаюче вікно</DialogTitle>
+      <DialogContent className="!max-w-[600px] !w-[calc(100%-0.5rem)] sm:!w-[calc(100%-1rem)] md:!w-[calc(100%-2rem)] lg:!w-full p-4 md:p-6 bg-white max-h-[95vh] overflow-hidden flex flex-col">
+        <DialogHeader className="flex-shrink-0 !px-2 sm:!px-4 !pt-3 sm:!pt-4">
+          <DialogTitle className='Poppins text-base sm:text-lg md:text-xl'>Створити спливаюче вікно</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-6'>
+        <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-4 sm:gap-6 !px-2 !py-2 sm:!px-4 sm:!py-4 md:!px-6 md:!py-6 overflow-y-auto flex-1 scrollbar-hide'>
           <CustomInput
             label="Назва*"
             placeholder="Введіть назву вікна"
@@ -73,7 +73,7 @@ export default function CreateModal({
                   id="description"
                   {...field}
                   placeholder="Введіть опис вікна"
-                  className={`w-full min-h-[120px] border-solid rounded-xl ${
+                  className={`w-full min-h-[100px] sm:min-h-[120px] border-solid rounded-xl px-2 sm:px-3 py-2 sm:py-3 ${
                     errors.description 
                       ? '!border-red text-red focus-visible:!border-red focus-visible:!ring-red/20 focus-visible:!ring-[3px]' 
                       : 'border-gray-200'
@@ -88,7 +88,7 @@ export default function CreateModal({
 
           <Button 
             type="submit" 
-            className="w-full" 
+            className="w-full mt-4" 
             disabled={isPending}
           >
             {isPending ? 'Збереження...' : 'Зберегти'}

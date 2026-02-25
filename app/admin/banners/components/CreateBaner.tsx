@@ -55,11 +55,11 @@ export default function CreateDialog({
 
   return (
     <Dialog open={isCreate} onOpenChange={setIsCreate}>
-      <DialogContent className="bg-white !max-w-[900px] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className='Poppins text-xl'>Створити банер</DialogTitle>
+      <DialogContent className="!max-w-[900px] !w-[calc(100%-0.5rem)] sm:!w-[calc(100%-1rem)] md:!w-[calc(100%-2rem)] lg:!w-full p-4 md:p-6 bg-white max-h-[95vh] overflow-hidden flex flex-col">
+        <DialogHeader className="flex-shrink-0 !px-2 sm:!px-4 !pt-3 sm:!pt-4">
+          <DialogTitle className='Poppins text-base sm:text-lg md:text-xl'>Створити банер</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-6 p-6'>
+        <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-4 sm:gap-6 !px-2 !py-2 sm:!px-4 sm:!py-4 md:!px-6 md:!py-6 overflow-y-auto flex-1 scrollbar-hide'>
           <div className="flex flex-col gap-5">
             <CustomInput
               label="Назва (PL)*"
@@ -122,7 +122,7 @@ export default function CreateDialog({
 
           <Button 
             type="submit" 
-            className="w-full" 
+            className="w-full mt-4" 
             disabled={isPending}
           >
             {isPending ? 'Збереження...' : 'Зберегти'}
