@@ -15,7 +15,7 @@ interface OrderData {
   billAddress?: string;
   billPostalCode?: string;
   billLocality?: string;
-  deliveryType: 'pickup' | 'courier' | 'locker';
+  deliveryType: 'pickup' | 'courier' | 'locker' | 'internal_courier';
   lockerNumber?: string;
   paymentType: 'cash' | 'payu';
   comment?: string;
@@ -63,8 +63,6 @@ export function useCreateOrder() {
         },
       };
 
-      // requireAuth: false - не требует обязательной авторизации
-      // но если пользователь авторизован, токен будет автоматически добавлен
       const result = await apiRequest<OrderResponse>('/orders', {
         method: 'POST',
         body: payload,

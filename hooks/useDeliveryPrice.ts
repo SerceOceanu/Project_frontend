@@ -5,6 +5,7 @@ interface DeliveryCostsResponse {
   courier: number;
   locker: number;
   pickup: number;
+  internal_courier: number;
 }
 
 export function useDeliveryPrice() {

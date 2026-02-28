@@ -184,9 +184,9 @@ export default function Form() {
     });
   }, [firebaseUser, deliveryAddress, reset]);
 
-  // Auto-switch to payu payment when courier or locker is selected
+  // Auto-switch to payu payment when courier, locker or internal_courier is selected
   useEffect(() => {
-    if ((order.deliveryType === 'courier' || order.deliveryType === 'locker') && order.paymentType === 'cash') {
+    if ((order.deliveryType === 'courier' || order.deliveryType === 'locker' || order.deliveryType === 'internal_courier') && order.paymentType === 'cash') {
       setOrder('paymentType', 'payu');
     }
   }, [order.deliveryType, order.paymentType, setOrder]);
@@ -331,7 +331,8 @@ export default function Form() {
             items={[
                 { value: 'pickup', label: t('delivery-form.delivery-type-1') },
                 { value: 'courier', label: t('delivery-form.delivery-type-3') },
-                { value: 'locker', label: t('delivery-form.delivery-type-2') }
+                { value: 'locker', label: t('delivery-form.delivery-type-2') },
+                { value: 'internal_courier', label: t('delivery-form.delivery-type-4') }
             ]} 
             value={order.deliveryType} 
             onChange={(value) => { setOrder('deliveryType', value) }} 

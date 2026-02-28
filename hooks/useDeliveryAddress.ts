@@ -7,7 +7,7 @@ export interface DeliveryAddress {
   address: string;
   postalCode: string;
   isCity: boolean;
-  deliveryType: 'pickup' | 'courier' | 'locker';
+  deliveryType: 'pickup' | 'courier' | 'locker' | 'internal_courier';
   lockerNumber?: string;
 }
 

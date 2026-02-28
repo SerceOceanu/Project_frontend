@@ -17,7 +17,7 @@ interface Order {
   billPostalCode: string;
   billLocality: string;
 
-  deliveryType: 'pickup' | 'courier' | 'locker';
+  deliveryType: 'pickup' | 'courier' | 'locker' | 'internal_courier';
   lockerNumber?: string;
   paymentType: 'cash' | 'payu';
   comment?: string;
