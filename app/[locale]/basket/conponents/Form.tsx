@@ -15,6 +15,8 @@ import { useBasketStore } from "@/store/useBasketStore";
 import { useStatesStore } from "@/store/useStatesStore";
 import { useUser as useFirebaseUser } from "@/hooks/useAuth";
 import { useDeliveryAddress } from "@/hooks/useDeliveryAddress";
+import { useDeliveryPrice } from "@/hooks/useDeliveryPrice";
+import { formatCurrency } from "@/lib/currency";
 import InpostLockerSearch from "@/components/InpostLockerSearch";
 
 export default function Form() {
@@ -22,6 +24,7 @@ export default function Form() {
   const { setIsLoginOpen } = useStatesStore();
   const { data: firebaseUser } = useFirebaseUser();
   const { data: deliveryAddress } = useDeliveryAddress();
+  const { data: deliveryCosts } = useDeliveryPrice();
   const t = useTranslations();
   // Dynamic Zod schema with i18n validation messages
   const schema = useMemo(() => 
@@ -328,12 +331,38 @@ export default function Form() {
       <div className="flex flex-col gap-5 bg-white px-6 py-7 rounded-xl mb-3">
         <h3 className="font-bold w-full rubik text-[24px]"> {t('delivery-form.delivery-type')} </h3>
           <RadioGroupComponent 
-            items={[
-                { value: 'pickup', label: t('delivery-form.delivery-type-1') },
-                { value: 'courier', label: t('delivery-form.delivery-type-3') },
-                { value: 'locker', label: t('delivery-form.delivery-type-2') },
-                { value: 'internal_courier', label: t('delivery-form.delivery-type-4') }
-            ]} 
+            items={useMemo(() => {
+              const getPrice = (type: 'pickup' | 'courier' | 'locker' | 'internal_courier') => {
+                const backendPrice = deliveryCosts?.[type];
+                const defaultPrice = Number(t(`delivery-form.delivery-default-${type}`));
+                const price = backendPrice !== undefined ? backendPrice : defaultPrice;
+                return price;
+              };
+
+              const formatPrice = (price: number) => {
+                if (price === 0) return '';
+                return `: ${formatCurrency(price)}${t('currency')}`;
+              };
+
+              return [
+                { 
+                  value: 'pickup', 
+                  label: `${t('delivery-form.delivery-type-1')}${formatPrice(getPrice('pickup'))}` 
+                },
+                { 
+                  value: 'courier', 
+                  label: `${t('delivery-form.delivery-type-3')}${formatPrice(getPrice('courier'))}` 
+                },
+                { 
+                  value: 'locker', 
+                  label: `${t('delivery-form.delivery-type-2')}${formatPrice(getPrice('locker'))}` 
+                },
+                { 
+                  value: 'internal_courier', 
+                  label: `${t('delivery-form.delivery-type-4')}${formatPrice(getPrice('internal_courier'))}` 
+                }
+              ];
+            }, [deliveryCosts, t])} 
             value={order.deliveryType} 
             onChange={(value) => { setOrder('deliveryType', value) }} 
           />
