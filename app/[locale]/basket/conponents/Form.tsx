@@ -26,6 +26,41 @@ export default function Form() {
   const { data: deliveryAddress } = useDeliveryAddress();
   const { data: deliveryCosts } = useDeliveryPrice();
   const t = useTranslations();
+  
+  // Prepare delivery options with prices
+  const deliveryItems = useMemo(() => {
+    const getPrice = (type: 'pickup' | 'courier' | 'locker' | 'internal_courier') => {
+      const backendPrice = deliveryCosts?.[type];
+      const defaultPrice = Number(t(`delivery-form.delivery-default-${type}`));
+      const price = backendPrice !== undefined ? backendPrice : defaultPrice;
+      return price;
+    };
+
+    const formatPrice = (price: number) => {
+      if (price === 0) return '';
+      return `: ${formatCurrency(price)}${t('currency')}`;
+    };
+
+    return [
+      { 
+        value: 'pickup', 
+        label: `${t('delivery-form.delivery-type-1')}${formatPrice(getPrice('pickup'))}` 
+      },
+      { 
+        value: 'courier', 
+        label: `${t('delivery-form.delivery-type-3')}${formatPrice(getPrice('courier'))}` 
+      },
+      { 
+        value: 'locker', 
+        label: `${t('delivery-form.delivery-type-2')}${formatPrice(getPrice('locker'))}` 
+      },
+      { 
+        value: 'internal_courier', 
+        label: `${t('delivery-form.delivery-type-4')}${formatPrice(getPrice('internal_courier'))}` 
+      }
+    ];
+  }, [deliveryCosts, t]);
+
   // Dynamic Zod schema with i18n validation messages
   const schema = useMemo(() => 
     z.object({
@@ -331,38 +366,7 @@ export default function Form() {
       <div className="flex flex-col gap-5 bg-white px-6 py-7 rounded-xl mb-3">
         <h3 className="font-bold w-full rubik text-[24px]"> {t('delivery-form.delivery-type')} </h3>
           <RadioGroupComponent 
-            items={useMemo(() => {
-              const getPrice = (type: 'pickup' | 'courier' | 'locker' | 'internal_courier') => {
-                const backendPrice = deliveryCosts?.[type];
-                const defaultPrice = Number(t(`delivery-form.delivery-default-${type}`));
-                const price = backendPrice !== undefined ? backendPrice : defaultPrice;
-                return price;
-              };
-
-              const formatPrice = (price: number) => {
-                if (price === 0) return '';
-                return `: ${formatCurrency(price)}${t('currency')}`;
-              };
-
-              return [
-                { 
-                  value: 'pickup', 
-                  label: `${t('delivery-form.delivery-type-1')}${formatPrice(getPrice('pickup'))}` 
-                },
-                { 
-                  value: 'courier', 
-                  label: `${t('delivery-form.delivery-type-3')}${formatPrice(getPrice('courier'))}` 
-                },
-                { 
-                  value: 'locker', 
-                  label: `${t('delivery-form.delivery-type-2')}${formatPrice(getPrice('locker'))}` 
-                },
-                { 
-                  value: 'internal_courier', 
-                  label: `${t('delivery-form.delivery-type-4')}${formatPrice(getPrice('internal_courier'))}` 
-                }
-              ];
-            }, [deliveryCosts, t])} 
+            items={deliveryItems} 
             value={order.deliveryType} 
             onChange={(value) => { setOrder('deliveryType', value) }} 
           />

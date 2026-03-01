@@ -16,12 +16,10 @@ export default function Warning() {
   // Find active popup
   const activePopup = popups?.find(popup => popup.active);
 
-  // Don't show popup on admin routes, while loading, on error, or if no active popup
-  if (isAdminRoute || isLoading || isError || !activePopup) {
-    return null;
-  }
-
   useEffect(() => {
+    // Only run effect if we have an active popup
+    if (!activePopup || isAdminRoute) return;
+    
     // Add backdrop blur to overlay
     const addBlurToOverlay = () => {
       const overlay = document.querySelector('[data-slot="dialog-overlay"]');
@@ -38,7 +36,12 @@ export default function Warning() {
     const timeout = setTimeout(addBlurToOverlay, 100);
     
     return () => clearTimeout(timeout);
-  }, []);
+  }, [activePopup, isAdminRoute]);
+
+  // Don't show popup on admin routes, while loading, on error, or if no active popup
+  if (isAdminRoute || isLoading || isError || !activePopup) {
+    return null;
+  }
 
   return (
 
