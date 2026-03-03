@@ -94,9 +94,8 @@ export default function ProductCard({ product }: { product: Product }) {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <span className="text-blue font-bold text-lg inter cursor-help">
-                    {product.gramsPerServing}
-                    {product.maxGramsPerServing && ` - ${product.maxGramsPerServing}`}{t('weight')}
+                  <span className="text-blue font-bold text-lg inter cursor-help whitespace-nowrap">
+                    {product.gramsPerServing} {product.maxGramsPerServing && ` - ${product.maxGramsPerServing}`}{t('weight')}
                   </span>
                 </TooltipTrigger>
                 {product.maxGramsPerServing && (
